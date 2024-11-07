@@ -1,15 +1,25 @@
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.border.Border;
 
-/**Decorator to change border of the Window. */
-class BorderDecorator extends PanelDecorator {
-    /**Uses PanelDecorator constructor to initialize panel / component. Adjusts border of window through PanelDecorator. */
-    public BorderDecorator(JPanel panel, Color color, int thickness) {
-        super(panel);
-        Border border = BorderFactory.createLineBorder(color, thickness);
-        decoratedPanel.setBorder(border);
+/**Decorator to change border of components. */
+class BorderDecorator extends ComponentDecorator {
+    Border border;
+    /**Uses ComponentDecorator constructor to initialize component. Adjusts border of window through ComponentDecorator. */
+    public BorderDecorator(JComponent cmp, Color color, int thickness) {
+        super(cmp);
+        this.border = BorderFactory.createLineBorder(color, thickness);
+        applyDecoration();
+    }
+
+    public Border getBorder() {
+        return border;
+    }
+
+    @Override
+    public void applyDecoration() {
+        decoratedComponent.setBorder(border);
     }
 }
