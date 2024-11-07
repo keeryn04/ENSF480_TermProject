@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -25,19 +26,8 @@ public class PageBuilder {
         return this;
     }
 
-    /**Add a label component that was already customized with Decorator
-     * @param label Label to be added with Builder
-     */
-    public PageBuilder addLabel(JLabel label) {
-        panel.add(label);
-        return this;
-    }
-
-    /**Add a button component that was already customized with Decorator
-     * @param button Button that will be added to the page
-     */
-    public PageBuilder addButton(JButton button) {
-        panel.add(button);
+    public PageBuilder addComponent(JComponent decoratedComponent, String position) {
+        panel.add(decoratedComponent, position);
         return this;
     }
 

@@ -1,11 +1,9 @@
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 /**Makes the HomePage to be displayed with Window*/
 public class HomePage implements Page {
@@ -17,26 +15,23 @@ public class HomePage implements Page {
     @Override
     public JPanel createPage() {
         try {
-            //Decorate button how you want it with decorator, then add with builder
             JButton homeButton = new JButton("Home");
-            homeButton = new ButtonColorDecorator(homeButton, Color.BLUE);
-            homeButton = new ButtonSizeDecorator(homeButton, 10, 20);
-
-            //Decorate label how you want it, then add with builder
             JLabel homeLabel = new JLabel("Home");
-            homeLabel = new LabelTextDecorator(homeLabel, "Howdy");
-            
-            //Use builder to add premade elements to the page
-            JPanel basicPanel = new PageBuilder() 
-                    .addLabel(homeLabel)
-                    .addButton(homeButton)
-                    .build();
-            
-            //Panel decorators don't need builder as it applies directly to page
-            JPanel decoratedPanel = new BackgroundDecorator(basicPanel, Color.BLUE);
-            decoratedPanel = new BorderDecorator(decoratedPanel, Color.RED, 10);
 
-            return decoratedPanel;
+            //Decorate elements how you want it with decorator, then add with builder
+            homeButton = (JButton) new BackgroundColorDecorator(homeButton, Color.RED).getDecoratedComponent();
+            homeButton = (JButton) new ForegroundColorDecorator(homeButton, Color.WHITE).getDecoratedComponent();
+            homeButton = (JButton) new SizeDecorator(homeButton, 50, 50).getDecoratedComponent();
+            homeLabel = (JLabel) new TextDecorator(homeLabel, "Howdy").getDecoratedComponent();
+            homeLabel = (JLabel) new SizeDecorator(homeLabel, 50, 50).getDecoratedComponent();
+
+            //Build the panel with positioned components
+            JPanel basicPanel = new PageBuilder()
+                    .addComponent(homeLabel, BorderLayout.NORTH)
+                    .addComponent(homeButton, BorderLayout.SOUTH)
+                    .build();
+
+            return basicPanel;
         } catch (Exception e) {
             System.out.printf("Error making Home Page: %s%n", e.getMessage());
             return null;
