@@ -1,19 +1,18 @@
 import javax.swing.JComponent;
 
-/**Decorator to change position of components. */
 public class PositionDecorator extends ComponentDecorator {
-    private String position;
+    private int x, y;
 
-    public PositionDecorator(JComponent cmp, String position) {
+    public PositionDecorator(JComponent cmp, int x, int y) {
         super(cmp);
-        this.position = position;
+        this.x = x;
+        this.y = y;
         applyDecoration();
     }
 
-    public String getPosition() {
-        return position;
-    }
-
     @Override
-    public void applyDecoration() {}
+    public void applyDecoration() {
+        decoratedComponent.setBounds(x, y, decoratedComponent.getPreferredSize().width, decoratedComponent.getPreferredSize().height);
+        decoratedComponent.revalidate();
+    }
 }
