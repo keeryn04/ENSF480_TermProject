@@ -2,6 +2,7 @@
 import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -14,7 +15,7 @@ public class PageBuilder {
     /**Made a new panel to be built with PageBuilder */
     public PageBuilder() {
         panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS)); //Default Layout
     }
 
     /**Sets the overall layout of the page
