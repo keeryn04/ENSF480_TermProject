@@ -1,9 +1,10 @@
+package frontend.decorators;
 import java.awt.Color;
 
 import javax.swing.JComponent;
 
 /**Decorator to change background of components. */
-class BackgroundColorDecorator extends ComponentDecorator {
+public class BackgroundColorDecorator extends ComponentDecorator {
     Color color;
     /**Uses ComponentDecorator constructor to initialize component. Adjusts background of component through ComponentDecorator. */
     public BackgroundColorDecorator(JComponent cmp, Color color) {

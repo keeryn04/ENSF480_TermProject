@@ -1,3 +1,4 @@
+package frontend.decorators;
 import java.awt.Color;
 
 import javax.swing.JComponent;

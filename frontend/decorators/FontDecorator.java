@@ -1,3 +1,4 @@
+package frontend.decorators;
 import java.awt.Font;
 
 import javax.swing.JComponent;

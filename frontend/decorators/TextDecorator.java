@@ -1,3 +1,4 @@
+package frontend.decorators;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
