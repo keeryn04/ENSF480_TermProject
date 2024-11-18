@@ -1,3 +1,4 @@
+package frontend.decorators;
 import javax.swing.JComponent;
 
 public class PositionDecorator extends ComponentDecorator {

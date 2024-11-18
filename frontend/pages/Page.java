@@ -1,3 +1,4 @@
+package frontend.pages;
 
 import javax.swing.JPanel;
 

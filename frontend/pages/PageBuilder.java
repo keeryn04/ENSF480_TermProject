@@ -1,11 +1,7 @@
-
-import java.awt.BorderLayout;
+package frontend.pages;
 import java.awt.LayoutManager;
-
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**Builds the page depending on what aspects you want for that page. Has various methods to make those components*/

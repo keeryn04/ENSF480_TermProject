@@ -1,3 +1,4 @@
+package frontend.decorators;
 import javax.swing.*;
 
 /**Decorator to change component details */
