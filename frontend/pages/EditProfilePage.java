@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import frontend.decorators.DecoratorHelpers;
 
+/**Page where user edits their personal info */
 public class EditProfilePage implements Page  {
     @Override
     public JPanel createPage() {

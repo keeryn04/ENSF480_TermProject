@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-
 import frontend.decorators.DecoratorHelpers;
 
 public class MoviePage implements Page  {
@@ -25,7 +24,7 @@ public class MoviePage implements Page  {
     JLabel posterLabel;
     JTextArea descriptionArea;
 
-    public MoviePage() {
+    private MoviePage() {
         titleLabel = new JLabel();
         posterLabel = new JLabel();
         descriptionArea = new JTextArea();
@@ -75,7 +74,7 @@ public class MoviePage implements Page  {
 
             return mainPanel;
         } catch (Exception e) {
-            System.out.printf("Error making Home Page: %s%n", e.getMessage());
+            System.out.printf("Error making Movie Page: %s%n", e.getMessage());
             return null;
         }
     }
@@ -83,13 +82,13 @@ public class MoviePage implements Page  {
     /**
      * Updates the MoviePage with the selected movie's details.
      */
-    public void updateContent(String title, String posterPath, String description) {
+    public void updateContent(String title, String description, String posterPath) {
         titleLabel.setText(title);
 
         //Load the image
         try {
             BufferedImage movieImage = ImageIO.read(new File(posterPath));
-            Image scaledImage = movieImage.getScaledInstance(300, 500, Image.SCALE_SMOOTH);
+            Image scaledImage = movieImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
             posterLabel.setIcon(new ImageIcon(scaledImage));
         } catch (IOException e) {
             e.printStackTrace();

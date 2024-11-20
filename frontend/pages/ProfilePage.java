@@ -2,9 +2,7 @@ package frontend.pages;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -13,6 +11,7 @@ import javax.swing.JPanel;
 
 import frontend.decorators.DecoratorHelpers;
 
+/**Page where user sees their personal info */
 public class ProfilePage implements Page  {
     @Override
     public JPanel createPage() {

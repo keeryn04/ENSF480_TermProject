@@ -65,4 +65,25 @@ public class Window {
             frame.setVisible(true);
         }
     }
+
+    public void makePages() {
+        Window window = Window.getInstance();
+
+        HomePage home = new HomePage();
+        JPanel homePanel = home.createPage();
+        window.addPanel("Home", homePanel);
+        window.showPanel("Home"); //Default starting page
+
+        ProfilePage profile = new ProfilePage();
+        JPanel profilePanel = profile.createPage();
+        window.addPanel("ProfilePage", profilePanel);
+
+        EditProfilePage editProfile = new EditProfilePage();
+        JPanel editProfilePanel = editProfile.createPage();
+        window.addPanel("ProfileEditPage", editProfilePanel);
+
+        MoviePage movie = MoviePage.getInstance();
+        JPanel moviePanel = movie.createPage();
+        window.addPanel("MoviePage", moviePanel);      
+    }
 }
