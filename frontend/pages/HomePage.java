@@ -1,4 +1,5 @@
 package frontend.pages;
+
 import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
 
@@ -7,71 +8,77 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-/**Makes the HomePage to be displayed with Window*/
+/** Displays the HomePage with a list of movies fetched from the database */
 public class HomePage implements Page {
 
-    /**Creates the Homepage elements. 
-     * Uses PageBuilder to create the different aspects of the page (Ex. Label, Button, etc.),
-     * and uses Decorators to add more functionality to those aspects.
-    */
+    /**
+     * Creates the Homepage elements.
+     * Fetches movie details from the database and dynamically creates UI components.
+     */
     @Override
     public JPanel createPage() {
         try {
-            //Create fonts
+            // Create fonts
             Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
-            
-            //Movie data (title, poster path, description) UPDATE WITH API CALL
-            Map<String, String[]> movies = new HashMap<>();
-            movies.put("Venom", new String[]{"./frontend/images/Venom.jpg", "Description for Venom"});
-            movies.put("Other Venom", new String[]{"./frontend/images/Venom.jpg", "Description for Other Venom"});
-            movies.put("This Venom", new String[]{"./frontend/images/Venom.jpg", "Description for This Venom"});
-            movies.put("That Venom", new String[]{"./frontend/images/Venom.jpg", "Description for That Venom"});
 
-            //Panels
+            // Panels
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
-            JPanel contentPanel = new JPanel(new BorderLayout());
             JPanel movieSelectionPanel = new JPanel(new FlowLayout());
             movieSelectionPanel.setBackground(Color.WHITE);
 
-            //Loop through movies and create panels
-            for (Map.Entry<String, String[]> entry : movies.entrySet()) {
-                String movieTitle = entry.getKey();
-                String[] movieDetails = entry.getValue();
+            // Database connection details
+            String dbUrl = "jdbc:mysql://localhost:3306/acmeplexdb";
+            String dbUser = "root";
+            String dbPassword = "password";
 
-                //Create movie panel
-                JPanel moviePanel = DecoratorHelpers.createMoviePanel(movieDetails[0], movieTitle, Color.DARK_GRAY, buttonFont);
+            // Fetch movie details from the database
+            try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+                 PreparedStatement statement = connection.prepareStatement("SELECT movie_id, title, poster_path FROM Movies");
+                 ResultSet resultSet = statement.executeQuery()) {
 
-                //Get the button from the moviePanel and add an action listener
-                JButton movieButton = (JButton) ((BorderLayout) moviePanel.getLayout()).getLayoutComponent(BorderLayout.SOUTH);
-                ActionListener listener = e -> {
-                    MoviePage.getInstance().updateContent(movieTitle, movieDetails[0], movieDetails[1]);
-                    Window.getInstance().showPanel("MoviePage");
-                };
+                while (resultSet.next()) {
+                    // Extract movie details
+                    int movieId = resultSet.getInt("movie_id");
+                    String movieTitle = resultSet.getString("title");
+                    String posterPath = resultSet.getString("poster_path");
 
-                ActionListenerDecorator accountDecorator = new ActionListenerDecorator(movieButton, movieButton, listener);
+                    // Create movie panel
+                    JPanel moviePanel = DecoratorHelpers.createMoviePanel(posterPath, movieTitle, Color.DARK_GRAY, buttonFont);
 
-                //Add to the movie selection panel
-                movieSelectionPanel.add(moviePanel);
+                    // Get the button from the moviePanel and add an action listener
+                    JButton movieButton = (JButton) ((BorderLayout) moviePanel.getLayout()).getLayoutComponent(BorderLayout.SOUTH);
+                    ActionListener listener = e -> {
+                        MoviePage.getInstance().updateContent(movieId);
+                        Window.getInstance().showPanel("MoviePage");
+                    };
+
+                    ActionListenerDecorator accountDecorator = new ActionListenerDecorator(movieButton, movieButton, listener);
+                    accountDecorator.applyDecoration(listener);
+
+                    // Add to the movie selection panel
+                    movieSelectionPanel.add(moviePanel);
+                }
             }
 
-            //Use builder to add all panels in main layout
+            // Use builder to add all panels in main layout
             JPanel mainPanel = new PageBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(movieSelectionPanel, BorderLayout.CENTER)
-                    .addComponent(contentPanel, BorderLayout.SOUTH)
                     .build();
 
             return mainPanel;
         } catch (Exception e) {
             System.out.printf("Error making Home Page: %s%n", e.getMessage());
-            return null;
+            return new JPanel(); // Return an empty panel on failure
         }
     }
 }
