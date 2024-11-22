@@ -36,10 +36,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
         Font nameFont = new Font("Times New Roman", Font.BOLD, 24);
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
 
-        nameLabel = DecoratorHelpers.makeLabel(Color.DARK_GRAY, "name", nameFont);
-        addressLabel = DecoratorHelpers.makeLabel(Color.DARK_GRAY, "address", labelFont);
-        cardNumLabel = DecoratorHelpers.makeLabel(Color.DARK_GRAY, "cardNum", labelFont);
-        cardDateLabel = DecoratorHelpers.makeLabel(Color.DARK_GRAY, "cardDate", labelFont);
+        nameLabel = DecoratorHelpers.makeLabel(Color.BLACK, "name", nameFont);
+        addressLabel = DecoratorHelpers.makeLabel(Color.BLACK, "address", labelFont);
+        cardNumLabel = DecoratorHelpers.makeLabel(Color.BLACK, "cardNum", labelFont);
+        cardDateLabel = DecoratorHelpers.makeLabel(Color.BLACK, "cardDate", labelFont);
 
         contentPanel = new JPanel();
 

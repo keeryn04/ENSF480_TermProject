@@ -75,6 +75,10 @@ public class Window {
         window.addPanel("Home", homePanel);
         window.showPanel("Home"); //Default starting page
 
+        LoginPage login = LoginPage.getInstance();
+        JPanel loginPanel = login.createPage();
+        window.addPanel("LoginPage", loginPanel);   
+
         ProfilePage profile = ProfilePage.getInstance();
         JPanel profilePanel = profile.createPage();
         window.addPanel("ProfilePage", profilePanel);
@@ -89,8 +93,6 @@ public class Window {
 
         SeatMapPage seatmap = SeatMapPage.getInstance();
         JPanel seatPanel = seatmap.createPage();
-        window.addPanel("SeatMapPage", seatPanel);      
-
-        
+        window.addPanel("SeatMapPage", seatPanel);        
     }
 }
