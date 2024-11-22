@@ -62,6 +62,7 @@ public class Window {
     /**Display the window on the screen*/
     public void showWindow() {
         if (!frame.isVisible()) {
+            frame.revalidate();
             frame.setVisible(true);
         }
     }
@@ -74,16 +75,22 @@ public class Window {
         window.addPanel("Home", homePanel);
         window.showPanel("Home"); //Default starting page
 
-        ProfilePage profile = new ProfilePage();
+        ProfilePage profile = ProfilePage.getInstance();
         JPanel profilePanel = profile.createPage();
         window.addPanel("ProfilePage", profilePanel);
 
-        EditProfilePage editProfile = new EditProfilePage();
-        JPanel editProfilePanel = editProfile.createPage();
-        window.addPanel("ProfileEditPage", editProfilePanel);
+        EditProfilePage profileEdit = new EditProfilePage();
+        JPanel profileEditPanel = profileEdit.createPage();
+        window.addPanel("ProfileEditPage", profileEditPanel);
 
         MoviePage movie = MoviePage.getInstance();
         JPanel moviePanel = movie.createPage();
         window.addPanel("MoviePage", moviePanel);      
+
+        SeatMapPage seatmap = SeatMapPage.getInstance();
+        JPanel seatPanel = seatmap.createPage();
+        window.addPanel("SeatMapPage", seatPanel);      
+
+        
     }
 }

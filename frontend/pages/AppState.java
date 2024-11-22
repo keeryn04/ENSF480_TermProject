@@ -1,30 +1,30 @@
 package frontend.pages;
-//Temp database class
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**Used to store data that will be used in the system (Like a cache to store database queried data)*/
 public class AppState {
-    private static AppState instance;
+    private static AppState instance; //Singleton instance
 
-    //Theatre info
-    private String screenNum;
-
-    //Movie info
-    private String movieTitle;
-    private String movieDetails;
-    private String moviePoster;
-
-    //Seatmap info
-    private String seatMapTitle;
-    private int seatRows;
-    private int seatCols;
+    private Map<String, String[]> movies;
+    private Map<Integer, Integer[]> screens;
 
     private AppState() {
-        screenNum = "1";
-        movieTitle = "title";
-        movieDetails = "details";
-        seatMapTitle = "map title";
-        seatRows = 5;
-        seatCols = 5;
+        movies = new HashMap<>();
+        movies.put("Venom", new String[]{"./frontend/images/Venom.jpg", "Description for Venom"});
+        movies.put("Other Venom", new String[]{"./frontend/images/Venom.jpg", "Description for Other Venom"});
+        movies.put("This Venom", new String[]{"./frontend/images/Venom.jpg", "Description for This Venom"});
+        movies.put("That Venom", new String[]{"./frontend/images/Venom.jpg", "Description for That Venom"});
+
+        screens = new HashMap<>();
+        screens.put(1, new Integer[]{5, 5});
+        screens.put(2, new Integer[]{1, 1});
+        screens.put(3, new Integer[]{10, 1});
+        screens.put(4, new Integer[]{8, 8});
     }
 
+    //Singleton management
     public static AppState getInstance() {
         if (instance == null) {
             instance = new AppState();
@@ -32,59 +32,12 @@ public class AppState {
         return instance;
     }
 
-    public String getScreenNum() {
-        return screenNum;
+    public Map<String, String[]> getMovies() {
+        return movies;
     }
 
-    public void setScreenNum(String screenNum) {
-        this.screenNum = screenNum;
+    public Map<Integer, Integer[]> getScreens() {
+        return screens;
     }
-
-    public String getMovieTitle() {
-        return movieTitle;
-    }
-
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
-    }
-
-    public String getMovieDetails() {
-        return movieDetails;
-    }
-
-    public void setMovieDetails(String movieDetails) {
-        this.movieDetails = movieDetails;
-    }
-
-    public String getMoviePoster() {
-        return moviePoster;
-    }
-
-    public void setMoviePoster(String imagePath) {
-        this.moviePoster = imagePath;
-    }
-
-    public String getSeatMapTitle() {
-        return seatMapTitle;
-    }
-
-    public void setSeatMapTitle(String seatMapTitle) {
-        this.seatMapTitle = seatMapTitle;
-    }
-
-    public int getSeatRows() {
-        return seatRows;
-    }
-
-    public void setSeatRows(int seatRows) {
-        this.seatRows = seatRows;
-    }
-
-    public int getSeatCols() {
-        return seatCols;
-    }
-
-    public void setSeatCols(int seatCols) {
-        this.seatCols = seatCols;
-    }
+    
 }
