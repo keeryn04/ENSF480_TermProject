@@ -19,7 +19,7 @@ public class Window {
             frame = new JFrame("Acmeplex");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLayout(new BorderLayout());
-            frame.setSize(700, 600);
+            frame.setSize(1000, 700);
             frame.setLocationRelativeTo(null);
 
             cardLayout = new CardLayout();

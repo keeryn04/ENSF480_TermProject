@@ -28,6 +28,13 @@ CREATE TABLE Movies (
     description TEXT
 );
 
+-- Screens Table
+CREATE TABLE Screens (
+    screen_id INT AUTO_INCREMENT PRIMARY KEY,
+    screen_rows INT,
+    screen_cols INT
+);
+
 -- Showtimes Table
 CREATE TABLE Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,

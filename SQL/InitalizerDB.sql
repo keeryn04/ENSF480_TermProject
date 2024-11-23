@@ -24,6 +24,16 @@ ON DUPLICATE KEY UPDATE
   poster_path = VALUES(poster_path),
   description = VALUES(description);
 
+-- Insert Screens
+INSERT INTO Screens (screen_rows, screen_cols)
+VALUES
+('5', '5'),
+('10', '10'),
+('2', '2'),
+('4', '4')
+ON DUPLICATE KEY UPDATE 
+    screen_rows = VALUES(screen_rows),
+    screen_cols = VALUES(screen_cols);
 
 -- Insert Showtimes
 INSERT INTO Showtimes (movie_id, start_time, end_time)

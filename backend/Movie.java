@@ -1,7 +1,6 @@
 package backend;
 
 public class Movie {
-    private int id;
     private String title;
     private String genre;
     private String duration;
@@ -9,8 +8,7 @@ public class Movie {
     private String posterPath;
     private String description;
 
-    public Movie(int id, String title, String genre, int duration, double rating, String posterPath, String desc) {
-        this.id = id;
+    public Movie(String title, String genre, int duration, double rating, String posterPath, String desc) {
         this.title = title;
         this.genre = genre;
         this.duration = String.valueOf(duration);

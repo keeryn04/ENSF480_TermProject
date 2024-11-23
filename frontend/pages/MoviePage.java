@@ -197,7 +197,7 @@ public class MoviePage implements Page, MoviePageObserver {
             descriptionArea.setText(movieDescription);
 
             if (posterImage != null) {
-                Image scaledImage = posterImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+                Image scaledImage = posterImage.getScaledInstance(250, 400, Image.SCALE_SMOOTH);
                 posterLabel.setIcon(new ImageIcon(scaledImage));
             } else {
                 posterLabel.setText("Image not found");
@@ -228,7 +228,7 @@ public class MoviePage implements Page, MoviePageObserver {
         //Load the image
         try {
             BufferedImage movieImage = ImageIO.read(new File(imagePath));
-            Image scaledImage = movieImage.getScaledInstance(150, 200, Image.SCALE_SMOOTH);
+            Image scaledImage = movieImage.getScaledInstance(150, 250, Image.SCALE_SMOOTH);
             JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
             moviePanel.add(picLabel, BorderLayout.CENTER);
         } catch (IOException e) {

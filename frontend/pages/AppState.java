@@ -8,6 +8,7 @@ import java.util.Map;
 
 import backend.DatabaseAccessor;
 import backend.Movie;
+import backend.Screen;
 
 /**Used to store data that will be used in the system (Like a cache to store database queried data)*/
 public class AppState {
@@ -32,11 +33,13 @@ public class AppState {
             movieId++;
         }
         
-        screens = new HashMap<>();
-        screens.put(1, new Integer[]{5, 5});
-        screens.put(2, new Integer[]{1, 1});
-        screens.put(3, new Integer[]{10, 1});
-        screens.put(4, new Integer[]{8, 8});
+        int screenId = 1;
+        Screen screen;
+        while ((screen = DatabaseAccessor.getScreenDetails(screenId)) != null) {
+            screens.put(screenId, 
+                new Integer[]{screen.getRows(), screen.getCols()});
+            screenId++;
+        }
     }
 
     //Singleton management
