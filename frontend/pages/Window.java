@@ -19,7 +19,7 @@ public class Window {
             frame = new JFrame("Acmeplex");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLayout(new BorderLayout());
-            frame.setSize(700, 600);
+            frame.setSize(1000, 700);
             frame.setLocationRelativeTo(null);
 
             cardLayout = new CardLayout();
@@ -62,7 +62,37 @@ public class Window {
     /**Display the window on the screen*/
     public void showWindow() {
         if (!frame.isVisible()) {
+            frame.revalidate();
             frame.setVisible(true);
         }
+    }
+
+    public void makePages() {
+        Window window = Window.getInstance();
+
+        HomePage home = new HomePage();
+        JPanel homePanel = home.createPage();
+        window.addPanel("Home", homePanel);
+        window.showPanel("Home"); //Default starting page
+
+        LoginPage login = LoginPage.getInstance();
+        JPanel loginPanel = login.createPage();
+        window.addPanel("LoginPage", loginPanel);   
+
+        ProfilePage profile = ProfilePage.getInstance();
+        JPanel profilePanel = profile.createPage();
+        window.addPanel("ProfilePage", profilePanel);
+
+        EditProfilePage profileEdit = new EditProfilePage();
+        JPanel profileEditPanel = profileEdit.createPage();
+        window.addPanel("ProfileEditPage", profileEditPanel);
+
+        MoviePage movie = MoviePage.getInstance();
+        JPanel moviePanel = movie.createPage();
+        window.addPanel("MoviePage", moviePanel);      
+
+        SeatMapPage seatmap = SeatMapPage.getInstance();
+        JPanel seatPanel = seatmap.createPage();
+        window.addPanel("SeatMapPage", seatPanel);        
     }
 }

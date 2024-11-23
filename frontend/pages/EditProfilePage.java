@@ -1,13 +1,17 @@
 package frontend.pages;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import frontend.decorators.DecoratorHelpers;
 
+/**Page where user edits their personal info */
 public class EditProfilePage implements Page  {
     @Override
     public JPanel createPage() {
@@ -22,16 +26,34 @@ public class EditProfilePage implements Page  {
             JPanel editPanel = new JPanel();
             editPanel.setLayout(new FlowLayout());
             editPanel.setBorder(BorderFactory.createTitledBorder("Edit Profile"));
-            JPanel nameField = DecoratorHelpers.makeLabeledField(Color.BLACK, "Name", labelFont, 20, null);
-            JPanel addressField = DecoratorHelpers.makeLabeledField(Color.BLACK, "Address", labelFont, 20, null);
-            JPanel paymentNumField = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", labelFont, 20, null);
-            JPanel paymentDateField = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Expiration Date: ", labelFont, 20, null);
+            JPanel nameFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Name", labelFont, 20, null);
+            JPanel addressFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Address", labelFont, 20, null);
+            JPanel paymentNumFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", labelFont, 20, null);
+            JPanel paymentDateFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Expiration Date: ", labelFont, 20, null);
+            /*
+            JTextField nameField = (JTextField) nameFieldPanel.getComponent(1);  // Get the JTextField from the JPanel
+            JTextField addressField = (JTextField) addressFieldPanel.getComponent(1);
+            JTextField paymentNumField = (JTextField) paymentNumFieldPanel.getComponent(1);
+            JTextField paymentDateField = (JTextField) paymentDateFieldPanel.getComponent(1);
+
+            // To retrieve the text entered by the user:
+            String enteredName = nameField.getText();
+            String enteredAddress = addressField.getText();
+            String enteredPaymentNum = paymentNumField.getText();
+            String enteredPaymentDate = paymentDateField.getText();
+
+            // Now, you can use the entered data, e.g., set it in ProfileState or elsewhere
+            ProfileState.getInstance().setName(enteredName);
+            ProfileState.getInstance().setAddress(enteredAddress);
+            ProfileState.getInstance().setCardNum(enteredPaymentNum);
+            ProfileState.getInstance().setCardDate(enteredPaymentDate);
+            */
 
             //Add components to panel
-            editPanel.add(nameField);
-            editPanel.add(addressField);
-            editPanel.add(paymentNumField);
-            editPanel.add(paymentDateField);
+            editPanel.add(nameFieldPanel);
+            editPanel.add(addressFieldPanel);
+            editPanel.add(paymentNumFieldPanel);
+            editPanel.add(paymentDateFieldPanel);
 
             //Combine all panels in main layout
             JPanel mainPanel = new PageBuilder()
