@@ -18,19 +18,11 @@ import javax.swing.JPanel;
 
 /** Displays the HomePage with a list of movies fetched from the database */
 public class HomePage implements Page {
-    JPanel movieSelectionPanel;
 
-    public HomePage() {
-        movieSelectionPanel = new JPanel(new FlowLayout());
-        movieSelectionPanel.setBackground(Color.WHITE);
-    }
-
-    /**Creates the Homepage elements. 
-     * Uses PageBuilder to create the different aspects of the page (Ex. Label, Button, etc.),
-     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
-    */
-    @SuppressWarnings("unused")
-
+    /**
+     * Creates the Homepage elements.
+     * Fetches movie details from the database and dynamically creates UI components.
+     */
     @Override
     public JPanel createPage() {
         try {
@@ -39,10 +31,42 @@ public class HomePage implements Page {
 
             // Panels
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
+            JPanel movieSelectionPanel = new JPanel(new FlowLayout());
+            movieSelectionPanel.setBackground(Color.WHITE);
 
-            JPanel contentPanel = new JPanel(new BorderLayout());
+            // Database connection details
+            String dbUrl = "jdbc:mysql://localhost:3306/acmeplexdb";
+            String dbUser = "root";
+            String dbPassword = "password";
 
-            populateMovieData(buttonFont);
+            // Fetch movie details from the database
+            try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+                 PreparedStatement statement = connection.prepareStatement("SELECT movie_id, title, poster_path FROM Movies");
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    // Extract movie details
+                    int movieId = resultSet.getInt("movie_id");
+                    String movieTitle = resultSet.getString("title");
+                    String posterPath = resultSet.getString("poster_path");
+
+                    // Create movie panel
+                    JPanel moviePanel = DecoratorHelpers.createMoviePanel(posterPath, movieTitle, Color.DARK_GRAY, buttonFont);
+
+                    // Get the button from the moviePanel and add an action listener
+                    JButton movieButton = (JButton) ((BorderLayout) moviePanel.getLayout()).getLayoutComponent(BorderLayout.SOUTH);
+                    ActionListener listener = e -> {
+                        MoviePage.getInstance().updateContent(movieId);
+                        Window.getInstance().showPanel("MoviePage");
+                    };
+
+                    ActionListenerDecorator accountDecorator = new ActionListenerDecorator(movieButton, movieButton, listener);
+                    accountDecorator.applyDecoration(listener);
+
+                    // Add to the movie selection panel
+                    movieSelectionPanel.add(moviePanel);
+                }
+            }
 
             // Use builder to add all panels in main layout
             JPanel mainPanel = new PageBuilder()
@@ -56,67 +80,5 @@ public class HomePage implements Page {
             System.out.printf("Error making Home Page: %s%n", e.getMessage());
             return new JPanel(); // Return an empty panel on failure
         }
-    }
-
-    /**Creates movie panels for HomePage based on data in Appstate */
-    private void populateMovieData(Font buttonFont) {
-        movieSelectionPanel.removeAll(); //Clear previous panels
-
-        //Get movie data from AppState
-        Map<String, String[]> movies = AppState.getInstance().getMovies();
-        Map<Integer, Integer[]> screens = AppState.getInstance().getScreens();
-        Map<String, Integer> movieScreenMapping = new HashMap<>();
-        Integer screenNumber = 1;
-
-        //Map movies to screens
-        for (Map.Entry<String, String[]> entry : movies.entrySet()) {
-            String movieTitle = entry.getKey();
-            movieScreenMapping.put(movieTitle, screenNumber); //Movie is on screen
-            screenNumber++;
-        }
-
-        //Make movie panel and seatmap for each movie / screen
-        for (Map.Entry<String, String[]> entry : movies.entrySet()) {
-            String movieTitle = entry.getKey();
-            String[] movieDetails = entry.getValue();
-            String imagePath = movieDetails[0];
-            String movieDesc = movieDetails[1];
-            String movieGenre = movieDetails[2];
-            String movieRating = movieDetails[3];
-            String movieRuntime = movieDetails[4];
-
-            //Create movie panel
-            JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDetails[1], movieDetails[0], Color.DARK_GRAY, buttonFont);
-            JButton movieButton = (JButton) moviePanel.getComponent(1);
-            ActionListener listener = e -> {
-                //Update Movie Data in Movie State
-                MovieState.getInstance().setMovieTitle(movieTitle);
-                MovieState.getInstance().setMovieDetails(movieDesc);
-                MovieState.getInstance().setMoviePoster(imagePath);
-                MovieState.getInstance().setMovieGenre(movieGenre);
-                MovieState.getInstance().setMovieRating(movieRating);
-                MovieState.getInstance().setMovieRuntime(movieRuntime);
-
-                Integer screenNum = movieScreenMapping.get(movieTitle); //Screen assigned to each movie
-                if (screenNum != null) {
-                    Integer[] screenDetails = screens.get(screenNum);
-                    Integer rows = screenDetails[0];
-                    Integer cols = screenDetails[1];
-                    
-                    //Set the seat rows and columns in SeatMapState
-                    SeatMapState.getInstance().setSeatRows(rows);
-                    SeatMapState.getInstance().setSeatCols(cols);
-                }
-            };
-        
-            movieButton.addActionListener(listener);
-
-            //Add movie panel to the UI
-            movieSelectionPanel.add(moviePanel);
-        }
-
-        //Remake the panel
-        movieSelectionPanel.revalidate();
-        movieSelectionPanel.repaint();
     }
 }

@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 import javax.swing.border.Border;
 
 /**Decorator to change border of components. */
-public class BorderDecorator extends ComponentDecorator {
+class BorderDecorator extends ComponentDecorator {
     Border border;
     /**Uses ComponentDecorator constructor to initialize component. Adjusts border of window through ComponentDecorator. */
     public BorderDecorator(JComponent cmp, Color color, int thickness) {

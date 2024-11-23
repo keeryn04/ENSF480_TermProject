@@ -22,41 +22,12 @@ public class DatabaseAccessor {
             statement.setInt(1, movieId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String title = resultSet.getString("title");
-                    String genre = resultSet.getString("genre");
-                    int duration = resultSet.getInt("duration");
-                    double rating = resultSet.getDouble("rating");
-                    String posterPath = resultSet.getString("poster_path");
-                    String description = resultSet.getString("description");
-
-                    return new Movie(title, genre, duration, rating, posterPath, description);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    /**
-     * Fetches screen details by screenId.
-     * @param screenId the ID of the creen to fetch.
-     * @return a Screen instance containing rows, cols.
-     */
-    public static Screen getScreenDetails(int screenID) {
-        String query = "SELECT screen_rows, screen_cols FROM Screens WHERE screen_id = ?";
-
-        try (Connection conn = connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
-
-            statement.setInt(1, screenID);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int rows = resultSet.getInt("screen_rows");
-                    int cols = resultSet.getInt("screen_cols");
-
-                    return new Screen(rows, cols);
+                    movieDetails.add(resultSet.getString("title"));
+                    movieDetails.add(resultSet.getString("genre"));
+                    movieDetails.add(resultSet.getString("duration"));
+                    movieDetails.add(resultSet.getString("rating"));
+                    movieDetails.add(resultSet.getString("poster_path"));
+                    movieDetails.add(resultSet.getString("description"));
                 }
             }
         } catch (SQLException e) {
@@ -64,6 +35,5 @@ public class DatabaseAccessor {
         }
 
         return movieDetails;
-
     }
 }

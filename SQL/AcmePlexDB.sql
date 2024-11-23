@@ -1,9 +1,3 @@
-DROP DATABASE IF EXISTS AcmePlexDB;
-
--- Create Database
-CREATE DATABASE AcmePlexDB;
-
--- Use the Database
 USE AcmePlexDB;
 
 -- Create Users Table
@@ -28,21 +22,12 @@ CREATE TABLE IF NOT EXISTS Movies (
     description TEXT
 );
 
--- Screens Table
-CREATE TABLE Screens (
-    screen_id INT AUTO_INCREMENT PRIMARY KEY,
-    screen_rows INT,
-    screen_cols INT
-);
-
 -- Create Showtimes Table
 CREATE TABLE IF NOT EXISTS Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
-    poster_path VARCHAR(255),
-    description TEXT,
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
 
