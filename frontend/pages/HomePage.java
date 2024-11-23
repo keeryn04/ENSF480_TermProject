@@ -72,8 +72,11 @@ public class HomePage implements Page {
         for (Map.Entry<String, String[]> entry : movies.entrySet()) {
             String movieTitle = entry.getKey();
             String[] movieDetails = entry.getValue();
-            String movieDesc = movieDetails[1];
             String imagePath = movieDetails[0];
+            String movieDesc = movieDetails[1];
+            String movieGenre = movieDetails[2];
+            String movieRating = movieDetails[3];
+            String movieRuntime = movieDetails[4];
 
             //Create movie panel
             JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDetails[1], movieDetails[0], Color.DARK_GRAY, buttonFont);
@@ -83,6 +86,9 @@ public class HomePage implements Page {
                 MovieState.getInstance().setMovieTitle(movieTitle);
                 MovieState.getInstance().setMovieDetails(movieDesc);
                 MovieState.getInstance().setMoviePoster(imagePath);
+                MovieState.getInstance().setMovieGenre(movieGenre);
+                MovieState.getInstance().setMovieRating(movieRating);
+                MovieState.getInstance().setMovieRuntime(movieRuntime);
 
                 Integer screenNum = movieScreenMapping.get(movieTitle);
                 if (screenNum != null) {

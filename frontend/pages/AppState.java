@@ -1,7 +1,13 @@
 package frontend.pages;
 
+import java.awt.List;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import backend.DatabaseAccessor;
+import backend.Movie;
 
 /**Used to store data that will be used in the system (Like a cache to store database queried data)*/
 public class AppState {
@@ -12,11 +18,20 @@ public class AppState {
 
     private AppState() {
         movies = new HashMap<>();
-        movies.put("Venom", new String[]{"./frontend/images/Venom.jpg", "Description for Venom"});
-        movies.put("Other Venom", new String[]{"./frontend/images/Venom.jpg", "Description for Other Venom"});
-        movies.put("This Venom", new String[]{"./frontend/images/Venom.jpg", "Description for This Venom"});
-        movies.put("That Venom", new String[]{"./frontend/images/Venom.jpg", "Description for That Venom"});
+        screens = new HashMap<>();
 
+        int movieId = 1;
+        Movie movie;
+        while ((movie = DatabaseAccessor.getMovieDetails(movieId)) != null) {
+            movies.put(movie.getTitle(), 
+                new String[]{"./frontend" + movie.getPosterPath(), 
+                movie.getDescription(), 
+                movie.getGenre(), 
+                movie.getRating(),
+                movie.getDuration()});
+            movieId++;
+        }
+        
         screens = new HashMap<>();
         screens.put(1, new Integer[]{5, 5});
         screens.put(2, new Integer[]{1, 1});
