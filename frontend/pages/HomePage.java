@@ -1,4 +1,6 @@
 package frontend.pages;
+
+import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
 
 import java.awt.BorderLayout;
@@ -6,13 +8,15 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-/**Makes the HomePage to be displayed with Window*/
+/** Displays the HomePage with a list of movies fetched from the database */
 public class HomePage implements Page {
     JPanel movieSelectionPanel;
 
@@ -26,30 +30,31 @@ public class HomePage implements Page {
      * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
     */
     @SuppressWarnings("unused")
+
     @Override
     public JPanel createPage() {
         try {
-            //Create fonts
+            // Create fonts
             Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
 
-            //Panels
+            // Panels
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
+
             JPanel contentPanel = new JPanel(new BorderLayout());
 
             populateMovieData(buttonFont);
 
-            //Use builder to add all panels in main layout
+            // Use builder to add all panels in main layout
             JPanel mainPanel = new PageBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(movieSelectionPanel, BorderLayout.CENTER)
-                    .addComponent(contentPanel, BorderLayout.SOUTH)
                     .build();
 
             return mainPanel;
         } catch (Exception e) {
             System.out.printf("Error making Home Page: %s%n", e.getMessage());
-            return null;
+            return new JPanel(); // Return an empty panel on failure
         }
     }
 

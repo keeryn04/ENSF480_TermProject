@@ -1,3 +1,20 @@
+USE AcmePlexDB;
+SET SQL_SAFE_UPDATES = 0;
+
+-- Clear Existing Data with WHERE Clause for Safe Update Mode
+DELETE FROM Tickets WHERE ticket_id IS NOT NULL;
+DELETE FROM Seats WHERE seat_id IS NOT NULL;
+DELETE FROM Showtimes WHERE showtime_id IS NOT NULL;
+DELETE FROM Movies WHERE movie_id IS NOT NULL;
+DELETE FROM Users WHERE user_id IS NOT NULL;
+
+-- Reset Auto-Increment Counters
+ALTER TABLE Tickets AUTO_INCREMENT = 1;
+ALTER TABLE Seats AUTO_INCREMENT = 1;
+ALTER TABLE Showtimes AUTO_INCREMENT = 1;
+ALTER TABLE Movies AUTO_INCREMENT = 1;
+ALTER TABLE Users AUTO_INCREMENT = 1;
+
 -- Insert Users
 INSERT INTO Users (name, email, card_number, is_registered, account_recharge, credit_balance)
 VALUES
@@ -64,3 +81,5 @@ ON DUPLICATE KEY UPDATE
     payment_status = VALUES(payment_status),
     cancelled = VALUES(cancelled),
     refund_amount = VALUES(refund_amount);
+
+SET SQL_SAFE_UPDATES = 1;

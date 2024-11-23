@@ -1,5 +1,7 @@
 package frontend.pages;
 
+import backend.DatabaseAccessor;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -10,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -18,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -150,6 +154,7 @@ public class MoviePage implements Page, MoviePageObserver {
 
             //Add titlePanel, posterPanel, and detailsPanel to the main contentPanel
             JPanel contentPanel = new PageBuilder()
+
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(posterPanel, BorderLayout.CENTER)
@@ -161,7 +166,6 @@ public class MoviePage implements Page, MoviePageObserver {
                     .setLayout(new BorderLayout())
                     .addComponent(headerPanel, BorderLayout.NORTH)
                     .addComponent(contentPanel, BorderLayout.CENTER)
-                    .addComponent(footerPanel, BorderLayout.SOUTH)
                     .build();
 
             return mainPanel;

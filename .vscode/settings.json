@@ -1,0 +1,34 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "xprotocol",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 33060,
+            "driver": "MySQL",
+            "name": "archerydb",
+            "database": "olympicarchery",
+            "username": "root",
+            "password": "@M4thI55tr0ng!",
+            "connectionTimeout": 1000
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "MySQL80",
+            "database": "AcmePlexDB",
+            "username": "localhost",
+            "password": "password",
+            "connectionTimeout": 100
+        }
+    ]
+}
