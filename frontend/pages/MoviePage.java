@@ -2,7 +2,9 @@ package frontend.pages;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -30,25 +32,58 @@ public class MoviePage implements Page, MoviePageObserver {
     private String movieTitle = "Movie Title";
     private String movieDescription = "Movie Description";
     private BufferedImage posterImage;
+    private String movieGenre = "Comedy";
+    private String movieRating = "3.6";
+    private String movieRuntime = "120";
+    private String movieStartTime = "Today";
+    private String movieEndTime = "Tomorrow";
     private Integer screenNum = 1; //Stored for ticket display purposes
 
     //UI components
     private JLabel titleLabel;
     private JLabel posterLabel;
     private JTextArea descriptionArea;
+    private JLabel starttimeTitle;
+    private JLabel starttimeLabel;
+    private JLabel endtimeTitle;
+    private JLabel endtimeLabel;
+    private JLabel genreTitle;
+    private JLabel genreLabel;
+    private JLabel ratingTitle;
+    private JLabel ratingLabel;
+    private JLabel runtimeTitle;
+    private JLabel runtimeLabel;
 
     private MoviePage() {
         //Initialize UI components
         Font titleFont = new Font("Times New Roman", Font.BOLD, 36);
+        Font dataTitleFont = new Font("Times New Roman", Font.BOLD, 20);
+        Font dataFont = new Font("Times New Roman", Font.PLAIN, 18);
         Font descriptionFont = new Font("Times New Roman", Font.BOLD, 18);
 
         titleLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieTitle, titleFont);
+
         posterLabel = new JLabel(); //Poster image
+
         descriptionArea = new JTextArea(movieDescription);
         descriptionArea.setFont(descriptionFont);
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         descriptionArea.setEditable(false);
+
+        starttimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Start Time: ", dataTitleFont);
+        starttimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieStartTime, dataFont);
+        endtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "End Time: ", dataTitleFont);
+        endtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieEndTime, dataFont);
+        
+        genreTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Genre: ", dataTitleFont);
+        genreLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieGenre, dataFont);
+
+        ratingTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Rating: ", dataTitleFont);
+        ratingLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieRating, dataFont);
+
+        runtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Runtime: ", dataTitleFont);
+        runtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieRuntime, dataFont);
 
         //Register with MovieState
         MovieState.getInstance().addMovieObserver(this);
@@ -70,19 +105,61 @@ public class MoviePage implements Page, MoviePageObserver {
     public JPanel createPage() {
         try {
             //Make header and footer
-            JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
+            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
             JPanel footerPanel = DecoratorHelpers.createFooterPanel("movieTicket");
 
-            //Layout setup
-            JPanel contentPanel = new JPanel(new BorderLayout());
-            contentPanel.add(titleLabel, BorderLayout.NORTH);
-            contentPanel.add(posterLabel, BorderLayout.CENTER);
-            contentPanel.add(new JScrollPane(descriptionArea), BorderLayout.SOUTH);
+            //Title panel with titleLabel
+            JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            titlePanel.add(titleLabel);
+
+            //Poster panel with posterLabel
+            JPanel posterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            posterPanel.add(posterLabel);
+
+            //Times panel (start and end titles and labels)
+            JPanel timesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            timesPanel.add(starttimeTitle);
+            timesPanel.add(starttimeLabel);
+            timesPanel.add(endtimeTitle);
+            timesPanel.add(endtimeLabel);
+
+            //Rating panel (title and label)
+            JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            ratingPanel.add(ratingTitle);
+            ratingPanel.add(ratingLabel);
+
+            //Runtime panel (title and label)
+            JPanel runtimePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            runtimePanel.add(runtimeTitle);
+            runtimePanel.add(runtimeLabel);
+
+            //Genre panel (title and label)
+            JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            genrePanel.add(genreTitle);
+            genrePanel.add(genreLabel);
+
+            //Add all detail panels to the detailsPanel
+            JPanel detailsPanel = new PageBuilder()
+                    .setLayout(new GridLayout(5, 1))
+                    .addComponent(timesPanel, null)
+                    .addComponent(ratingPanel, null)
+                    .addComponent(runtimePanel, null)
+                    .addComponent(genrePanel, null)
+                    .addComponent(new JScrollPane(descriptionArea), null)
+                    .build();
+
+            //Add titlePanel, posterPanel, and detailsPanel to the main contentPanel
+            JPanel contentPanel = new PageBuilder()
+                    .setLayout(new BorderLayout())
+                    .addComponent(titlePanel, BorderLayout.NORTH)
+                    .addComponent(posterPanel, BorderLayout.CENTER)
+                    .addComponent(detailsPanel, BorderLayout.SOUTH)
+                    .build();
 
             //Use builder to add all panels in the main layout
             JPanel mainPanel = new PageBuilder()
                     .setLayout(new BorderLayout())
-                    .addComponent(titlePanel, BorderLayout.NORTH)
+                    .addComponent(headerPanel, BorderLayout.NORTH)
                     .addComponent(contentPanel, BorderLayout.CENTER)
                     .addComponent(footerPanel, BorderLayout.SOUTH)
                     .build();
@@ -111,6 +188,26 @@ public class MoviePage implements Page, MoviePageObserver {
                 posterImage = loadImage((String) value);
                 updateContent();
                 break;
+            case "movieGenre":
+                movieGenre = (String) value;
+                updateContent();
+                break;
+            case "movieRating":
+                movieRating = (String) value;
+                updateContent();
+                break;
+            case "movieRuntime":
+                movieRuntime = (String) value;
+                updateContent();
+                break;
+            case "movieStarttime":
+                movieStartTime = (String) value;
+                updateContent();
+                break;
+            case "movieEndtime":
+                movieEndTime = (String) value;
+                updateContent();
+                break;
             case "screenNum":
                 screenNum = (Integer) value;
                 updateContent();
@@ -127,12 +224,19 @@ public class MoviePage implements Page, MoviePageObserver {
             descriptionArea.setText(movieDescription);
 
             if (posterImage != null) {
-                Image scaledImage = posterImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+                Image scaledImage = posterImage.getScaledInstance(250, 400, Image.SCALE_SMOOTH);
                 posterLabel.setIcon(new ImageIcon(scaledImage));
             } else {
                 posterLabel.setText("Image not found");
                 posterLabel.setHorizontalAlignment(SwingConstants.CENTER);
             }
+
+            genreLabel.setText(movieGenre);
+            ratingLabel.setText(movieRating);
+            runtimeLabel.setText(movieRuntime);
+
+            starttimeLabel.setText(movieStartTime);
+            endtimeLabel.setText(movieEndTime);
         });
     }
 
@@ -154,7 +258,7 @@ public class MoviePage implements Page, MoviePageObserver {
         //Load the image
         try {
             BufferedImage movieImage = ImageIO.read(new File(imagePath));
-            Image scaledImage = movieImage.getScaledInstance(150, 200, Image.SCALE_SMOOTH);
+            Image scaledImage = movieImage.getScaledInstance(150, 250, Image.SCALE_SMOOTH);
             JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
             moviePanel.add(picLabel, BorderLayout.CENTER);
         } catch (IOException e) {

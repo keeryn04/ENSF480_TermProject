@@ -91,7 +91,7 @@ public class DecoratorHelpers {
             //Use builder to add all panels in main layout
             JPanel titlePanel = new PageBuilder()
                     .setLayout(new BorderLayout())
-                    .addComponent(titleLabel, BorderLayout.WEST)
+                    .addComponent(titleLabel, BorderLayout.CENTER)
                     .addComponent(profileButton, BorderLayout.EAST)
                     .build();
             

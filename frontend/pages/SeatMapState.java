@@ -30,7 +30,7 @@ public class SeatMapState {
     private void notifySeatMapObservers(String key, Object value) {
         for (SeatMapObserver observer : observersSeatMap) {
             observer.onSeatMapUpdate(key, value);
-            System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
+            //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
     }
 

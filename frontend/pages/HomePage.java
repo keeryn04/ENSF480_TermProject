@@ -36,7 +36,7 @@ public class HomePage implements Page {
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
             JPanel contentPanel = new JPanel(new BorderLayout());
 
-            populateMoviePanels(buttonFont);
+            populateMovieData(buttonFont);
 
             //Use builder to add all panels in main layout
             JPanel mainPanel = new PageBuilder()
@@ -54,7 +54,7 @@ public class HomePage implements Page {
     }
 
     /**Creates movie panels for HomePage based on data in Appstate */
-    private void populateMoviePanels(Font buttonFont) {
+    private void populateMovieData(Font buttonFont) {
         movieSelectionPanel.removeAll(); //Clear previous panels
 
         //Get movie data from AppState
@@ -63,17 +63,22 @@ public class HomePage implements Page {
         Map<String, Integer> movieScreenMapping = new HashMap<>();
         Integer screenNumber = 1;
 
+        //Map movies to screens
         for (Map.Entry<String, String[]> entry : movies.entrySet()) {
             String movieTitle = entry.getKey();
             movieScreenMapping.put(movieTitle, screenNumber); //Movie is on screen
             screenNumber++;
         }
 
+        //Make movie panel and seatmap for each movie / screen
         for (Map.Entry<String, String[]> entry : movies.entrySet()) {
             String movieTitle = entry.getKey();
             String[] movieDetails = entry.getValue();
-            String movieDesc = movieDetails[1];
             String imagePath = movieDetails[0];
+            String movieDesc = movieDetails[1];
+            String movieGenre = movieDetails[2];
+            String movieRating = movieDetails[3];
+            String movieRuntime = movieDetails[4];
 
             //Create movie panel
             JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDetails[1], movieDetails[0], Color.DARK_GRAY, buttonFont);
@@ -83,13 +88,17 @@ public class HomePage implements Page {
                 MovieState.getInstance().setMovieTitle(movieTitle);
                 MovieState.getInstance().setMovieDetails(movieDesc);
                 MovieState.getInstance().setMoviePoster(imagePath);
+                MovieState.getInstance().setMovieGenre(movieGenre);
+                MovieState.getInstance().setMovieRating(movieRating);
+                MovieState.getInstance().setMovieRuntime(movieRuntime);
 
-                Integer screenNum = movieScreenMapping.get(movieTitle);
+                Integer screenNum = movieScreenMapping.get(movieTitle); //Screen assigned to each movie
                 if (screenNum != null) {
                     Integer[] screenDetails = screens.get(screenNum);
                     Integer rows = screenDetails[0];
                     Integer cols = screenDetails[1];
-        
+                    
+                    //Set the seat rows and columns in SeatMapState
                     SeatMapState.getInstance().setSeatRows(rows);
                     SeatMapState.getInstance().setSeatCols(cols);
                 }
