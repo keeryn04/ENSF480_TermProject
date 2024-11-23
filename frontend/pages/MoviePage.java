@@ -35,12 +35,18 @@ public class MoviePage implements Page, MoviePageObserver {
     private String movieGenre = "Comedy";
     private String movieRating = "3.6";
     private String movieRuntime = "120";
+    private String movieStartTime = "Today";
+    private String movieEndTime = "Tomorrow";
     private Integer screenNum = 1; //Stored for ticket display purposes
 
     //UI components
     private JLabel titleLabel;
     private JLabel posterLabel;
     private JTextArea descriptionArea;
+    private JLabel starttimeTitle;
+    private JLabel starttimeLabel;
+    private JLabel endtimeTitle;
+    private JLabel endtimeLabel;
     private JLabel genreTitle;
     private JLabel genreLabel;
     private JLabel ratingTitle;
@@ -64,6 +70,11 @@ public class MoviePage implements Page, MoviePageObserver {
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         descriptionArea.setEditable(false);
+
+        starttimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Start Time: ", dataTitleFont);
+        starttimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieStartTime, dataFont);
+        endtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "End Time: ", dataTitleFont);
+        endtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieEndTime, dataFont);
         
         genreTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Genre: ", dataTitleFont);
         genreLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieGenre, dataFont);
@@ -105,6 +116,13 @@ public class MoviePage implements Page, MoviePageObserver {
             JPanel posterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             posterPanel.add(posterLabel);
 
+            //Times panel (start and end titles and labels)
+            JPanel timesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            timesPanel.add(starttimeTitle);
+            timesPanel.add(starttimeLabel);
+            timesPanel.add(endtimeTitle);
+            timesPanel.add(endtimeLabel);
+
             //Rating panel (title and label)
             JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             ratingPanel.add(ratingTitle);
@@ -122,7 +140,8 @@ public class MoviePage implements Page, MoviePageObserver {
 
             //Add all detail panels to the detailsPanel
             JPanel detailsPanel = new PageBuilder()
-                    .setLayout(new GridLayout(4, 1))
+                    .setLayout(new GridLayout(5, 1))
+                    .addComponent(timesPanel, null)
                     .addComponent(ratingPanel, null)
                     .addComponent(runtimePanel, null)
                     .addComponent(genrePanel, null)
@@ -181,6 +200,14 @@ public class MoviePage implements Page, MoviePageObserver {
                 movieRuntime = (String) value;
                 updateContent();
                 break;
+            case "movieStarttime":
+                movieStartTime = (String) value;
+                updateContent();
+                break;
+            case "movieEndtime":
+                movieEndTime = (String) value;
+                updateContent();
+                break;
             case "screenNum":
                 screenNum = (Integer) value;
                 updateContent();
@@ -207,6 +234,9 @@ public class MoviePage implements Page, MoviePageObserver {
             genreLabel.setText(movieGenre);
             ratingLabel.setText(movieRating);
             runtimeLabel.setText(movieRuntime);
+
+            starttimeLabel.setText(movieStartTime);
+            endtimeLabel.setText(movieEndTime);
         });
     }
 

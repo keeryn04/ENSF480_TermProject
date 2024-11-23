@@ -16,6 +16,8 @@ public class MovieState {
     private String movieGenre;
     private String movieRating;
     private String movieRuntime;
+    private String movieStarttime;
+    private String movieEndtime;
     private Integer screenNum;
 
     //Singleton management
@@ -91,6 +93,24 @@ public class MovieState {
     public void setMovieRuntime(String movieRuntime) {
         this.movieRuntime = movieRuntime;
         notifyMovieObservers("movieRuntime", movieRuntime);
+    }
+
+    public String getMovieStarttime() {
+        return movieStarttime;
+    }
+
+    public void setMovieStarttime(String movieStarttime) {
+        this.movieStarttime = movieStarttime;
+        notifyMovieObservers("movieStarttime", movieStarttime);
+    }
+
+    public String getMovieEndtime() {
+        return movieEndtime;
+    }
+
+    public void setMovieEndtime(String movieEndtime) {
+        this.movieEndtime = movieEndtime;
+        notifyMovieObservers("movieEndtime", movieEndtime);
     }
 
     public int getScreenNum() {

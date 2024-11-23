@@ -45,9 +45,9 @@ public class DatabaseAccessor {
     }
 
     /**
-     * Fetches movie details by movieId.
-     * @param movieId the ID of the movie to fetch.
-     * @return a Movie instance containing title, genre, duration, rating, posterPath, and description.
+     * Fetches screen details by screenId.
+     * @param screenId the ID of the creen to fetch.
+     * @return a Screen instance containing rows, cols.
      */
     public static Screen getScreenDetails(int screenID) {
         String query = "SELECT screen_rows, screen_cols FROM Screens WHERE screen_id = ?";
