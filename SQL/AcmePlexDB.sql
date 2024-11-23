@@ -1,11 +1,7 @@
--- Create Database
-CREATE DATABASE AcmePlexDB;
-
--- Use the Database
 USE AcmePlexDB;
 
--- Users Table
-CREATE TABLE Users (
+-- Create Users Table
+CREATE TABLE IF NOT EXISTS Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -15,19 +11,19 @@ CREATE TABLE Users (
     credit_balance DOUBLE DEFAULT 0.00
 );
 
--- Movies Table
-CREATE TABLE Movies (
+-- Create Movies Table
+CREATE TABLE IF NOT EXISTS Movies (
     movie_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     genre VARCHAR(50),
     duration INT,
     rating DECIMAL(2, 1),
-    poster_path VARCHAR(255), -- Path or URL to the poster image
+    poster_path VARCHAR(255),
     description TEXT
 );
 
--- Showtimes Table
-CREATE TABLE Showtimes (
+-- Create Showtimes Table
+CREATE TABLE IF NOT EXISTS Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
     start_time DATETIME NOT NULL,
@@ -35,8 +31,8 @@ CREATE TABLE Showtimes (
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
 
--- Seats Table
-CREATE TABLE Seats (
+-- Create Seats Table
+CREATE TABLE IF NOT EXISTS Seats (
     seat_id INT AUTO_INCREMENT PRIMARY KEY,
     showtime_id INT NOT NULL,
     seat_pos CHAR(10),
@@ -47,8 +43,8 @@ CREATE TABLE Seats (
     FOREIGN KEY (reserved_by) REFERENCES Users(user_id)
 );
 
--- Tickets Table
-CREATE TABLE Tickets (
+-- Create Tickets Table
+CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     seat_id INT NOT NULL,

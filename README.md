@@ -17,15 +17,15 @@ Group Number: L01-02
 
 ## How to run the Program
 
-This application has only been tested on Windows 11.
+-This application has only been tested on Windows 11.
 
-Currently: Requires a running MySQL server with AcmePlexDB.sql and Initalizer.sql to be run once each before running app.
+-Currently: Requires a running MySQL server with AcmePlexDB.sql and Initalizer.sql to be run once each before running app.
 
-⚠️ *** \/ONLY DO THIS STEP IF Main.class DOES NOT EXIST\/ *** ⚠️
-Then enter a terminal inside ENSF480_TermProject folder and input: "javac Main.java frontend/pages/*.java frontend/decorators/*.java backend/*.java"
-⚠️ *** /\ONLY DO THIS STEP IF Main.class DOES NOT EXIST/\ *** ⚠️
+⚠️ *** \/ONLY DO THIS STEP IF Main.class DOES NOT EXIST OR Main.class NEEDS TO BE UPDATED\/ *** ⚠️
+-Then enter a terminal inside ENSF480_TermProject folder and input: "javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java backend/*.java"
+⚠️ *** /\ONLY DO THIS STEP IF Main.class DOES NOT EXIST OR Main.class NEEDS TO BE UPDATED/\ *** ⚠️
 
-To run, simply enter: "java Main" once the .class file has been made
+-To run, simply enter: "java -cp ".;lib\mysql-connector-j-9.1.0.jar"Main" once the .class file has been made
 
 ## How to Use the Program
 
