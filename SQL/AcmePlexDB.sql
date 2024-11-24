@@ -1,13 +1,8 @@
-DROP DATABASE IF EXISTS AcmePlexDB;
-
--- Create Database
-CREATE DATABASE AcmePlexDB;
-
 -- Use the Database
 USE AcmePlexDB;
 
 -- Users Table
-CREATE TABLE Users (
+CREATE TABLE IF NOT EXISTS Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -18,25 +13,25 @@ CREATE TABLE Users (
 );
 
 -- Movies Table
-CREATE TABLE Movies (
+CREATE TABLE IF NOT EXISTS Movies (
     movie_id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR(100) NOT NULL UNIQUE,
     genre VARCHAR(50),
     duration INT,
     rating DECIMAL(2, 1),
-    poster_path VARCHAR(255), -- Path or URL to the poster image
+    poster_path VARCHAR(255),
     description TEXT
 );
 
 -- Screens Table
-CREATE TABLE Screens (
+CREATE TABLE IF NOT EXISTS Screens (
     screen_id INT AUTO_INCREMENT PRIMARY KEY,
     screen_rows INT,
     screen_cols INT
 );
 
 -- Showtimes Table
-CREATE TABLE Showtimes (
+CREATE TABLE IF NOT EXISTS Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
     start_time DATETIME NOT NULL,
@@ -45,19 +40,19 @@ CREATE TABLE Showtimes (
 );
 
 -- Seats Table
-CREATE TABLE Seats (
+CREATE TABLE IF NOT EXISTS Seats (
     seat_id INT AUTO_INCREMENT PRIMARY KEY,
     showtime_id INT NOT NULL,
     seat_pos CHAR(10),
     number INT,
     is_reserved BOOLEAN DEFAULT FALSE,
-    reserved_by INT,
+    reserved_by INT DEFAULT NULL,
     FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
     FOREIGN KEY (reserved_by) REFERENCES Users(user_id)
 );
 
 -- Tickets Table
-CREATE TABLE Tickets (
+CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     seat_id INT NOT NULL,
