@@ -139,7 +139,7 @@ public class MoviePage implements Page, MoviePageObserver {
             genrePanel.add(genreLabel);
 
             //Add all detail panels to the detailsPanel
-            JPanel detailsPanel = new PageBuilder()
+            JPanel detailsPanel = new PanelBuilder()
                     .setLayout(new GridLayout(5, 1))
                     .addComponent(timesPanel, null)
                     .addComponent(ratingPanel, null)
@@ -149,7 +149,7 @@ public class MoviePage implements Page, MoviePageObserver {
                     .build();
 
             //Add titlePanel, posterPanel, and detailsPanel to the main contentPanel
-            JPanel contentPanel = new PageBuilder()
+            JPanel contentPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(posterPanel, BorderLayout.CENTER)
@@ -157,7 +157,7 @@ public class MoviePage implements Page, MoviePageObserver {
                     .build();
 
             //Use builder to add all panels in the main layout
-            JPanel mainPanel = new PageBuilder()
+            JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(headerPanel, BorderLayout.NORTH)
                     .addComponent(contentPanel, BorderLayout.CENTER)
