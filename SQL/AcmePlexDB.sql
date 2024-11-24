@@ -1,6 +1,7 @@
+-- Use the Database
 USE AcmePlexDB;
 
--- Create Users Table
+-- Users Table
 CREATE TABLE IF NOT EXISTS Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -11,10 +12,10 @@ CREATE TABLE IF NOT EXISTS Users (
     credit_balance DOUBLE DEFAULT 0.00
 );
 
--- Create Movies Table
+-- Movies Table
 CREATE TABLE IF NOT EXISTS Movies (
     movie_id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR(100) NOT NULL UNIQUE,
     genre VARCHAR(50),
     duration INT,
     rating DECIMAL(2, 1),
@@ -22,7 +23,14 @@ CREATE TABLE IF NOT EXISTS Movies (
     description TEXT
 );
 
--- Create Showtimes Table
+-- Screens Table
+CREATE TABLE IF NOT EXISTS Screens (
+    screen_id INT AUTO_INCREMENT PRIMARY KEY,
+    screen_rows INT,
+    screen_cols INT
+);
+
+-- Showtimes Table
 CREATE TABLE IF NOT EXISTS Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
@@ -31,19 +39,19 @@ CREATE TABLE IF NOT EXISTS Showtimes (
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
 
--- Create Seats Table
+-- Seats Table
 CREATE TABLE IF NOT EXISTS Seats (
     seat_id INT AUTO_INCREMENT PRIMARY KEY,
     showtime_id INT NOT NULL,
     seat_pos CHAR(10),
     number INT,
     is_reserved BOOLEAN DEFAULT FALSE,
-    reserved_by INT,
+    reserved_by INT DEFAULT NULL,
     FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
     FOREIGN KEY (reserved_by) REFERENCES Users(user_id)
 );
 
--- Create Tickets Table
+-- Tickets Table
 CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,

@@ -33,7 +33,33 @@ public class DatabaseAccessor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
+    }
 
-        return movieDetails;
+    /**
+     * Fetches screen details by screenId.
+     * @param screenId the ID of the creen to fetch.
+     * @return a Screen instance containing rows, cols.
+     */
+    public static Screen getScreenDetails(int screenID) {
+        String query = "SELECT screen_rows, screen_cols FROM Screens WHERE screen_id = ?";
+
+        try (Connection conn = DatabaseConfig.connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, screenID);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int rows = resultSet.getInt("screen_rows");
+                    int cols = resultSet.getInt("screen_cols");
+
+                    return new Screen(rows, cols);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
