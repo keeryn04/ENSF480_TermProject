@@ -22,7 +22,7 @@ Group Number: L01-02
 -Currently: Requires an existing MySQL server which has been run at least once with AcmePlexDB.sql and Initalizer.sql to both be run once each before running app. DatabaseConfig.java in the backend MUST be updated with the nessisary information in relation to the users corresponding URL, Username and Password for their MySQL Server.
 
 ⚠️ *** \/ONLY DO THIS STEP IF Main.class DOES NOT EXIST OR Main.class NEEDS TO BE UPDATED\/ *** ⚠️
--Then enter a terminal inside ENSF480_TermProject folder and input: "javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java backend/*.java"
+-Then enter a terminal inside ENSF480_TermProject folder and input: "javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java backend/*.java"
 ⚠️ *** /\ONLY DO THIS STEP IF Main.class DOES NOT EXIST OR Main.class NEEDS TO BE UPDATED/\ *** ⚠️
 
 -To run, simply enter: "java -cp ".;lib\mysql-connector-j-9.1.0.jar"Main" once the .class file has been made
