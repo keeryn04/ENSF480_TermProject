@@ -3,9 +3,6 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.swing.JPanel;
-
 import backend.DatabaseConfig;
 import frontend.pages.*;
 
@@ -31,26 +28,10 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        // Initialize the application UI
+        
         Window window = Window.getInstance();
 
-        HomePage home = new HomePage();
-        JPanel homePanel = home.createPage();
-        window.addPanel("Home", homePanel);
-        window.showPanel("Home");
-
-        ProfilePage profile = new ProfilePage();
-        JPanel profilePanel = profile.createPage();
-        window.addPanel("ProfilePage", profilePanel);
-
-        EditProfilePage editProfile = new EditProfilePage();
-        JPanel editProfilePanel = editProfile.createPage();
-        window.addPanel("ProfileEditPage", editProfilePanel);
-
-        MoviePage movie = MoviePage.getInstance();
-        JPanel moviePanel = movie.createPage();
-        window.addPanel("MoviePage", moviePanel);
+        window.makePages();
 
         window.showWindow();
     }
@@ -74,3 +55,9 @@ public class Main {
         }
     }
 }
+
+//Compile
+//javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java backend/*.java
+
+//Run
+//java -cp ".;lib\mysql-connector-j-9.1.0.jar"Main
