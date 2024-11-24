@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import frontend.pages.PageBuilder;
+import frontend.pages.PanelBuilder;
 import frontend.pages.Window;
 
 public class DecoratorHelpers {
