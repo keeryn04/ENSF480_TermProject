@@ -89,7 +89,7 @@ public class DecoratorHelpers {
             ActionListenerDecorator accountDecorator = new ActionListenerDecorator(profileButton, profileButton, listener);
 
             //Use builder to add all panels in main layout
-            JPanel titlePanel = new PageBuilder()
+            JPanel titlePanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titleLabel, BorderLayout.CENTER)
                     .addComponent(profileButton, BorderLayout.EAST)
@@ -135,10 +135,14 @@ public class DecoratorHelpers {
             rightButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Edit Info", buttonFont);
             ActionListener listener = e -> {Window.getInstance().showPanel("ProfileEditPage");};
             ActionListenerDecorator accountDecorator = new ActionListenerDecorator(rightButton, rightButton, listener);
-        } 
+        } else if (type.equals("paymentConfirm")) { //Confirmed payment page (Booking ticket)
+            rightButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Confirm Purchase", buttonFont);
+            ActionListener listener = e -> {Window.getInstance().showPanel("PaymentSuccessPage");};
+            ActionListenerDecorator accountDecorator = new ActionListenerDecorator(rightButton, rightButton, listener);
+        }
 
         //Use builder to add all panels in main layout
-        JPanel titlePanel = new PageBuilder()
+        JPanel titlePanel = new PanelBuilder()
                 .setLayout(new BorderLayout())
                 .addComponent(backButton, BorderLayout.WEST)
                 .addComponent(rightButton, BorderLayout.EAST)

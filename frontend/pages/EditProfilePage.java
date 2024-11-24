@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import frontend.decorators.DecoratorHelpers;
 
@@ -56,7 +55,7 @@ public class EditProfilePage implements Page  {
             editPanel.add(paymentDateFieldPanel);
 
             //Combine all panels in main layout
-            JPanel mainPanel = new PageBuilder()
+            JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(editPanel, BorderLayout.CENTER)

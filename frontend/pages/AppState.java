@@ -1,8 +1,7 @@
 package frontend.pages;
 
-import java.awt.List;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,25 +20,8 @@ public class AppState {
         movies = new HashMap<>();
         screens = new HashMap<>();
 
-        int movieId = 1;
-        Movie movie;
-        while ((movie = DatabaseAccessor.getMovieDetails(movieId)) != null) {
-            movies.put(movie.getTitle(), 
-                new String[]{"./frontend" + movie.getPosterPath(), 
-                movie.getDescription(), 
-                movie.getGenre(), 
-                movie.getRating(),
-                movie.getDuration()});
-            movieId++;
-        }
-        
-        int screenId = 1;
-        Screen screen;
-        while ((screen = DatabaseAccessor.getScreenDetails(screenId)) != null) {
-            screens.put(screenId, 
-                new Integer[]{screen.getRows(), screen.getCols()});
-            screenId++;
-        }
+        loadMovies();
+        loadScreens();
     }
 
     //Singleton management
@@ -57,5 +39,30 @@ public class AppState {
     public Map<Integer, Integer[]> getScreens() {
         return screens;
     }
+
+    private void loadMovies() {
+        int movieId = 1;
+        Movie movie;
+        while ((movie = DatabaseAccessor.getMovieDetails(movieId)) != null) {
+            movies.put(movie.getTitle(),
+                new String[]{
+                    "./frontend" + movie.getPosterPath(),
+                    movie.getDescription(),
+                    movie.getGenre(),
+                    movie.getRating(),
+                    movie.getDuration()
+                });
+            movieId++;
+        }
+    }
     
+    private void loadScreens() {
+        int screenId = 1;
+        Screen screen;
+        while ((screen = DatabaseAccessor.getScreenDetails(screenId)) != null) {
+            screens.put(screenId,
+                new Integer[]{screen.getRows(), screen.getCols()});
+            screenId++;
+        }
+    }
 }

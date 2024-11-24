@@ -56,7 +56,7 @@ public class LoginPage implements Page, LoginPageObserver {
             editPanel.add(passwordFieldPanel);
 
             //Combine all panels in main layout
-            JPanel mainPanel = new PageBuilder()
+            JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(editPanel, BorderLayout.CENTER)

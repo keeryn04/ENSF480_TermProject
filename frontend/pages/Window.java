@@ -94,5 +94,9 @@ public class Window {
         SeatMapPage seatmap = SeatMapPage.getInstance();
         JPanel seatPanel = seatmap.createPage();
         window.addPanel("SeatMapPage", seatPanel);        
+
+        PaymentPage payment = PaymentPage.getInstance();
+        JPanel paymentPanel = payment.createPage();
+        window.addPanel("PaymentPage", paymentPanel);   
     }
 }

@@ -39,7 +39,7 @@ public class HomePage implements Page {
             populateMovieData(buttonFont);
 
             //Use builder to add all panels in main layout
-            JPanel mainPanel = new PageBuilder()
+            JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(movieSelectionPanel, BorderLayout.CENTER)
@@ -57,9 +57,11 @@ public class HomePage implements Page {
     private void populateMovieData(Font buttonFont) {
         movieSelectionPanel.removeAll(); //Clear previous panels
 
+        AppState appState = AppState.getInstance();
+
         //Get movie data from AppState
-        Map<String, String[]> movies = AppState.getInstance().getMovies();
-        Map<Integer, Integer[]> screens = AppState.getInstance().getScreens();
+        Map<String, String[]> movies = appState.getMovies();
+        Map<Integer, Integer[]> screens = appState.getScreens();
         Map<String, Integer> movieScreenMapping = new HashMap<>();
         Integer screenNumber = 1;
 
@@ -81,7 +83,7 @@ public class HomePage implements Page {
             String movieRuntime = movieDetails[4];
 
             //Create movie panel
-            JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDetails[1], movieDetails[0], Color.DARK_GRAY, buttonFont);
+            JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDesc, imagePath, Color.DARK_GRAY, buttonFont);
             JButton movieButton = (JButton) moviePanel.getComponent(1);
             ActionListener listener = e -> {
                 //Update Movie Data in Movie State

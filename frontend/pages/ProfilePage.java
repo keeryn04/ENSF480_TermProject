@@ -60,7 +60,6 @@ public class ProfilePage implements Page, ProfilePageObserver {
     @Override
     public JPanel createPage() {
         try {
-            updateProfileData(); //Fill profile with test data REMOVE LATER
             //Header and Footer Panels
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
             JPanel footerPanel = DecoratorHelpers.createFooterPanel("editInfo");
@@ -80,7 +79,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
             contentPanel.add(cardDateLabel);
 
             //Combine all panels in the main layout
-            JPanel mainPanel = new PageBuilder()
+            JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(contentPanel, BorderLayout.CENTER)
@@ -134,14 +133,5 @@ public class ProfilePage implements Page, ProfilePageObserver {
             contentPanel.revalidate();
             contentPanel.repaint();
         });
-    }
-
-    /**Update profile data with profile button or confirm edit button */
-    public void updateProfileData() {
-        //Initialize test data
-        ProfileState.getInstance().setName("Abby Anderson");
-        ProfileState.getInstance().setAddress("123 Street St.");
-        ProfileState.getInstance().setCardNum("1231118291");
-        ProfileState.getInstance().setCardDate("11/27");
     }
 }

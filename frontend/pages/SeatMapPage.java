@@ -62,7 +62,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
             contentPanel.add(seatmapPanel, BorderLayout.CENTER);
 
             //Use builder to assemble the main layout
-            return new PageBuilder()
+            return new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(headerPanel, BorderLayout.NORTH)
                     .addComponent(contentPanel, BorderLayout.CENTER)
