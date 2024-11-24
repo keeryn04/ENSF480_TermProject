@@ -5,11 +5,11 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 /**Builds the page depending on what aspects you want for that page. Has various methods to make those components*/
-public class PageBuilder {
+public class PanelBuilder {
     private JPanel panel;
     
     /**Made a new panel to be built with PageBuilder */
-    public PageBuilder() {
+    public PanelBuilder() {
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS)); //Default Layout
     }
@@ -17,13 +17,13 @@ public class PageBuilder {
     /**Sets the overall layout of the page
      * @param layoutSet Set the layout of the page to this
      */
-    public PageBuilder setLayout(LayoutManager layoutSet) {
+    public PanelBuilder setLayout(LayoutManager layoutSet) {
         LayoutManager layout = layoutSet;
         panel.setLayout(layout);
         return this;
     }
 
-    public PageBuilder addComponent(JComponent decoratedComponent, String position) {
+    public PanelBuilder addComponent(JComponent decoratedComponent, String position) {
         panel.add(decoratedComponent, position);
         return this;
     }

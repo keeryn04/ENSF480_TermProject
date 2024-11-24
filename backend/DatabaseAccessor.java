@@ -12,9 +12,8 @@ public class DatabaseAccessor {
      * @param movieId the ID of the movie to fetch.
      * @return a List containing title, genre, duration, rating, posterPath, and description.
      */
-    public List<String> getMovieDetails(int movieId) {
+    public static Movie getMovieDetails(int movieId) {
         String query = "SELECT title, genre, duration, rating, poster_path, description FROM Movies WHERE movie_id = ?";
-        List<String> movieDetails = new ArrayList<>();
 
         try (Connection conn = DatabaseConfig.connect();
              PreparedStatement statement = conn.prepareStatement(query)) {
@@ -22,17 +21,20 @@ public class DatabaseAccessor {
             statement.setInt(1, movieId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    movieDetails.add(resultSet.getString("title"));
-                    movieDetails.add(resultSet.getString("genre"));
-                    movieDetails.add(resultSet.getString("duration"));
-                    movieDetails.add(resultSet.getString("rating"));
-                    movieDetails.add(resultSet.getString("poster_path"));
-                    movieDetails.add(resultSet.getString("description"));
+                    String title = resultSet.getString("title");
+                    String genre = resultSet.getString("genre");
+                    int duration = resultSet.getInt("duration");
+                    double rating = resultSet.getDouble("rating");
+                    String posterPath = resultSet.getString("poster_path");
+                    String description = resultSet.getString("description");
+
+                    return new Movie(title, genre, duration, rating, posterPath, description);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
