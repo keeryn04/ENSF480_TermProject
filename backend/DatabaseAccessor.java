@@ -5,14 +5,6 @@ import java.sql.*;
 /** Handles database interactions */
 public class DatabaseAccessor {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/AcmePlexDB";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "30170031";
-
-    private static Connection connect() throws SQLException {
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-    }
-
     /**
      * Fetches movie details by movieId.
      * @param movieId the ID of the movie to fetch.
@@ -21,7 +13,7 @@ public class DatabaseAccessor {
     public static Movie getMovieDetails(int movieId) {
         String query = "SELECT title, genre, duration, rating, poster_path, description FROM Movies WHERE movie_id = ?";
 
-        try (Connection conn = connect();
+        try (Connection conn = DatabaseConfig.connect();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, movieId);
@@ -52,7 +44,7 @@ public class DatabaseAccessor {
     public static Screen getScreenDetails(int screenID) {
         String query = "SELECT screen_rows, screen_cols FROM Screens WHERE screen_id = ?";
 
-        try (Connection conn = connect();
+        try (Connection conn = DatabaseConfig.connect();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, screenID);
