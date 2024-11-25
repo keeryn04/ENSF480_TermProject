@@ -45,7 +45,7 @@ public class LoginPage implements Page, LoginPageObserver {
         try {
             //Header and Footer            
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
-            JPanel footerPanel = DecoratorHelpers.createFooterPanel("confirmInfo");
+            //JPanel footerPanel = DecoratorHelpers.createFooterPanel("confirmInfo");
 
             //Profile panel
             JPanel editPanel = new JPanel();
@@ -61,7 +61,7 @@ public class LoginPage implements Page, LoginPageObserver {
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(editPanel, BorderLayout.CENTER)
-                    .addComponent(footerPanel, BorderLayout.SOUTH)
+                    //.addComponent(footerPanel, BorderLayout.SOUTH)
                     .build();
 
             return mainPanel;
