@@ -1,4 +1,4 @@
-package frontend.pages;
+package frontend.states;
 
 import java.util.ArrayList;
 import java.util.Arrays;

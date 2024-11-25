@@ -3,9 +3,9 @@ package frontend.panels;
 import javax.swing.*;
 
 import frontend.decorators.DecoratorHelpers;
-import frontend.pages.ErrorState;
-import frontend.pages.PaymentState;
 import frontend.pages.Window;
+import frontend.states.ErrorState;
+import frontend.states.PaymentState;
 
 import java.awt.*;
 import java.awt.event.ActionListener;

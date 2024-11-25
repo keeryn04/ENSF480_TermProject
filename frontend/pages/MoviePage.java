@@ -25,6 +25,7 @@ import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.MovieState;
 
 public class MoviePage implements Page, MoviePageObserver {
     private static MoviePage instance; // Singleton
