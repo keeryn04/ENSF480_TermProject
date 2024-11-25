@@ -10,11 +10,13 @@ public class PaymentState {
     private final List<PaymentPageObserver> observersPayment = new ArrayList<>();
 
     //Data stored in PaymentState for page-to-page use
-    private String cardCVV; //CardNum and CardDate stored in ProfileState
+    private String cardCVV;
     private String itemPurchased;
-    private int amount;
-    private double price;
+    private int ticketAmount;
+    private double totalPrice;
     private String ticketList;
+    private Boolean ticketFlag;
+    private double ticketCost;
 
     //Singleton management
     public static PaymentState getInstance() {
@@ -22,6 +24,16 @@ public class PaymentState {
             instance = new PaymentState();
         }
         return instance;
+    }
+
+    private PaymentState() {
+        cardCVV = ""; //CardNum and CardDate stored in ProfileState
+        itemPurchased = ""; 
+        ticketAmount = 0;
+        totalPrice = 0; 
+        ticketList = "";
+        ticketFlag = false;
+        ticketCost = 10.50;
     }
 
     //Add PaymentPage objects as an observer for payment-related changes
@@ -33,7 +45,7 @@ public class PaymentState {
     private void notifyPaymentObservers(String key, Object value) {
         for (PaymentPageObserver observer : observersPayment) {
             observer.onPaymentConfirmed(key, value);
-            System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
+            //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
     }
 
@@ -47,12 +59,12 @@ public class PaymentState {
         notifyPaymentObservers("paymentCVV", cardCVV);
     }
 
-    public int getAmount() {
-        return amount;
+    public int getTicketAmount() {
+        return ticketAmount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setTicketAmount(int amount) {
+        this.ticketAmount = amount;
         notifyPaymentObservers("paymentAmount", amount);
     }
 
@@ -65,27 +77,56 @@ public class PaymentState {
         notifyPaymentObservers("paymentItemPurchased", itemPurchased);
     }
 
-    public double getPrice() {
-        return price;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-        notifyPaymentObservers("paymentPrice", price);
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+        notifyPaymentObservers("paymentPrice", totalPrice);
     }
 
     public String getTicketList() {
         return ticketList;
     }
 
-    //Formats into single string of list of tickets
-    public void setTicketList(ArrayList<String> ticketList) {
-        if (ticketList.size() > 1) {
-            this.ticketList = String.join(", ", ticketList);
-        } else {
-            this.ticketList = ticketList.get(0); //Only one item
-        }
+    public void setTicketList(List<String> tickets) {
+        this.ticketList = String.join(", ", tickets);
+        notifyPaymentObservers("paymentTicketList", ticketList);
+    }
 
-        notifyPaymentObservers("paymentTicketList", this.ticketList);
+    public void setTicketFlag(Boolean ticketFlag) {
+        this.ticketFlag = ticketFlag;
+        notifyPaymentObservers("paymentTicketFlag", ticketFlag);
+    }
+
+    public Boolean getTicketFlag() {
+        return ticketFlag;
+    }
+
+    // Ticket management
+    public void addTicket() {
+        setTotalPrice(totalPrice + ticketCost);
+        setTicketAmount(ticketAmount + 1);
+    }
+
+    public void removeTicket() {
+        setTotalPrice(totalPrice - ticketCost);
+        setTicketAmount(ticketAmount - 1);
+    }
+
+    public void clearTicketsAndSeats() {
+        setTicketList(new ArrayList<>());
+        setTicketAmount(0);
+        setTotalPrice(0.0);
+        SeatMapState.getInstance().clearSelectedSeats(); // Clear related SeatMapState
+    }
+
+    public void submitTicketConfirm() {
+        if (ticketAmount > 0) {
+            setTicketFlag(true); // Tickets selected, flag is true
+        } else {
+            setTicketFlag(false); // No tickets selected
+        }
     }
 }

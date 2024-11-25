@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
+import frontend.panels.FooterPanel;
 
 public class MoviePage implements Page, MoviePageObserver {
     private static MoviePage instance; // Singleton
@@ -106,7 +107,7 @@ public class MoviePage implements Page, MoviePageObserver {
         try {
             //Make header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
-            JPanel footerPanel = DecoratorHelpers.createFooterPanel("movieTicket");
+            FooterPanel footerPanel = new FooterPanel("movieTicket");
 
             //Title panel with titleLabel
             JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));

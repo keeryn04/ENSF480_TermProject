@@ -14,6 +14,7 @@ import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.BorderDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.SeatMapObserver;
+import frontend.panels.FooterPanel;
 
 public class SeatMapPage implements Page, SeatMapObserver {
     private static SeatMapPage instance; // Singleton instance
@@ -30,6 +31,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
         //Default seatmap
         rows = 1;
         cols = 1;
+        
         seatmapPanel = createSeatMapPanel(rows, cols);
 
         contentPanel = new JPanel();
@@ -55,7 +57,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
         try {            
             //Create header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
-            JPanel footerPanel = DecoratorHelpers.createFooterPanel("continuePurchase");
+            FooterPanel footerPanel = new FooterPanel("continuePurchase");
 
             //Layout setup
             contentPanel = new JPanel(new BorderLayout());
@@ -97,8 +99,10 @@ public class SeatMapPage implements Page, SeatMapObserver {
                 seatButton.addActionListener(e -> {
                     if (seatButton.getBackground().equals(Color.LIGHT_GRAY)) {
                         seatButton.setBackground(Color.GREEN); //Selected
+                        SeatMapState.getInstance().addSelectedSeat(seatButton.getText());
                     } else {
                         seatButton.setBackground(Color.LIGHT_GRAY); //Deselected
+                        SeatMapState.getInstance().removeSelectedSeat(seatButton.getText());
                     }
                 });
 
@@ -129,7 +133,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
         return mainPanel;
     }
 
-    /**Resets the seat colors on the seat map.*/
+    /**Resets the seat colors and the seat status on the seat map.*/
     public void resetSeats(JButton[][] seats) {
         for (int row = 0; row < seats.length; row++) {
             for (int col = 0; col < seats[row].length; col++) {
@@ -138,6 +142,8 @@ public class SeatMapPage implements Page, SeatMapObserver {
                 }
             }
         }
+
+        PaymentState.getInstance().clearTicketsAndSeats(); //Update info stored for payment
     }
     
     /**Update screen data based on SeatMapState data */

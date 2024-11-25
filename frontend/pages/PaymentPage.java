@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.PaymentPageObserver;
+import frontend.panels.FooterPanel;
 
 public class PaymentPage implements Page, PaymentPageObserver {
     private static PaymentPage instance; // Singleton
@@ -21,10 +22,11 @@ public class PaymentPage implements Page, PaymentPageObserver {
     private String cardCVV;
 
     //Update depending on what purchased
-    private String itemPurchased = "Tickets";
-    private double price = 1.90;
-    private int amount = 2; //Only update if tickets purchased
-    private String ticketList = "Seat 4";
+    private String itemPurchased;
+    private double price; 
+    private int amount; //If 0, shows registration purchase page
+    private String ticketList;
+    private Boolean ticketFlag;
 
     //UI Components
     private JLabel itemPurchasedTitle;
@@ -42,6 +44,13 @@ public class PaymentPage implements Page, PaymentPageObserver {
     private JPanel cardCVVPanel; //3 Numbers on the back
 
     private PaymentPage() {
+        itemPurchased = new String();
+        price = 0; 
+        amount = 0;
+        ticketList = new String();
+        ticketFlag = false;
+
+        //GUI Initialization
         Font dataTitleFont = new Font("Times New Roman", Font.BOLD, 20);
         Font dataFont = new Font("Times New Roman", Font.PLAIN, 18);
 
@@ -77,7 +86,7 @@ public class PaymentPage implements Page, PaymentPageObserver {
         try {
             //Make header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
-            JPanel footerPanel = DecoratorHelpers.createFooterPanel("paymentConfirm");
+            FooterPanel footerPanel = new FooterPanel("paymentConfirm");
 
             JPanel itemPurchasedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             itemPurchasedPanel.add(itemPurchasedTitle);
@@ -106,8 +115,8 @@ public class PaymentPage implements Page, PaymentPageObserver {
                     .addComponent(pricePanel, null)
                     .addComponent(paymentPanel, null)
                     .build();
-
-            if (2 >= 1) { //Ticket purchasing HARDCODED FOR TESTING
+            
+            if (ticketFlag) { //Ticket purchasing
                 contentPanel.add(amountPanel);
                 contentPanel.add(ticketListPanel);
             } 
@@ -150,6 +159,18 @@ public class PaymentPage implements Page, PaymentPageObserver {
                 ticketList = (String) value;
                 updateContent();
                 break;
+            case "paymentTicketFlag":
+                ticketFlag = (Boolean) value;
+                if (ticketFlag == true) { //Handle if it should be registration or ticket purchasing
+                    itemPurchased = "Tickets";
+                    refreshPage(); 
+                } else {
+                    itemPurchased = "Registration";
+                    price = 20;
+                    refreshPage(); 
+                }
+                updateContent();
+                break;
             default:
                 break;
         }
@@ -158,10 +179,15 @@ public class PaymentPage implements Page, PaymentPageObserver {
     
     private void updateContent() {
         SwingUtilities.invokeLater(() -> {
-           priceLabel.setText(String.valueOf(price));
+           priceLabel.setText("$" + String.valueOf(price));
            amountLabel.setText(String.valueOf(amount));
            itemPurchasedLabel.setText(itemPurchased);
            ticketListLabel.setText(ticketList);
         });
+    }
+
+    private void refreshPage() {
+        JPanel newPage = createPage();
+        Window.getInstance().addPanel("PaymentPage", newPage);  
     }
 }
