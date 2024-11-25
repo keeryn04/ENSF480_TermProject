@@ -49,6 +49,7 @@ INSERT INTO Screens (screen_rows, screen_cols)
 VALUES
     (10, 2),
     (10, 3),
+    (10, 6),
     (10, 5);
 
 -- Insert Showtimes
@@ -57,7 +58,7 @@ VALUES
     (1, 1, '2024-11-24 18:00:00'),
     (2, 3, '2024-11-24 20:30:00'),
     (3, 2, '2024-11-25 19:00:00'),
-    (4, 2, '2024-11-25 21:00:00')
+    (4, 4, '2024-11-25 21:00:00')
 ON DUPLICATE KEY UPDATE
     screening = VALUES(screening);
 

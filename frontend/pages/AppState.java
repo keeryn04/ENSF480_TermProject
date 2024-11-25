@@ -22,8 +22,6 @@ public class AppState {
 
         loadMovies();
         loadScreens();
-        loadMovies();
-        loadScreens();
     }
 
     //Singleton management
