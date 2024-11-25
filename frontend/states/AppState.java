@@ -1,4 +1,4 @@
-package frontend.pages;
+package frontend.states;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +20,6 @@ public class AppState {
         movies = new HashMap<>();
         screens = new HashMap<>();
 
-        loadMovies();
-        loadScreens();
         loadMovies();
         loadScreens();
     }

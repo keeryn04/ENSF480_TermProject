@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.PaymentPageObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.PaymentState;
 
 public class PaymentPage implements Page, PaymentPageObserver {
     private static PaymentPage instance; // Singleton

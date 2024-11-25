@@ -7,61 +7,144 @@ import java.util.List;
 /** Handles database interactions */
 public class DatabaseAccessor {
 
-    /**
-     * Fetches movie details by movieId.
-     * @param movieId the ID of the movie to fetch.
-     * @return a List containing title, genre, duration, rating, posterPath, and description.
-     */
+    // Retrieve a Movie by movieId
     public static Movie getMovieDetails(int movieId) {
         String query = "SELECT title, genre, duration, rating, poster_path, description FROM Movies WHERE movie_id = ?";
-
         try (Connection conn = DatabaseConfig.connect();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, movieId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String title = resultSet.getString("title");
-                    String genre = resultSet.getString("genre");
-                    int duration = resultSet.getInt("duration");
-                    double rating = resultSet.getDouble("rating");
-                    String posterPath = resultSet.getString("poster_path");
-                    String description = resultSet.getString("description");
-
-                    return new Movie(title, genre, duration, rating, posterPath, description);
+                    return new Movie(
+                        resultSet.getString("title"),
+                        resultSet.getString("genre"),
+                        resultSet.getInt("duration"),
+                        resultSet.getDouble("rating"),
+                        resultSet.getString("poster_path"),
+                        resultSet.getString("description")
+                    );
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
-    /**
-     * Fetches screen details by screenId.
-     * @param screenId the ID of the creen to fetch.
-     * @return a Screen instance containing rows, cols.
-     */
-    public static Screen getScreenDetails(int screenID) {
-        String query = "SELECT screen_rows, screen_cols FROM Screens WHERE screen_id = ?";
-
+    // Retrieve a Screen by screenId
+    public static Screen getScreenDetails(int screenId) {
+        String query = "SELECT screen_cols FROM Screens WHERE screen_id = ?";
         try (Connection conn = DatabaseConfig.connect();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
-            statement.setInt(1, screenID);
+            statement.setInt(1, screenId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int rows = resultSet.getInt("screen_rows");
-                    int cols = resultSet.getInt("screen_cols");
-
-                    return new Screen(rows, cols);
+                    return new Screen(10, resultSet.getInt("screen_cols")); // Rows are fixed at 10
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
+    }
+
+    // Retrieve a Showtime by showtimeId
+    public static Showtime getShowtimeDetails(int showtimeId) {
+        String query = "SELECT movie_id, screen_id, screening FROM Showtimes WHERE showtime_id = ?";
+        try (Connection conn = DatabaseConfig.connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, showtimeId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new Showtime(
+                        showtimeId,
+                        resultSet.getInt("movie_id"),
+                        resultSet.getInt("screen_id"),
+                        resultSet.getTimestamp("screening").toLocalDateTime()
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Retrieve Tickets by userId
+    public static List<Ticket> getTicketsByUser(int userId) {
+        String query = "SELECT ticket_id, showtime_id, row, column FROM Tickets WHERE user_id = ?";
+        List<Ticket> tickets = new ArrayList<>();
+        try (Connection conn = DatabaseConfig.connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    tickets.add(new Ticket(
+                        resultSet.getInt("ticket_id"),
+                        userId,
+                        resultSet.getInt("showtime_id"),
+                        resultSet.getString("seat_row"),
+                        resultSet.getInt("seat_col")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tickets;
+    }
+
+    // Retrieve Tickets by showtimeId
+    public static List<Ticket> getTicketsByShowtime(int showtimeId) {
+        String query = "SELECT ticket_id, user_id, row, column FROM Tickets WHERE user_id = ?";
+        List<Ticket> tickets = new ArrayList<>();
+        try (Connection conn = DatabaseConfig.connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, showtimeId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    tickets.add(new Ticket(
+                        resultSet.getInt("ticket_id"),
+                        resultSet.getInt("user_id"),
+                        showtimeId,
+                        resultSet.getString("seat_row"),
+                        resultSet.getInt("seat_col")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tickets;
+    }
+
+    // Retrieve Payments by userId
+    public static List<Payment> getPaymentsByUser(int userId) {
+        String query = "SELECT payment_id, amount, payment_time, method FROM Payments WHERE user_id = ?";
+        List<Payment> payments = new ArrayList<>();
+        try (Connection conn = DatabaseConfig.connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    payments.add(new Payment(
+                        resultSet.getInt("payment_id"),
+                        userId,
+                        resultSet.getDouble("amount"),
+                        resultSet.getTimestamp("payment_time").toLocalDateTime(),
+                        resultSet.getString("method")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return payments;
     }
 }

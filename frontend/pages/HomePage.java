@@ -1,5 +1,8 @@
 package frontend.pages;
 import frontend.decorators.DecoratorHelpers;
+import frontend.states.AppState;
+import frontend.states.MovieState;
+import frontend.states.SeatMapState;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
