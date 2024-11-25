@@ -1,15 +1,19 @@
+create database IF NOT EXISTS AcmePlexDB;
+
 -- Use the Database
 USE AcmePlexDB;
 
 -- Users Table
 CREATE TABLE IF NOT EXISTS Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(100),
     email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL,
     card_number VARCHAR(16),
+    credit_balance DECIMAL(10, 2) DEFAULT 0.00,
     is_registered BOOLEAN DEFAULT FALSE,
-    account_recharge DATE,
-    credit_balance DOUBLE DEFAULT 0.00
+    annual_fee_paid BOOLEAN DEFAULT FALSE,
+    last_payment_date DATE
 );
 
 -- Movies Table
@@ -26,39 +30,38 @@ CREATE TABLE IF NOT EXISTS Movies (
 -- Screens Table
 CREATE TABLE IF NOT EXISTS Screens (
     screen_id INT AUTO_INCREMENT PRIMARY KEY,
-    screen_rows INT,
-    screen_cols INT
+    screen_rows INT NOT NULL,
+    screen_cols INT NOT NULL
 );
 
 -- Showtimes Table
 CREATE TABLE IF NOT EXISTS Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME NOT NULL,
-    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
-);
-
--- Seats Table
-CREATE TABLE IF NOT EXISTS Seats (
-    seat_id INT AUTO_INCREMENT PRIMARY KEY,
-    showtime_id INT NOT NULL,
-    seat_pos CHAR(10),
-    number INT,
-    is_reserved BOOLEAN DEFAULT FALSE,
-    reserved_by INT DEFAULT NULL,
-    FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
-    FOREIGN KEY (reserved_by) REFERENCES Users(user_id)
+    screen_id INT NOT NULL,
+    screening DATETIME NOT NULL,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    FOREIGN KEY (screen_id) REFERENCES Screens(screen_id)
 );
 
 -- Tickets Table
 CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    seat_id INT NOT NULL,
-    payment_status VARCHAR(50),
-    cancelled BOOLEAN DEFAULT FALSE,
-    refund_amount DECIMAL(8, 2),
+    showtime_id INT NOT NULL,
+    seat_row CHAR(2) NOT NULL,
+    seat_col INT NOT NULL,
+    FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (seat_id) REFERENCES Seats(seat_id)
+    UNIQUE (showtime_id, seat_row, seat_col) -- Ensure no duplicate tickets
+);
+
+-- Payments Table
+CREATE TABLE IF NOT EXISTS Payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    amount DECIMAL(8, 2) NOT NULL,
+    payment_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    method VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );

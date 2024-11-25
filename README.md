@@ -13,16 +13,16 @@ Group Number: L01-02
 | Cody Casselman | cody.casselman@ucalgary.ca |          |
 | Ryan Graham    | ryan.graham3@ucalgary.ca   | 30171130 |
 | Keeryn Johnson | keeryn.johnson@ucalgary.ca |          |
-| Evan Mann      | evan.mann@ucalgary.ca      |          |
+| Evan Mann      | evan.mann@ucalgary.ca      | 30141069 |
 
 ## How to run the Program
 
 -This application has only been tested on Windows 11.
 
--Currently: Requires an existing MySQL server which has been run at least once with AcmePlexDB.sql and Initalizer.sql to both be run once each before running app. DatabaseConfig.java in the backend MUST be updated with the nessisary information in relation to the users corresponding URL, Username and Password for their MySQL Server.
+-Currently: Requires an existing MySQL server which has been run at least once with AcmePlexDB.sql and Initalizer.sql to both be run once each before running app. DatabaseConfig.java in the backend MUST be updated with the nessecary information in relation to the users corresponding URL, Username and Password for their MySQL Server.
 
 ⚠️ *** \/ONLY DO THIS STEP IF Main.class DOES NOT EXIST OR Main.class NEEDS TO BE UPDATED\/ *** ⚠️
--Then enter a terminal inside ENSF480_TermProject folder and input: "javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java backend/*.java"
+-Then enter a terminal inside ENSF480_TermProject folder and input: "javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java frontend/states/*.java frontend/panels/*.java backend/*.java"
 ⚠️ *** /\ONLY DO THIS STEP IF Main.class DOES NOT EXIST OR Main.class NEEDS TO BE UPDATED/\ *** ⚠️
 
 -To run, simply enter: "java -cp ".;lib\mysql-connector-j-9.1.0.jar"Main" once the .class file has been made
