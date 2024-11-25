@@ -98,6 +98,31 @@ public class DatabaseAccessor {
         return tickets;
     }
 
+    // Retrieve Tickets by showtimeId
+    public static List<Ticket> getTicketsByShowtime(int showtimeId) {
+        String query = "SELECT ticket_id, user_id, row, column FROM Tickets WHERE user_id = ?";
+        List<Ticket> tickets = new ArrayList<>();
+        try (Connection conn = DatabaseConfig.connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, showtimeId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    tickets.add(new Ticket(
+                        resultSet.getInt("ticket_id"),
+                        resultSet.getInt("user_id"),
+                        showtimeId,
+                        resultSet.getString("seat_row"),
+                        resultSet.getInt("seat_col")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tickets;
+    }
+
     // Retrieve Payments by userId
     public static List<Payment> getPaymentsByUser(int userId) {
         String query = "SELECT payment_id, amount, payment_time, method FROM Payments WHERE user_id = ?";
