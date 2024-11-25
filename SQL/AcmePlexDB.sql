@@ -6,9 +6,9 @@ USE AcmePlexDB;
 -- Users Table
 CREATE TABLE IF NOT EXISTS Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(100),
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(100) NOT NULL,
     card_number VARCHAR(16),
     credit_balance DECIMAL(10, 2) DEFAULT 0.00,
     is_registered BOOLEAN DEFAULT FALSE,

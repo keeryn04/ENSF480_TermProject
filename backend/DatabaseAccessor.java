@@ -11,7 +11,7 @@ public class DatabaseAccessor {
     public static Movie getMovieDetails(int movieId) {
         String query = "SELECT title, genre, duration, rating, poster_path, description FROM Movies WHERE movie_id = ?";
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, movieId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -54,7 +54,7 @@ public class DatabaseAccessor {
     public static Showtime getShowtimeDetails(int showtimeId) {
         String query = "SELECT movie_id, screen_id, screening FROM Showtimes WHERE showtime_id = ?";
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, showtimeId);
             try (ResultSet resultSet = statement.executeQuery()) {
