@@ -15,6 +15,8 @@ import frontend.decorators.BorderDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.PaymentState;
+import frontend.states.SeatMapState;
 
 public class SeatMapPage implements Page, SeatMapObserver {
     private static SeatMapPage instance; // Singleton instance

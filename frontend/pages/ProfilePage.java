@@ -15,6 +15,7 @@ import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.ProfileState;
 
 public class ProfilePage implements Page, ProfilePageObserver {
     private static ProfilePage instance; // Singleton

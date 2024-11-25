@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
+import frontend.states.LoginState;
 
 public class LoginPage implements Page, LoginPageObserver {
     private static LoginPage instance; // Singleton
