@@ -16,10 +16,10 @@ ALTER TABLE Movies AUTO_INCREMENT = 1;
 ALTER TABLE Users AUTO_INCREMENT = 1;
 
 -- Insert Users
-INSERT INTO Users (name, email, card_number, is_registered, account_recharge, credit_balance)
+INSERT INTO Users (name, email, password, card_number, is_registered, account_recharge, credit_balance)
 VALUES
-    ('John Doe', 'john.doe@example.com', '1111222233334444', TRUE, '2025-12-31', 3.45),
-    ('Jane Smith', 'jane.smith@example.com', NULL, FALSE, NULL, 0.00)
+    ('John Doe', 'john.doe@example.com', 'johnDoe', '1111222233334444', TRUE, '2025-12-31', 3.45),
+    (NULL, 'jane.smith@example.com', 'smith1234', NULL, FALSE, NULL, 0.00)
 ON DUPLICATE KEY UPDATE 
     name = VALUES(name),
     card_number = VALUES(card_number),

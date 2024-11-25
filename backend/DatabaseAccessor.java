@@ -9,14 +9,16 @@ public class DatabaseAccessor {
 
     /**
      * Fetches movie details by movieId.
+     * 
      * @param movieId the ID of the movie to fetch.
-     * @return a List containing title, genre, duration, rating, posterPath, and description.
+     * @return a List containing title, genre, duration, rating, posterPath, and
+     *         description.
      */
     public static Movie getMovieDetails(int movieId) {
         String query = "SELECT title, genre, duration, rating, poster_path, description FROM Movies WHERE movie_id = ?";
 
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, movieId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -40,6 +42,7 @@ public class DatabaseAccessor {
 
     /**
      * Fetches screen details by screenId.
+     * 
      * @param screenId the ID of the creen to fetch.
      * @return a Screen instance containing rows, cols.
      */
@@ -47,7 +50,7 @@ public class DatabaseAccessor {
         String query = "SELECT screen_rows, screen_cols FROM Screens WHERE screen_id = ?";
 
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, screenID);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -64,4 +67,50 @@ public class DatabaseAccessor {
 
         return null;
     }
+
+    public static String getUserEmail(int userID) {
+        String query = "SELECT email FROM Users WHERE user_id = ?";
+        try (Connection conn = DatabaseConfig.connect();
+                PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, userID);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("email");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static User loginUser(String email, String password) {
+        String query = "SELECT * FROM Users WHERE email = ? AND password = ?";
+        try (Connection conn = DatabaseConfig.connect();
+                PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setString(1, email);
+            statement.setString(2, password);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new User(resultSet.getInt("user_id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("email"),
+                            resultSet.getString("password"),
+                            resultSet.getString("address"),
+                            resultSet.getInt("card_number"),
+                            resultSet.getBoolean("is_registered"),
+                            resultSet.getString("account_recharge"),
+                            resultSet.getDouble("credit_balance"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
