@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.ProfilePageObserver;
+import frontend.panels.FooterPanel;
 
 public class ProfilePage implements Page, ProfilePageObserver {
     private static ProfilePage instance; // Singleton
@@ -62,7 +63,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
         try {
             //Header and Footer Panels
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
-            JPanel footerPanel = DecoratorHelpers.createFooterPanel("editInfo");
+            FooterPanel footerPanel = new FooterPanel("editInfo");
 
             //Profile panel
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS)); 

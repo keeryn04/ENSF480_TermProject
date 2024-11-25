@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import frontend.pages.PanelBuilder;
+import frontend.pages.PaymentState;
 import frontend.pages.Window;
 
 public class DecoratorHelpers {
@@ -123,7 +124,10 @@ public class DecoratorHelpers {
 
         } else if (type.equals("continuePurchase")) { //Used on SeatMapPage, traverse to PaymentPage
             rightButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Continue to Payment", buttonFont);
-            ActionListener listener = e -> {Window.getInstance().showPanel("PaymentPage");};
+            ActionListener listener = e -> {
+                PaymentState.getInstance().submitTicketConfirm();
+                Window.getInstance().showPanel("PaymentPage");
+            };
             ActionListenerDecorator accountDecorator = new ActionListenerDecorator(rightButton, rightButton, listener);
 
         } else if (type.equals("confirmInfo")) { //Used for confirming edited info
@@ -135,6 +139,7 @@ public class DecoratorHelpers {
             rightButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Edit Info", buttonFont);
             ActionListener listener = e -> {Window.getInstance().showPanel("ProfileEditPage");};
             ActionListenerDecorator accountDecorator = new ActionListenerDecorator(rightButton, rightButton, listener);
+
         } else if (type.equals("paymentConfirm")) { //Confirmed payment page (Booking ticket)
             rightButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Confirm Purchase", buttonFont);
             ActionListener listener = e -> {Window.getInstance().showPanel("PaymentSuccessPage");};

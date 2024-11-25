@@ -6,7 +6,7 @@ import java.util.List;
 import frontend.observers.LoginPageObserver;
 
 public class LoginState {
-     private static LoginState instance;
+    private static LoginState instance;
     private final List<LoginPageObserver> observersLogin = new ArrayList<>();
 
     //Movie info
@@ -29,7 +29,7 @@ public class LoginState {
     private void notifyLoginObservers(String key, Object value) {
         for (LoginPageObserver observer : observersLogin) {
             observer.onLoginChange(key, value);
-            System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
+            //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
     }
 

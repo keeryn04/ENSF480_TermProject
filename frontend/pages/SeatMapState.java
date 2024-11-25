@@ -5,15 +5,21 @@ import java.util.List;
 
 import frontend.observers.SeatMapObserver;
 
+/**
+ * Manages seat map-related data and notifies observers about changes.
+ */
 public class SeatMapState {
     private static SeatMapState instance;
     private final List<SeatMapObserver> observersSeatMap = new ArrayList<>();
+    private final List<String> selectedSeatList = new ArrayList<>();
 
-    //Seatmap info
-    private int seatRows;
-    private int seatCols;
+    // SeatMap dimensions
+    private int seatRows = 0;
+    private int seatCols = 0;
 
-    //Singleton management
+    // Singleton management
+    private SeatMapState() {}
+
     public static SeatMapState getInstance() {
         if (instance == null) {
             instance = new SeatMapState();
@@ -21,12 +27,11 @@ public class SeatMapState {
         return instance;
     }
 
-    //Add SeatMap objects as an observer for seatmap-related changes
+    // Observer management
     public void addSeatMapObserver(SeatMapObserver observer) {
         observersSeatMap.add(observer);
     }
 
-    //Notify on Seatmap data changes
     private void notifySeatMapObservers(String key, Object value) {
         for (SeatMapObserver observer : observersSeatMap) {
             observer.onSeatMapUpdate(key, value);
@@ -34,18 +39,33 @@ public class SeatMapState {
         }
     }
 
-    // Getters and setters with notifications
-    public int getSeatRows() {
-        return seatRows;
+    // Seat selection management
+    public List<String> getSelectedSeats() {
+        return selectedSeatList;
     }
 
+    public void addSelectedSeat(String seat) {
+        if (!selectedSeatList.contains(seat)) {
+            selectedSeatList.add(seat);
+            PaymentState.getInstance().setTicketList(selectedSeatList);
+            PaymentState.getInstance().addTicket();
+        }
+    }
+
+    public void removeSelectedSeat(String seat) {
+        selectedSeatList.remove(seat);
+        PaymentState.getInstance().setTicketList(selectedSeatList);
+        PaymentState.getInstance().removeTicket();
+    }
+
+    public void clearSelectedSeats() {
+        selectedSeatList.clear();
+    }
+
+    // Seat map configuration
     public void setSeatRows(int seatRows) {
         this.seatRows = seatRows;
         notifySeatMapObservers("seatRows", seatRows);
-    }
-
-    public int getSeatCols() {
-        return seatCols;
     }
 
     public void setSeatCols(int seatCols) {
