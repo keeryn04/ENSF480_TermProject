@@ -16,13 +16,16 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import backend.User;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.PaymentPageObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.PaymentState;
 
@@ -58,6 +61,10 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     private JPanel cardDatePanel;
     private JPanel cardCVVPanel; //3 Numbers on the back
 
+    //Fonts
+    private Font dataTitleFont;
+    private Font dataFont;
+
     private PaymentPage() {
         itemPurchased = new String();
         price = 0; 
@@ -66,8 +73,8 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         ticketFlag = false;
 
         //GUI Initialization
-        Font dataTitleFont = new Font("Times New Roman", Font.BOLD, 20);
-        Font dataFont = new Font("Times New Roman", Font.PLAIN, 18);
+        dataTitleFont = new Font("Times New Roman", Font.BOLD, 20);
+        dataFont = new Font("Times New Roman", Font.PLAIN, 18);
 
         posterLabel = new JLabel();
 
@@ -83,9 +90,9 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         ticketListTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Tickets Selected: ", dataTitleFont);
         ticketListLabel = DecoratorHelpers.makeLabel(Color.BLACK, ticketList, dataFont);
 
-        cardNumPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", dataTitleFont, 20, null);
-        cardDatePanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Expiration Date: ", dataTitleFont, 20, null);
-        cardCVVPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card CVV: ", dataTitleFont, 3, null);
+        cardNumPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", dataTitleFont, 20, null, null);
+        cardDatePanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Expiration Date: ", dataTitleFont, 20,null, null);
+        cardCVVPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card CVV: ", dataTitleFont, 3, null, null);
 
         PaymentState.getInstance().addPaymentObserver(this);
         MovieState.getInstance().addMovieObserver(this);
@@ -102,6 +109,18 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     @Override
     public JPanel createPage() {
         try {
+            if (AppState.getInstance().getCurrentUser() != null) {
+                User currentUser = AppState.getInstance().getCurrentUser();
+                if (currentUser != null) { //User is logged in, has data stored to autofill
+                    cardNum = String.valueOf(currentUser.getCardNumber());
+                    cardDate = currentUser.getCardExpiry();
+
+                    //Autofill fields
+                    cardNumPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", dataTitleFont, 20, cardNum, null);
+                    cardDatePanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Expiration Date: ", dataTitleFont, 20, cardDate, null);
+                }
+            }
+            
             //Make header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
             FooterPanel footerPanel = new FooterPanel("paymentConfirm");

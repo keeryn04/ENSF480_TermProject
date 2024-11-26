@@ -178,9 +178,11 @@ public class DatabaseAccessor {
                             resultSet.getString("password"),
                             resultSet.getString("address"),
                             resultSet.getInt("card_number"),
+                            resultSet.getString("card_exp_date"),
                             resultSet.getBoolean("is_registered"),
                             resultSet.getString("account_recharge"),
-                            resultSet.getDouble("credit_balance"));
+                            resultSet.getDouble("credit_balance")
+                            );
                 }
             }
         } catch (SQLException e) {

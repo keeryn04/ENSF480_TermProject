@@ -19,12 +19,12 @@ ALTER TABLE Users AUTO_INCREMENT = 1;
 ALTER TABLE Screens AUTO_INCREMENT = 1;
 
 -- Insert Users
-INSERT INTO Users (name, email, password, card_number, is_registered, credit_balance, last_payment_date)
+INSERT INTO Users (name, email, password, card_number, card_exp_date, is_registered, credit_balance, last_payment_date)
 VALUES
-    ('John Doe', 'john.doe@example.com', 'hashedpassword123', '1111222233334444', TRUE, 3.45, '2025-12-31'),
-    ('Jane Smith', 'jane.smith@example.com', 'hashedpassword456', NULL, FALSE, 0.00, NULL),
-    ('Alice Johnson', 'alice.johnson@example.com', '1234', '5555666677778888', TRUE, 1.00, '2024-08-23'),
-    ('Bob Brown', 'bob.brown@example.com', 'password', '9999888877776666', FALSE, 25.75, NULL)
+    ('John Doe', 'john.doe@example.com', 'hashedpassword123', '1111222233334444', '04/28', TRUE, 3.45, '2025-12-31'),
+    ('Jane Smith', 'jane.smith@example.com', 'hashedpassword456', NULL, NULL, FALSE, 0.00, NULL),
+    ('Alice Johnson', 'alice.johnson@example.com', '1234', '5555666677778888', '09/30', TRUE, 1.00, '2024-08-23'),
+    ('Bob Brown', 'bob.brown@example.com', 'password', '9999888877776666', '11/16', FALSE, 25.75, NULL)
 ON DUPLICATE KEY UPDATE 
     name = VALUES(name),
     password = VALUES(password),

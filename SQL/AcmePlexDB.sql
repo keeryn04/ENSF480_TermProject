@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
     card_number VARCHAR(16),
+    card_exp_date VARCHAR(5),
     credit_balance DECIMAL(10, 2) DEFAULT 0.00,
     is_registered BOOLEAN DEFAULT FALSE,
     annual_fee_paid BOOLEAN DEFAULT FALSE,
