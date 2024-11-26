@@ -10,6 +10,7 @@ public class MovieState {
     private final List<MoviePageObserver> observersMovie = new ArrayList<>();
 
     //Movie info
+    private Integer movieId;
     private String movieTitle;
     private String movieDetails;
     private String moviePoster;
@@ -39,6 +40,15 @@ public class MovieState {
             observer.onMovieSelected(key, value);
             //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
+    }
+
+    public Integer getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Integer movieId) {
+        this.movieId = movieId;
+        notifyMovieObservers("movieId", movieId);
     }
 
     public String getMovieTitle() {
@@ -93,24 +103,6 @@ public class MovieState {
     public void setMovieRuntime(String movieRuntime) {
         this.movieRuntime = movieRuntime;
         notifyMovieObservers("movieRuntime", movieRuntime);
-    }
-
-    public String getMovieStarttime() {
-        return movieStarttime;
-    }
-
-    public void setMovieStarttime(String movieStarttime) {
-        this.movieStarttime = movieStarttime;
-        notifyMovieObservers("movieStarttime", movieStarttime);
-    }
-
-    public String getMovieEndtime() {
-        return movieEndtime;
-    }
-
-    public void setMovieEndtime(String movieEndtime) {
-        this.movieEndtime = movieEndtime;
-        notifyMovieObservers("movieEndtime", movieEndtime);
     }
 
     public int getScreenNum() {

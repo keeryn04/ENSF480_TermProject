@@ -39,9 +39,19 @@ CREATE TABLE IF NOT EXISTS Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
     screen_id INT NOT NULL,
-    screening DATETIME NOT NULL,
-    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
-    FOREIGN KEY (screen_id) REFERENCES Screens(screen_id)
+    start_time DATETIME NOT NULL,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (screen_id) REFERENCES Screens(screen_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Seats (
+    seat_id INT PRIMARY KEY AUTO_INCREMENT,  
+    screen_id INT NOT NULL,                   
+    seat_pos CHAR(1) NOT NULL,                
+    seat_number INT NOT NULL,                 
+    is_reserved BOOLEAN NOT NULL,             
+    reserved_by INT,                          
+    FOREIGN KEY (screen_id) REFERENCES Screens(screen_id) ON DELETE CASCADE
 );
 
 -- Tickets Table
@@ -52,7 +62,7 @@ CREATE TABLE IF NOT EXISTS Tickets (
     seat_row CHAR(2) NOT NULL,
     seat_col INT NOT NULL,
     FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     UNIQUE (showtime_id, seat_row, seat_col) -- Ensure no duplicate tickets
 );
 
@@ -63,5 +73,5 @@ CREATE TABLE IF NOT EXISTS Payments (
     amount DECIMAL(8, 2) NOT NULL,
     payment_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     method VARCHAR(50),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );

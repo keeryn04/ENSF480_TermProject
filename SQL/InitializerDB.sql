@@ -7,6 +7,8 @@ DELETE FROM Tickets WHERE ticket_id IS NOT NULL;
 DELETE FROM Showtimes WHERE showtime_id IS NOT NULL;
 DELETE FROM Movies WHERE movie_id IS NOT NULL;
 DELETE FROM Users WHERE user_id IS NOT NULL;
+DELETE FROM Tickets WHERE ticket_id IS NOT NULL;
+DELETE FROM Screens WHERE screen_id IS NOT NULL;
 
 -- Reset Auto-Increment Counters
 ALTER TABLE Payments AUTO_INCREMENT = 1;
