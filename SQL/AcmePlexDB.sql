@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS Users (
     name VARCHAR(100),
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
+    address VARCHAR(100),
     card_number VARCHAR(16),
     credit_balance DECIMAL(10, 2) DEFAULT 0.00,
     is_registered BOOLEAN DEFAULT FALSE,
