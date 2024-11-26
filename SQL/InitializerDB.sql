@@ -16,6 +16,7 @@ ALTER TABLE Tickets AUTO_INCREMENT = 1;
 ALTER TABLE Showtimes AUTO_INCREMENT = 1;
 ALTER TABLE Movies AUTO_INCREMENT = 1;
 ALTER TABLE Users AUTO_INCREMENT = 1;
+ALTER TABLE Screens AUTO_INCREMENT = 1;
 
 -- Insert Users
 INSERT INTO Users (name, email, password, card_number, is_registered, credit_balance, last_payment_date)
@@ -60,7 +61,8 @@ VALUES
     (1, 1, '2024-11-24 18:00:00'),
     (2, 3, '2024-11-24 20:30:00'),
     (3, 2, '2024-11-25 19:00:00'),
-    (4, 4, '2024-11-25 21:00:00')
+    (4, 4, '2024-11-25 21:00:00'),
+    (4, 4, '2024-11-25 16:00:00')
 ON DUPLICATE KEY UPDATE
     screening = VALUES(screening);
 

@@ -90,8 +90,6 @@ public class AppState {
             screens.put(screen.getScreenId(), screen);
             screenId++;
         }
-
-        System.out.println("Screens loaded: " + screens.size());
     }
     /*
     private void loadUserEmails() {
