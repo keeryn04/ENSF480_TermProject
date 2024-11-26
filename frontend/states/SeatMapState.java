@@ -14,6 +14,7 @@ public class SeatMapState {
     private final List<String> selectedSeatList = new ArrayList<>();
 
     // SeatMap dimensions
+    private int screenId;
     private int seatRows = 0;
     private int seatCols = 0;
 
@@ -63,6 +64,11 @@ public class SeatMapState {
     }
 
     // Seat map configuration
+    public void setScreenId(int screenId) {
+        this.screenId = screenId;
+        notifySeatMapObservers("screenId", screenId);
+    }
+
     public void setSeatRows(int seatRows) {
         this.seatRows = seatRows;
         notifySeatMapObservers("seatRows", seatRows);

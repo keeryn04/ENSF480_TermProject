@@ -10,10 +10,16 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,34 +27,39 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import backend.DatabaseAccessor;
+import backend.Movie;
+import backend.Showtime;
 import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
+import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.AppState;
 import frontend.states.MovieState;
+import frontend.states.SeatMapState;
 
-public class MoviePage implements Page, MoviePageObserver {
+public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private static MoviePage instance; // Singleton
 
     //Data fields for movie details
+    private Integer movieId = 1;
     private String movieTitle = "Movie Title";
     private String movieDescription = "Movie Description";
     private BufferedImage posterImage;
     private String movieGenre = "Comedy";
     private String movieRating = "3.6";
     private String movieRuntime = "120";
-    private String movieStartTime = "Today";
-    private String movieEndTime = "Tomorrow";
-    private Integer screenNum = 1; //Stored for ticket display purposes
+    private Integer screenId = 1; 
 
     //UI components
     private JLabel titleLabel;
     private JLabel posterLabel;
     private JTextArea descriptionArea;
-    private JLabel starttimeTitle;
-    private JLabel starttimeLabel;
-    private JLabel endtimeTitle;
-    private JLabel endtimeLabel;
+    private JLabel screenTitle;
+    private JLabel screenLabel;
+    private JLabel timeTitle;
+    private JComboBox<String> timeDropdown;
     private JLabel genreTitle;
     private JLabel genreLabel;
     private JLabel ratingTitle;
@@ -73,10 +84,11 @@ public class MoviePage implements Page, MoviePageObserver {
         descriptionArea.setWrapStyleWord(true);
         descriptionArea.setEditable(false);
 
-        starttimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Start Time: ", dataTitleFont);
-        starttimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieStartTime, dataFont);
-        endtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "End Time: ", dataTitleFont);
-        endtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieEndTime, dataFont);
+        screenTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Screen: ", dataTitleFont);
+        screenLabel = DecoratorHelpers.makeLabel(Color.BLACK, String.valueOf(screenId), dataFont);
+
+        timeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Screening Time: ", dataTitleFont);
+        timeDropdown = new JComboBox<>();
         
         genreTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Genre: ", dataTitleFont);
         genreLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieGenre, dataFont);
@@ -87,8 +99,9 @@ public class MoviePage implements Page, MoviePageObserver {
         runtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Runtime: ", dataTitleFont);
         runtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieRuntime, dataFont);
 
-        //Register with MovieState
+        //Register with MovieState and SeatMapState
         MovieState.getInstance().addMovieObserver(this);
+        SeatMapState.getInstance().addSeatMapObserver(this);
     }
 
     /**Returns single instance of MoviePage */
@@ -118,12 +131,16 @@ public class MoviePage implements Page, MoviePageObserver {
             JPanel posterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             posterPanel.add(posterLabel);
 
-            //Times panel (start and end titles and labels)
+            JPanel screenPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            screenPanel.add(screenTitle);
+            screenPanel.add(screenLabel);
+
+            //Times dropdown panel (start and end), load data then add component
+            loadShowtimesDropdowns(movieId);
+
             JPanel timesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            timesPanel.add(starttimeTitle);
-            timesPanel.add(starttimeLabel);
-            timesPanel.add(endtimeTitle);
-            timesPanel.add(endtimeLabel);
+            timesPanel.add(timeTitle);
+            timesPanel.add(timeDropdown);
 
             //Rating panel (title and label)
             JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -142,7 +159,8 @@ public class MoviePage implements Page, MoviePageObserver {
 
             //Add all detail panels to the detailsPanel
             JPanel detailsPanel = new PanelBuilder()
-                    .setLayout(new GridLayout(5, 1))
+                    .setLayout(new GridLayout(6, 1))
+                    .addComponent(screenPanel, null)
                     .addComponent(timesPanel, null)
                     .addComponent(ratingPanel, null)
                     .addComponent(runtimePanel, null)
@@ -178,6 +196,11 @@ public class MoviePage implements Page, MoviePageObserver {
     public void onMovieSelected(String key, Object value) {
         //React to changes from AppState
         switch (key) {
+            case "movieId":
+                movieId = (Integer) value;
+                updateContent();
+                updateDropdown();
+                break;
             case "movieTitle":
                 movieTitle = (String) value;
                 updateContent();
@@ -202,28 +225,17 @@ public class MoviePage implements Page, MoviePageObserver {
                 movieRuntime = (String) value;
                 updateContent();
                 break;
-            case "movieStarttime":
-                movieStartTime = (String) value;
-                updateContent();
-                break;
-            case "movieEndtime":
-                movieEndTime = (String) value;
-                updateContent();
-                break;
-            case "screenNum":
-                screenNum = (Integer) value;
-                updateContent();
-                break;
             default:
                 break;
         }
     }
 
-    /**Change the aspects of the MoviePage based on AppState data retrieved by observer */
+    /**Change the aspects of the MoviePage based on App data retrieved by observer */
     private void updateContent() {
         SwingUtilities.invokeLater(() -> {
             titleLabel.setText(movieTitle);
             descriptionArea.setText(movieDescription);
+            screenLabel.setText(String.valueOf(screenId));
 
             if (posterImage != null) {
                 Image scaledImage = posterImage.getScaledInstance(250, 400, Image.SCALE_SMOOTH);
@@ -236,10 +248,24 @@ public class MoviePage implements Page, MoviePageObserver {
             genreLabel.setText(movieGenre);
             ratingLabel.setText(movieRating);
             runtimeLabel.setText(movieRuntime);
-
-            starttimeLabel.setText(movieStartTime);
-            endtimeLabel.setText(movieEndTime);
         });
+    }
+
+    //Separate update for heavy processing in comparison to changing text
+    private void updateDropdown() {
+        loadShowtimesDropdowns(movieId);
+    }
+
+    @Override
+    public void onSeatMapUpdate(String key, Object value) {
+        switch (key) {
+            case "screenId":
+                screenId = (Integer) value;
+                updateContent();
+                break;
+            default:
+                break;
+        }
     }
 
     /**Helper function for loading image */
@@ -280,5 +306,37 @@ public class MoviePage implements Page, MoviePageObserver {
         moviePanel.add(movieButton, BorderLayout.SOUTH);
 
         return moviePanel;
+    }
+
+    private List<String> getShowtimesForMovie(Integer movieId) {
+        Map<Integer, Showtime> showtimes = AppState.getInstance().getShowtimes();
+        List<String> filteredShowtimes = new ArrayList<>();
+
+        Movie movie = AppState.getInstance().getMovies().get(movieId);
+        Integer runtimeMinutes = movie != null ? movie.getDurationInt() : 0;
+
+        for (Showtime showtime : showtimes.values()) {
+            if (showtime.getMovieId().equals(movieId)) {
+                // Format start and end times for the dropdown
+                filteredShowtimes.add(showtime.getFormattedScreeningTime("yyyy-MM-dd HH:mm", runtimeMinutes));
+            }
+        }
+
+        return filteredShowtimes;
+    }
+
+
+    private void loadShowtimesDropdowns(Integer movieId) {
+        List<String> showtimes = getShowtimesForMovie(movieId);
+    
+        timeDropdown.removeAllItems();
+    
+        if (showtimes.isEmpty()) {
+            timeDropdown.addItem("No Showtimes Available");
+        } else {
+            for (String showtime : showtimes) {
+                timeDropdown.addItem(showtime);
+            }
+        }
     }
 }

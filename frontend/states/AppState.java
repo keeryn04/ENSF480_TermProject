@@ -1,5 +1,7 @@
 package frontend.states;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.Map;
 import backend.DatabaseAccessor;
 import backend.Movie;
 import backend.Screen;
+import backend.Showtime;
 import backend.User;
 
 /**
@@ -17,20 +20,26 @@ import backend.User;
 public class AppState {
     private static AppState instance; // Singleton instance
 
-    private Map<String, String[]> movies;
-    private Map<Integer, Integer[]> screens;
+    private Map<Integer, Movie> movies;
+    private Map<Integer, Screen> screens;
     private ArrayList<String> userEmails;
     private User currentUser;
+    private Map<Integer, Showtime> showtimes;
+
+    DateTimeFormatter formatter;
 
     private AppState() {
         movies = new HashMap<>();
         screens = new HashMap<>();
+        showtimes = new HashMap<>();
         userEmails = null;
         currentUser = null; // If null, user is not logged in
+        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         loadMovies();
         loadScreens();
-        loadUserEmails();
+        loadShowtimes();
+        //loadUserEmails();
     }
 
     // Singleton management
@@ -41,22 +50,26 @@ public class AppState {
         return instance;
     }
 
-    public Map<String, String[]> getMovies() {
+    public Map<Integer, Movie> getMovies() {
         return movies;
     }
 
-    public Map<Integer, Integer[]> getScreens() {
+    public Map<Integer, Screen> getScreens() {
         return screens;
+    }
+
+    public Map<Integer, Showtime> getShowtimes() {
+        return showtimes;
     }
 
     public User getCurrentUser() {
         return currentUser;
     }
-
+    /*
     public void logInUser(String email, String password) {
         currentUser = DatabaseAccessor.loginUser(email, password);
     }
-
+    */
     public void logOutUser() {
         currentUser = null;
     }
@@ -65,14 +78,7 @@ public class AppState {
         int movieId = 1;
         Movie movie;
         while ((movie = DatabaseAccessor.getMovieDetails(movieId)) != null) {
-            movies.put(movie.getTitle(),
-                    new String[] {
-                            "./frontend" + movie.getPosterPath(),
-                            movie.getDescription(),
-                            movie.getGenre(),
-                            movie.getRating(),
-                            movie.getDuration()
-                    });
+            movies.put(movie.getMovieId(), movie);
             movieId++;
         }
     }
@@ -81,17 +87,28 @@ public class AppState {
         int screenId = 1;
         Screen screen;
         while ((screen = DatabaseAccessor.getScreenDetails(screenId)) != null) {
-            screens.put(screenId,
-                    new Integer[] { screen.getRows(), screen.getCols() });
+            screens.put(screen.getScreenId(), screen);
             screenId++;
         }
-    }
 
+        System.out.println("Screens loaded: " + screens.size());
+    }
+    /*
     private void loadUserEmails() {
         int userId = 1;
         String email;
         while ((email = DatabaseAccessor.getUserEmail(userId)) != null) {
             userEmails.add(email);
         }
+    }
+        */
+
+    private void loadShowtimes() {
+        int showtimeId = 1;
+        Showtime showtime;
+        while ((showtime = DatabaseAccessor.getShowtimeDetails(showtimeId)) != null) {
+            showtimes.put(showtimeId, showtime);
+            showtimeId++;
+        } 
     }
 }

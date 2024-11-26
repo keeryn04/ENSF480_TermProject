@@ -17,12 +17,14 @@ public class DatabaseAccessor {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return new Movie(
-                            resultSet.getString("title"),
-                            resultSet.getString("genre"),
-                            resultSet.getInt("duration"),
-                            resultSet.getDouble("rating"),
-                            resultSet.getString("poster_path"),
-                            resultSet.getString("description"));
+                        movieId, 
+                        resultSet.getString("title"),
+                        resultSet.getString("genre"),
+                        resultSet.getInt("duration"),
+                        resultSet.getDouble("rating"),
+                        resultSet.getString("poster_path"),
+                        resultSet.getString("description")
+                    );
                 }
             }
         } catch (SQLException e) {
@@ -40,7 +42,7 @@ public class DatabaseAccessor {
             statement.setInt(1, screenId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Screen(10, resultSet.getInt("screen_cols")); // Rows are fixed at 10
+                    return new Screen(screenId, 10, resultSet.getInt("screen_cols")); // Rows are fixed at 10
                 }
             }
         } catch (SQLException e) {
@@ -54,7 +56,7 @@ public class DatabaseAccessor {
         String query = "SELECT movie_id, screen_id, screening FROM Showtimes WHERE showtime_id = ?";
         try (Connection conn = DatabaseConfig.connect();
                 PreparedStatement statement = conn.prepareStatement(query)) {
-
+                    //public Showtime(Integer showtimeId, Integer movieId, Integer screenId, LocalDateTime screeningTime)
             statement.setInt(1, showtimeId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {

@@ -15,6 +15,10 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import backend.Movie;
+import backend.Screen;
+import backend.Showtime;
+
 /**Makes the HomePage to be displayed with Window*/
 public class HomePage implements Page {
     JPanel movieSelectionPanel;
@@ -39,6 +43,7 @@ public class HomePage implements Page {
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
             JPanel contentPanel = new JPanel(new BorderLayout());
 
+            //Assign data to pages based on movie chosen
             populateMovieData(buttonFont);
 
             //Use builder to add all panels in main layout
@@ -63,33 +68,36 @@ public class HomePage implements Page {
         AppState appState = AppState.getInstance();
 
         //Get movie data from AppState
-        Map<String, String[]> movies = appState.getMovies();
-        Map<Integer, Integer[]> screens = appState.getScreens();
-        Map<String, Integer> movieScreenMapping = new HashMap<>();
+        Map<Integer, Movie> movies = appState.getMovies();
+        Map<Integer, Screen> screens = appState.getScreens();
+        Map<Integer, Integer> movieScreenMapping = new HashMap<>();
         Integer screenNumber = 1;
 
         //Map movies to screens
-        for (Map.Entry<String, String[]> entry : movies.entrySet()) {
-            String movieTitle = entry.getKey();
-            movieScreenMapping.put(movieTitle, screenNumber); //Movie is on screen
+        for (Map.Entry<Integer, Movie> entry : movies.entrySet()) {
+            Integer movieId = entry.getKey();
+            movieScreenMapping.put(movieId, screenNumber); 
             screenNumber++;
         }
 
+
         //Make movie panel and seatmap for each movie / screen
-        for (Map.Entry<String, String[]> entry : movies.entrySet()) {
-            String movieTitle = entry.getKey();
-            String[] movieDetails = entry.getValue();
-            String imagePath = movieDetails[0];
-            String movieDesc = movieDetails[1];
-            String movieGenre = movieDetails[2];
-            String movieRating = movieDetails[3];
-            String movieRuntime = movieDetails[4];
+        for (Map.Entry<Integer, Movie> entry : movies.entrySet()) {
+            Integer movieId = entry.getKey();
+            Movie movieDetails = entry.getValue();
+            String movieTitle = movieDetails.getTitle();
+            String imagePath = movieDetails.getPosterPath();
+            String movieDesc = movieDetails.getDescription();
+            String movieGenre = movieDetails.getGenre();
+            String movieRating = movieDetails.getRating();
+            String movieRuntime = movieDetails.getDuration();
 
             //Create movie panel
             JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDesc, imagePath, Color.DARK_GRAY, buttonFont);
             JButton movieButton = (JButton) moviePanel.getComponent(1);
             ActionListener listener = e -> {
                 //Update Movie Data in Movie State
+                MovieState.getInstance().setMovieId(movieId);
                 MovieState.getInstance().setMovieTitle(movieTitle);
                 MovieState.getInstance().setMovieDetails(movieDesc);
                 MovieState.getInstance().setMoviePoster(imagePath);
@@ -97,13 +105,14 @@ public class HomePage implements Page {
                 MovieState.getInstance().setMovieRating(movieRating);
                 MovieState.getInstance().setMovieRuntime(movieRuntime);
 
-                Integer screenNum = movieScreenMapping.get(movieTitle); //Screen assigned to each movie
+                Integer screenNum = movieScreenMapping.get(movieId); //Screen assigned to each movie
                 if (screenNum != null) {
-                    Integer[] screenDetails = screens.get(screenNum);
-                    Integer rows = screenDetails[0];
-                    Integer cols = screenDetails[1];
+                    Screen screenDetails = screens.get(screenNum);
+                    Integer rows = screenDetails.getRows();
+                    Integer cols = screenDetails.getCols();
                     
                     //Set the seat rows and columns in SeatMapState
+                    SeatMapState.getInstance().setScreenId(screenNum);
                     SeatMapState.getInstance().setSeatRows(rows);
                     SeatMapState.getInstance().setSeatCols(cols);
                 }
