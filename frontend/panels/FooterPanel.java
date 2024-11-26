@@ -65,7 +65,11 @@ public class FooterPanel extends JPanel {
 
     private JButton createBackButton(Font font) {
         JButton backButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Back to Home", font);
-        backButton.addActionListener(e -> Window.getInstance().showPanel("Home"));
+        backButton.addActionListener(e -> {
+            Window.getInstance().showPanel("Home");
+            ErrorState.getInstance().clearError();
+        });
+        
         return backButton;
     }
 

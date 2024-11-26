@@ -238,7 +238,7 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             screenLabel.setText(String.valueOf(screenId));
 
             if (posterImage != null) {
-                Image scaledImage = posterImage.getScaledInstance(250, 400, Image.SCALE_SMOOTH);
+                Image scaledImage = posterImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
                 posterLabel.setIcon(new ImageIcon(scaledImage));
             } else {
                 posterLabel.setText("Image not found");

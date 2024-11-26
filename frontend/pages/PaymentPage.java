@@ -4,17 +4,29 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import frontend.decorators.DecoratorHelpers;
+import frontend.observers.MoviePageObserver;
 import frontend.observers.PaymentPageObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.MovieState;
 import frontend.states.PaymentState;
 
-public class PaymentPage implements Page, PaymentPageObserver {
+public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver {
     private static PaymentPage instance; // Singleton
 
     //Stored info (For signed in user)
@@ -28,6 +40,7 @@ public class PaymentPage implements Page, PaymentPageObserver {
     private int amount; //If 0, shows registration purchase page
     private String ticketList;
     private Boolean ticketFlag;
+    private BufferedImage posterImage;
 
     //UI Components
     private JLabel itemPurchasedTitle;
@@ -38,6 +51,7 @@ public class PaymentPage implements Page, PaymentPageObserver {
     private JLabel amountLabel;
     private JLabel priceTitle;
     private JLabel priceLabel;
+    private JLabel posterLabel;
 
     //Payment inputs
     private JPanel cardNumPanel;
@@ -55,8 +69,13 @@ public class PaymentPage implements Page, PaymentPageObserver {
         Font dataTitleFont = new Font("Times New Roman", Font.BOLD, 20);
         Font dataFont = new Font("Times New Roman", Font.PLAIN, 18);
 
+        posterLabel = new JLabel();
+
         itemPurchasedTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Shopping Cart: ", dataTitleFont);
         itemPurchasedLabel = DecoratorHelpers.makeLabel(Color.BLACK, itemPurchased, dataFont);
+
+        priceTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Price: ", dataTitleFont);
+        priceLabel = DecoratorHelpers.makeLabel(Color.BLACK, "$" + String.valueOf(price), dataFont);
         
         amountTitle = DecoratorHelpers.makeLabel(Color.BLACK, "# of Tickets: ", dataTitleFont);
         amountLabel = DecoratorHelpers.makeLabel(Color.BLACK, String.valueOf(amount), dataFont);
@@ -64,14 +83,12 @@ public class PaymentPage implements Page, PaymentPageObserver {
         ticketListTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Tickets Selected: ", dataTitleFont);
         ticketListLabel = DecoratorHelpers.makeLabel(Color.BLACK, ticketList, dataFont);
 
-        priceTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Price: ", dataTitleFont);
-        priceLabel = DecoratorHelpers.makeLabel(Color.BLACK, "$" + String.valueOf(price), dataFont);
-
         cardNumPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", dataTitleFont, 20, null);
-        cardDatePanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Expiration Date: : ", dataTitleFont, 20, null);
+        cardDatePanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Expiration Date: ", dataTitleFont, 20, null);
         cardCVVPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card CVV: ", dataTitleFont, 3, null);
 
         PaymentState.getInstance().addPaymentObserver(this);
+        MovieState.getInstance().addMovieObserver(this);
     }
 
     /**Returns single instance of PaymentPage */
@@ -89,38 +106,72 @@ public class PaymentPage implements Page, PaymentPageObserver {
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
             FooterPanel footerPanel = new FooterPanel("paymentConfirm");
 
-            JPanel itemPurchasedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            itemPurchasedPanel.add(itemPurchasedTitle);
-            itemPurchasedPanel.add(itemPurchasedLabel);
+            //Shopping cart panel
+            JPanel purchaseInfoPanel = new JPanel(new GridLayout(2, 1, 10, 0));
+            purchaseInfoPanel.add( createSectionPanel(
+                new JLabel[] {itemPurchasedTitle, itemPurchasedLabel},
+                FlowLayout.CENTER
+            ));
 
-            JPanel pricePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            pricePanel.add(priceTitle);
-            pricePanel.add(priceLabel);
+            //Price panel
+            purchaseInfoPanel.add( createSectionPanel(
+                new JLabel[] {priceTitle, priceLabel},
+                FlowLayout.CENTER
+            ));
 
-            JPanel amountPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            amountPanel.add(amountTitle);
-            amountPanel.add(amountLabel);
+            //Ticket panel, only if tickets being purchased
+            JPanel purchaseAndTicketPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+            JPanel ticketInfoPanel = new JPanel(new GridLayout(2, 1, 10, 0));
+            JPanel posterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            if (ticketFlag) { //Check if tickets being purchased, add sections if so
+                ticketInfoPanel.add(createSectionPanel(
+                    new JLabel[] {amountTitle, amountLabel},
+                    FlowLayout.CENTER
+                ));
+                ticketInfoPanel.add(createSectionPanel(
+                    new JLabel[] {ticketListTitle, ticketListLabel},
+                    FlowLayout.CENTER
+                ));
 
-            JPanel ticketListPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            ticketListPanel.add(ticketListTitle);
-            ticketListPanel.add(ticketListLabel);
+                //Poster panel with movie poster
+                posterPanel.add(posterLabel);
+                 // Two rows: one for purchase info, one for ticket info
+                purchaseAndTicketPanel.add(purchaseInfoPanel);
+                purchaseAndTicketPanel.add(ticketInfoPanel);
+            }
 
-            JPanel paymentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            paymentPanel.add(cardNumPanel);
-            paymentPanel.add(cardDatePanel);
-            paymentPanel.add(cardCVVPanel);
+            //Payment input fields
+            JPanel paymentDetailsPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+            paymentDetailsPanel.add(cardNumPanel);
+            paymentDetailsPanel.add(cardDatePanel);
+            paymentDetailsPanel.add(cardCVVPanel);
 
-            JPanel contentPanel = new PanelBuilder()
-                    .setLayout(new GridLayout(7, 1))
-                    .addComponent(itemPurchasedPanel, null)
-                    .addComponent(pricePanel, null)
-                    .addComponent(paymentPanel, null)
-                    .build();
-            
-            if (ticketFlag) { //Ticket purchasing
-                contentPanel.add(amountPanel);
-                contentPanel.add(ticketListPanel);
-            } 
+            //Main content panel, with gridbaglayout for custom grid placement
+            JPanel contentPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10); //Ad spacing between components
+
+            //Poster panel (spanning 2 rows)
+            gbc.gridx = 0; //Column 0 (left side)
+            gbc.gridy = 0; //Row 0
+            gbc.gridheight = 2; //Spans 2 rows
+            gbc.fill = GridBagConstraints.BOTH; //Fill space both vertically and horizontally
+            gbc.weightx = 0.4; //Allocate less horizontal space compared to the ticket panel
+            gbc.weighty = 1.0; //Equal vertical weight
+            contentPanel.add(posterPanel, gbc);
+
+            //Ticket information panel (right side, row 0)
+            gbc.gridx = 1; //Column 1 (right side)
+            gbc.gridy = 0; //Row 0
+            gbc.gridheight = 1; //Occupies only 1 row
+            gbc.weightx = 0.6; //Allocate more horizontal space
+            contentPanel.add(purchaseAndTicketPanel, gbc);
+
+            //Payment details panel (right side, row 1)
+            gbc.gridx = 1; //Column 1 (right side)
+            gbc.gridy = 1; //Row 1
+            gbc.gridheight = 1; //Occupies only 1 row
+            contentPanel.add(paymentDetailsPanel, gbc);
 
             //Use builder to add all panels in the main layout
             JPanel mainPanel = new PanelBuilder()
@@ -137,6 +188,7 @@ public class PaymentPage implements Page, PaymentPageObserver {
         }
     }
 
+    /**Handles updates to payment info, used for refreshing page info */
     @Override
     public void onPaymentConfirmed(String key, Object value) {
         //React to changes from AppState
@@ -177,18 +229,66 @@ public class PaymentPage implements Page, PaymentPageObserver {
         }
     }
 
-    
+    /**For movie poster updating*/
+    @Override
+    public void onMovieSelected(String key, Object value) {
+        switch (key) {
+            case "moviePoster":
+                posterImage = loadImage((String) value);
+                updateContent();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**Helper function for loading image 
+     * @param path The path of the image to be loaded
+     * @return The image that was loaded from the path
+    */
+    private BufferedImage loadImage(String path) {
+        try {
+            return ImageIO.read(new File(path));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /*Update the page content based on observers */
     private void updateContent() {
         SwingUtilities.invokeLater(() -> {
            priceLabel.setText("$" + String.valueOf(price));
            amountLabel.setText(String.valueOf(amount));
            itemPurchasedLabel.setText(itemPurchased);
            ticketListLabel.setText(ticketList);
+           if (posterImage != null) {
+                Image scaledImage = posterImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+                posterLabel.setIcon(new ImageIcon(scaledImage));
+            } else {
+                posterLabel.setText("Image not found");
+                posterLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            }
         });
     }
 
+    /**For updating the page when swapping from registration to tickets */
     private void refreshPage() {
         JPanel newPage = createPage();
         Window.getInstance().addPanel("PaymentPage", newPage);  
+    }
+
+    /**Makes a titled label with placement, background and spacings
+     * @param labels The components you want to add
+     * @param alignment The alignment you want the returned panel to have
+     * @return A formatted panel with title and label
+     */
+    private JPanel createSectionPanel(JLabel[] labels, int alignment) {
+        JPanel sectionPanel = new JPanel(new FlowLayout(alignment, 10, 10)); 
+        sectionPanel.setBackground(Color.WHITE);
+        for (JLabel label : labels) {
+            sectionPanel.add(label);
+        }
+        return sectionPanel;
     }
 }
