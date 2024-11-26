@@ -338,5 +338,44 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
                 timeDropdown.addItem(showtime);
             }
         }
+
+        timeDropdown.addActionListener(e -> {
+            //Get the selected item
+            String selectedShowtime = (String) timeDropdown.getSelectedItem();
+        
+            //Ensure it's not null or the placeholder text
+            if (selectedShowtime != null && !selectedShowtime.equals("No Showtimes Available")) {
+                handleDropdownChange(selectedShowtime);
+            }
+        });
     }
+
+    private void handleDropdownChange(String selectedShowtime) {
+        //Extract details if the showtime includes runtime or screen info
+        System.out.println("Selected Showtime: " + selectedShowtime);
+    
+        // Optionally, update the screenId or other movie-related data
+        Showtime selectedShowtimeData = findShowtimeData(selectedShowtime);
+        if (selectedShowtimeData != null) {
+            screenId = selectedShowtimeData.getScreenId();
+            int showtimeId = selectedShowtimeData.getShowtimeId(); //Local as its not displayed anywhere, just stored for db access
+            MovieState.getInstance().setShowtimeId(showtimeId);
+            updateContent(); //Refresh content on the page
+        }
+    }
+    
+    private Showtime findShowtimeData(String selectedShowtime) {
+        Map<Integer, Showtime> showtimes = AppState.getInstance().getShowtimes();
+    
+        // Loop through showtimes to find the matching one
+        for (Showtime showtime : showtimes.values()) {
+            String formattedTime = showtime.getFormattedScreeningTime("yyyy-MM-dd HH:mm", movieRuntime != null ? Integer.parseInt(movieRuntime) : 0);
+            if (formattedTime.equals(selectedShowtime)) {
+                return showtime;
+            }
+        }
+    
+        return null; // No matching showtime found
+    }
+    
 }
