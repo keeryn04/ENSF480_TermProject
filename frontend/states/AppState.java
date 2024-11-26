@@ -25,7 +25,7 @@ public class AppState {
     private AppState() {
         movies = new HashMap<>();
         screens = new HashMap<>();
-        userEmails = null;
+        userEmails = new ArrayList<>();
         currentUser = null; // If null, user is not logged in
 
         loadMovies();
@@ -92,6 +92,7 @@ public class AppState {
         String email;
         while ((email = DatabaseAccessor.getUserEmail(userId)) != null) {
             userEmails.add(email);
+            userId++;
         }
     }
 }

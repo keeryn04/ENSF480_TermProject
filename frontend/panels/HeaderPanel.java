@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HeaderPanel extends JPanel {
-    private JButton leftButton;
-    private JButton rightButton;
+    private JButton leftButton = null;
+    private JButton rightButton = null;
 
     private static final Map<String, String> LEFT_BUTTON_LABELS = new HashMap<>();
     private static final Map<String, String> RIGHT_BUTTON_LABELS = new HashMap<>();
@@ -32,8 +32,8 @@ public class HeaderPanel extends JPanel {
         // CHANGE THE SHOW PANEL NAMES WHEN PAGES ARE ADDED! THIS IS FOR TESTING
         // PURPOSES
         // Actions buttons when not signed in
-        LEFT_BUTTON_ACTIONS.put("notSginedIn", e -> Window.getInstance().showPanel("LoginPage"));
-        RIGHT_BUTTON_ACTIONS.put("notSginedIn", e -> Window.getInstance().showPanel("LoginPage"));
+        LEFT_BUTTON_ACTIONS.put("notSignedIn", e -> Window.getInstance().showPanel("LoginPage"));
+        RIGHT_BUTTON_ACTIONS.put("notSignedIn", e -> Window.getInstance().showPanel("LoginPage"));
 
         // Actions for buttons when signed in
         LEFT_BUTTON_ACTIONS.put("signedIn", e -> Window.getInstance().showPanel("LoginPage"));
@@ -50,8 +50,13 @@ public class HeaderPanel extends JPanel {
         leftButton = createLeftButton(type, buttonFont);
         rightButton = createRightButton(type, buttonFont);
 
-        add(leftButton, BorderLayout.EAST);
-        add(rightButton, BorderLayout.EAST);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BorderLayout());
+        buttonPanel.add(leftButton, BorderLayout.WEST);
+        buttonPanel.add(rightButton, BorderLayout.EAST);
+
+        add(buttonPanel, BorderLayout.EAST);
+        // add(rightButton, BorderLayout.EAST);
     }
 
     private JButton createLeftButton(String type, Font font) {
