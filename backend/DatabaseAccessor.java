@@ -170,15 +170,14 @@ public class DatabaseAccessor {
             statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new User(resultSet.getInt("user_id"),
-                            resultSet.getString("name"),
+                    return new User(resultSet.getString("name"),
                             resultSet.getString("email"),
                             resultSet.getString("password"),
                             resultSet.getString("address"),
                             resultSet.getInt("card_number"),
                             resultSet.getBoolean("is_registered"),
-                            resultSet.getString("account_recharge"),
-                            resultSet.getDouble("credit_balance"));
+                            resultSet.getDouble("credit_balance"),
+                            resultSet.getString("last_payment_date"));
                 }
             }
         } catch (SQLException e) {
