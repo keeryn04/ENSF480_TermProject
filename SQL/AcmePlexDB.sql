@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Showtimes (
     showtime_id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
     screen_id INT NOT NULL,
-    start_time DATETIME NOT NULL,
+    screening DATETIME NOT NULL,
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
     FOREIGN KEY (screen_id) REFERENCES Screens(screen_id) ON DELETE CASCADE
 );

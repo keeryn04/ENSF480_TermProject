@@ -93,7 +93,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
                 JButton seatButton = DecoratorHelpers.makeButton(
                         Color.LIGHT_GRAY,
                         Color.BLACK,
-                        "Seat " + (row * cols + col + 1),
+                        "" + (char) ('A' + row) + (col + 1),
                         seatFont
                 );
 
