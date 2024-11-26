@@ -37,7 +37,7 @@ public class DatabaseAccessor {
     public static Screen getScreenDetails(int screenId) {
         String query = "SELECT screen_cols FROM Screens WHERE screen_id = ?";
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, screenId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -61,11 +61,10 @@ public class DatabaseAccessor {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return new Showtime(
-                        showtimeId,
-                        resultSet.getInt("movie_id"),
-                        resultSet.getInt("screen_id"),
-                        resultSet.getTimestamp("screening").toLocalDateTime()
-                    );
+                            showtimeId,
+                            resultSet.getInt("movie_id"),
+                            resultSet.getInt("screen_id"),
+                            resultSet.getTimestamp("screening").toLocalDateTime());
                 }
             }
         } catch (SQLException e) {
@@ -79,18 +78,17 @@ public class DatabaseAccessor {
         String query = "SELECT ticket_id, showtime_id, row, column FROM Tickets WHERE user_id = ?";
         List<Ticket> tickets = new ArrayList<>();
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     tickets.add(new Ticket(
-                        resultSet.getInt("ticket_id"),
-                        userId,
-                        resultSet.getInt("showtime_id"),
-                        resultSet.getString("seat_row"),
-                        resultSet.getInt("seat_col")
-                    ));
+                            resultSet.getInt("ticket_id"),
+                            userId,
+                            resultSet.getInt("showtime_id"),
+                            resultSet.getString("seat_row"),
+                            resultSet.getInt("seat_col")));
                 }
             }
         } catch (SQLException e) {
@@ -104,18 +102,17 @@ public class DatabaseAccessor {
         String query = "SELECT ticket_id, user_id, row, column FROM Tickets WHERE user_id = ?";
         List<Ticket> tickets = new ArrayList<>();
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, showtimeId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     tickets.add(new Ticket(
-                        resultSet.getInt("ticket_id"),
-                        resultSet.getInt("user_id"),
-                        showtimeId,
-                        resultSet.getString("seat_row"),
-                        resultSet.getInt("seat_col")
-                    ));
+                            resultSet.getInt("ticket_id"),
+                            resultSet.getInt("user_id"),
+                            showtimeId,
+                            resultSet.getString("seat_row"),
+                            resultSet.getInt("seat_col")));
                 }
             }
         } catch (SQLException e) {
@@ -129,23 +126,67 @@ public class DatabaseAccessor {
         String query = "SELECT payment_id, amount, payment_time, method FROM Payments WHERE user_id = ?";
         List<Payment> payments = new ArrayList<>();
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+                PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     payments.add(new Payment(
-                        resultSet.getInt("payment_id"),
-                        userId,
-                        resultSet.getDouble("amount"),
-                        resultSet.getTimestamp("payment_time").toLocalDateTime(),
-                        resultSet.getString("method")
-                    ));
+                            resultSet.getInt("payment_id"),
+                            userId,
+                            resultSet.getDouble("amount"),
+                            resultSet.getTimestamp("payment_time").toLocalDateTime(),
+                            resultSet.getString("method")));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return payments;
+    }
+
+    public static String getUserEmail(int userID) {
+        String query = "SELECT email FROM Users WHERE user_id = ?";
+        try (Connection conn = DatabaseConfig.connect();
+                PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, userID);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("email");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static User loginUser(String email, String password) {
+        String query = "SELECT * FROM Users WHERE email = ? AND password = ?";
+        try (Connection conn = DatabaseConfig.connect();
+                PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setString(1, email);
+            statement.setString(2, password);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new User(resultSet.getInt("user_id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("email"),
+                            resultSet.getString("password"),
+                            resultSet.getString("address"),
+                            resultSet.getInt("card_number"),
+                            resultSet.getBoolean("is_registered"),
+                            resultSet.getString("account_recharge"),
+                            resultSet.getDouble("credit_balance"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
