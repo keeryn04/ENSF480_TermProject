@@ -20,13 +20,11 @@ public class AppState {
     private Map<String, String[]> movies;
     private Map<Integer, Integer[]> screens;
     private ArrayList<String> userEmails;
-    private User currentUser;
 
     private AppState() {
         movies = new HashMap<>();
         screens = new HashMap<>();
         userEmails = new ArrayList<>();
-        currentUser = null; // If null, user is not logged in
 
         loadMovies();
         loadScreens();
@@ -47,18 +45,6 @@ public class AppState {
 
     public Map<Integer, Integer[]> getScreens() {
         return screens;
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    public void logInUser(String email, String password) {
-        currentUser = DatabaseAccessor.loginUser(email, password);
-    }
-
-    public void logOutUser() {
-        currentUser = null;
     }
 
     private void loadMovies() {

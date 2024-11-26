@@ -15,18 +15,21 @@ import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
-import frontend.states.ProfileState;
+import frontend.states.UserState;
+
+import backend.User;
 
 public class ProfilePage implements Page, ProfilePageObserver {
     private static ProfilePage instance; // Singleton
 
-    //Default Data
-    private String name = "John Doe";
-    private String address = "123 Address Ave.";
-    private String cardNum = "123456789";
-    private String cardDate = "01/01";
+    // Default Data
+    private User user;
+    // private String name = "John Doe";
+    // private String address = "123 Address Ave.";
+    // private String cardNum = "123456789";
+    // private String cardDate = "01/01";
 
-    //UI components
+    // UI components
     private JLabel nameLabel;
     private JLabel addressLabel;
     private JLabel cardNumLabel;
@@ -34,7 +37,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
     private JPanel contentPanel;
 
     private ProfilePage() {
-        //Fonts and Labels
+        // Fonts and Labels
         Font nameFont = new Font("Times New Roman", Font.BOLD, 24);
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
 
@@ -45,8 +48,8 @@ public class ProfilePage implements Page, ProfilePageObserver {
 
         contentPanel = new JPanel();
 
-        //Register with ProfileState
-        ProfileState.getInstance().addProfileObserver(this);
+        // Register with ProfileState
+        UserState.getInstance().addProfilePageObserver(this);
     }
 
     /**
@@ -62,16 +65,16 @@ public class ProfilePage implements Page, ProfilePageObserver {
     @Override
     public JPanel createPage() {
         try {
-            //Header and Footer Panels
+            // Header and Footer Panels
             JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
             FooterPanel footerPanel = new FooterPanel("editInfo");
 
-            //Profile panel
-            contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS)); 
-            contentPanel = (JPanel) new BackgroundColorDecorator(contentPanel, Color.WHITE).getDecoratedComponent();  
+            // Profile panel
+            contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+            contentPanel = (JPanel) new BackgroundColorDecorator(contentPanel, Color.WHITE).getDecoratedComponent();
             contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-            //Add labels to the panel
+            // Add labels to the panel
             contentPanel.add(nameLabel);
             contentPanel.add(Box.createVerticalStrut(10));
             contentPanel.add(addressLabel);
@@ -80,7 +83,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
             contentPanel.add(Box.createVerticalStrut(10));
             contentPanel.add(cardDateLabel);
 
-            //Combine all panels in the main layout
+            // Combine all panels in the main layout
             JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
@@ -95,25 +98,13 @@ public class ProfilePage implements Page, ProfilePageObserver {
         }
     }
 
-    /**Update profile data based on ProfileState data */
+    /** Update profile data based on ProfileState data */
     @Override
     public void onProfileEdited(String key, Object value) {
-        //React to changes from AppState
+        // React to changes from AppState
         switch (key) {
-            case "name":
-                name = (String) value;
-                updateContent();
-                break;
-            case "address":
-                address = (String) value;
-                updateContent();
-                break;
-            case "cardNum":
-                cardNum = (String) value;
-                updateContent();
-                break;
-            case "cardDate":
-                cardDate = (String) value;
+            case "User":
+                user = (User) value;
                 updateContent();
                 break;
             default:
@@ -127,10 +118,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
     public void updateContent() {
         SwingUtilities.invokeLater(() -> {
 
-            nameLabel.setText("Hi " + name + "!");
-            addressLabel.setText("Address: " + address);
-            cardNumLabel.setText("Credit / Debit Card Number: " + cardNum);
-            cardDateLabel.setText("Credit / Debit Expiration Date: " + cardDate);
+            nameLabel.setText("Hi " + user.getName() + "!");
+            addressLabel.setText("Address: " + user.getAddress());
+            cardNumLabel.setText("Credit / Debit Card Number: " + user.getCardNumber());
+            cardDateLabel.setText("Credit / Debit Expiration Date: ");// WE DONT HAVE A CARD DATE IN THE SQL
 
             contentPanel.revalidate();
             contentPanel.repaint();

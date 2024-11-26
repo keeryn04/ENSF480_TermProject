@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import frontend.decorators.DecoratorHelpers;
 import frontend.pages.Window;
+import frontend.states.UserState;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -41,11 +42,16 @@ public class HeaderPanel extends JPanel {
 
     }
 
-    public HeaderPanel(String type) {
+    public HeaderPanel() {
         setLayout(new BorderLayout());
         setBackground(Color.LIGHT_GRAY);
 
         Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
+        String type = "notSignedIn";
+
+        if (UserState.getInstance().getUser() != null) {
+            type = "signedIn";
+        }
 
         leftButton = createLeftButton(type, buttonFont);
         rightButton = createRightButton(type, buttonFont);

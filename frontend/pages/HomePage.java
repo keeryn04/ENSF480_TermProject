@@ -41,7 +41,7 @@ public class HomePage implements Page {
             Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
 
             // Panels
-            JPanel headerPanel = new HeaderPanel("notSignedIn");
+            JPanel headerPanel = new HeaderPanel();
             JPanel contentPanel = new JPanel(new BorderLayout());
 
             populateMovieData(buttonFont);
