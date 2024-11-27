@@ -10,9 +10,9 @@ Group Number: L01-02
 
 | Name           | Email                      | UCID     |
 | -------------- | -------------------------- | -------- |
-| Cody Casselman | cody.casselman@ucalgary.ca |          |
+| Cody Casselman | cody.casselman@ucalgary.ca | 30115793 |
 | Ryan Graham    | ryan.graham3@ucalgary.ca   | 30171130 |
-| Keeryn Johnson | keeryn.johnson@ucalgary.ca |          |
+| Keeryn Johnson | keeryn.johnson@ucalgary.ca | 30170031 |
 | Evan Mann      | evan.mann@ucalgary.ca      | 30141069 |
 
 ## How to run the Program
