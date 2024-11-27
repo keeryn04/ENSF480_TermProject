@@ -184,7 +184,11 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
             gbc.gridy = 0; //Row 0
             gbc.gridheight = 1; //Occupies only 1 row
             gbc.weightx = 0.6; //Allocate more horizontal space
-            contentPanel.add(purchaseAndTicketPanel, gbc);
+            if (ticketFlag) {
+                contentPanel.add(purchaseAndTicketPanel, gbc);
+            } else {
+                contentPanel.add(purchaseInfoPanel, gbc);
+            }
 
             //Payment details panel (right side, row 1)
             gbc.gridx = 1; //Column 1 (right side)
