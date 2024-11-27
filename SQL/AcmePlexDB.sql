@@ -45,16 +45,6 @@ CREATE TABLE IF NOT EXISTS Showtimes (
     FOREIGN KEY (screen_id) REFERENCES Screens(screen_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS Seats (
-    seat_id INT PRIMARY KEY AUTO_INCREMENT,  
-    screen_id INT NOT NULL,                   
-    seat_pos CHAR(1) NOT NULL,                
-    seat_number INT NOT NULL,                 
-    is_reserved BOOLEAN NOT NULL,             
-    reserved_by INT,                          
-    FOREIGN KEY (screen_id) REFERENCES Screens(screen_id) ON DELETE CASCADE
-);
-
 -- Tickets Table
 CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
