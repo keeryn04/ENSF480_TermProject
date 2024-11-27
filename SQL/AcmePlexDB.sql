@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS Users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
     card_number VARCHAR(16),
+    card_exp_date VARCHAR(5),
+    card_cvv VARCHAR(3),
     credit_balance DECIMAL(10, 2) DEFAULT 0.00,
     is_registered BOOLEAN DEFAULT FALSE,
     annual_fee_paid BOOLEAN DEFAULT FALSE,
@@ -30,7 +32,6 @@ CREATE TABLE IF NOT EXISTS Movies (
 -- Screens Table
 CREATE TABLE IF NOT EXISTS Screens (
     screen_id INT AUTO_INCREMENT PRIMARY KEY,
-    screen_rows INT NOT NULL,
     screen_cols INT NOT NULL
 );
 
@@ -59,7 +60,7 @@ CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     showtime_id INT NOT NULL,
-    seat_row CHAR(2) NOT NULL,
+    seat_row CHAR(1) NOT NULL,
     seat_col INT NOT NULL,
     FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,

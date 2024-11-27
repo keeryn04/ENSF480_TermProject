@@ -42,7 +42,7 @@ public class DatabaseAccessor {
             statement.setInt(1, screenId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Screen(screenId, 10, resultSet.getInt("screen_cols")); // Rows are fixed at 10
+                    return new Screen(screenId, resultSet.getInt("screen_cols")); // Rows are fixed at 10
                 }
             }
         } catch (SQLException e) {
@@ -178,9 +178,12 @@ public class DatabaseAccessor {
                             resultSet.getString("password"),
                             resultSet.getString("address"),
                             resultSet.getInt("card_number"),
+                            resultSet.getString("card_exp_date"),
+                            resultSet.getString("card_cvv"),
                             resultSet.getBoolean("is_registered"),
                             resultSet.getString("account_recharge"),
-                            resultSet.getDouble("credit_balance"));
+                            resultSet.getDouble("credit_balance")
+                            );
                 }
             }
         } catch (SQLException e) {
@@ -188,5 +191,22 @@ public class DatabaseAccessor {
         }
 
         return null;
+    }
+
+    //Store ticket in the database
+    public static void addTicket(User user, int showtimeId, String seatRow, int seatCol) {
+        String query = "INSERT INTO Tickets (user_id, showtime_id, seat_row, seat_col) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseConfig.connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+    
+            statement.setInt(1, user.getID());
+            statement.setInt(2, showtimeId);
+            statement.setString(3, seatRow);
+            statement.setInt(4, seatCol);
+            statement.executeUpdate();
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

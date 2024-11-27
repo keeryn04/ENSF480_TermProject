@@ -5,9 +5,9 @@ public class Screen {
     private Integer cols;
     private Integer screenId;
 
-    public Screen(int screenId, int rows, int cols) {
+    public Screen(int screenId, int cols) {
         this.screenId = screenId;
-        this.rows = rows;
+        this.rows = 10;
         this.cols = cols;
     }
 

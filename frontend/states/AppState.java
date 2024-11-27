@@ -1,9 +1,7 @@
 package frontend.states;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +33,7 @@ public class AppState {
         userEmails = null;
         currentUser = null; // If null, user is not logged in
         formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        currentUser = new User(0, "Apple", "Mapple", "123", "123 Street St.", 123413, "04/28", "734", false, null, 0);
 
         loadMovies();
         loadScreens();

@@ -3,7 +3,9 @@ package frontend.panels;
 import javax.swing.*;
 
 import frontend.decorators.DecoratorHelpers;
+import frontend.pages.PaymentSuccessPage;
 import frontend.pages.Window;
+import frontend.states.AppState;
 import frontend.states.ErrorState;
 import frontend.states.PaymentState;
 
@@ -27,6 +29,7 @@ public class FooterPanel extends JPanel {
         BUTTON_LABELS.put("confirmInfo", "Confirm");
         BUTTON_LABELS.put("editInfo", "Edit Info");
         BUTTON_LABELS.put("paymentConfirm", "Confirm Purchase");
+        BUTTON_LABELS.put("default", null);
 
         // Populate button actions
         BUTTON_ACTIONS.put("movieTicket", e -> Window.getInstance().showPanel("SeatMapPage"));
@@ -42,7 +45,10 @@ public class FooterPanel extends JPanel {
         });
         BUTTON_ACTIONS.put("confirmInfo", e -> Window.getInstance().showPanel("ProfilePage"));
         BUTTON_ACTIONS.put("editInfo", e -> Window.getInstance().showPanel("ProfileEditPage"));
-        BUTTON_ACTIONS.put("paymentConfirm", e -> Window.getInstance().showPanel("PaymentSuccessPage"));
+        BUTTON_ACTIONS.put("paymentConfirm", e -> {
+            Window.getInstance().showPanel("PaymentSuccessPage");
+            PaymentSuccessPage.getInstance().processPaymentSuccess(AppState.getInstance().getCurrentUser());
+        });
     }
 
     public FooterPanel(String type) {
@@ -65,7 +71,11 @@ public class FooterPanel extends JPanel {
 
     private JButton createBackButton(Font font) {
         JButton backButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Back to Home", font);
-        backButton.addActionListener(e -> Window.getInstance().showPanel("Home"));
+        backButton.addActionListener(e -> {
+            Window.getInstance().showPanel("Home");
+            ErrorState.getInstance().clearError();
+        });
+        
         return backButton;
     }
 
