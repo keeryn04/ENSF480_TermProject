@@ -24,6 +24,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import backend.Movie;
 import backend.Showtime;
@@ -47,7 +49,11 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private String movieGenre = "Comedy";
     private String movieRating = "3.6";
     private String movieRuntime = "120";
-    private Integer screenId = 1; 
+    private Integer screenId = 1;
+    private String releaseDate = "2020-10-31";
+
+    //Date today
+    LocalDate currentDate = LocalDate.now();
 
     //UI components
     private JLabel titleLabel;
@@ -118,7 +124,18 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
         try {
             //Make header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
-            FooterPanel footerPanel = new FooterPanel("movieTicket");
+
+            FooterPanel footerPanel;
+
+            //ParsedReleaseDate
+            LocalDate storedDate = LocalDate.parse(releaseDate);
+
+            if(currentDate.isBefore(storedDate)){
+                footerPanel = new FooterPanel("heldMovieTicket");
+            }
+            else{
+                footerPanel = new FooterPanel("movieTicket");
+            }
 
             //Title panel with titleLabel
             JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -220,6 +237,10 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
                 break;
             case "movieRuntime":
                 movieRuntime = (String) value;
+                updateContent();
+                break;
+            case "releaseDate":
+                releaseDate = (String) value;
                 updateContent();
                 break;
             default:

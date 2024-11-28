@@ -25,6 +25,7 @@ public class FooterPanel extends JPanel {
     static {
         // Populate button labels
         BUTTON_LABELS.put("movieTicket", "Purchase a Ticket");
+        BUTTON_LABELS.put("heldMovieTicket", "Tickets Unavailable: Movie Not Released");
         BUTTON_LABELS.put("continuePurchase", "Continue to Payment");
         BUTTON_LABELS.put("confirmInfo", "Confirm");
         BUTTON_LABELS.put("editInfo", "Edit Info");

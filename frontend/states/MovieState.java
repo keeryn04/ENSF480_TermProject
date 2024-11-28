@@ -19,6 +19,7 @@ public class MovieState {
     private String movieRating;
     private String movieRuntime;
     private Integer screenNum;
+    private String releaseDate;
 
     //Singleton management
     public static MovieState getInstance() {
@@ -38,6 +39,7 @@ public class MovieState {
         movieRating = "Rating";
         movieRuntime = "123";
         screenNum = 1;
+        releaseDate = "2020-10-31";
     }
 
     //Add MoviePage objects as an observer for movie-related changes
@@ -133,5 +135,9 @@ public class MovieState {
         this.screenNum = screenNum;
         notifyMovieObservers("screenNum", screenNum);
     }
-    
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+        notifyMovieObservers("releaseDate", releaseDate);
+    }
 }

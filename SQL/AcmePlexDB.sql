@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS Movies (
     duration INT,
     rating DECIMAL(2, 1),
     poster_path VARCHAR(255),
-    description TEXT
+    description TEXT,
+    release_date VARCHAR(50)
 );
 
 -- Screens Table

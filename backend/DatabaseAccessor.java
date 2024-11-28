@@ -9,7 +9,7 @@ public class DatabaseAccessor {
 
     // Retrieve a Movie by movieId
     public static Movie getMovieDetails(int movieId) {
-        String query = "SELECT title, genre, duration, rating, poster_path, description FROM Movies WHERE movie_id = ?";
+        String query = "SELECT title, genre, duration, rating, poster_path, description, release_date FROM Movies WHERE movie_id = ?";
         try (Connection conn = DatabaseConfig.connect();
                 PreparedStatement statement = conn.prepareStatement(query)) {
 
@@ -23,7 +23,8 @@ public class DatabaseAccessor {
                         resultSet.getInt("duration"),
                         resultSet.getDouble("rating"),
                         resultSet.getString("poster_path"),
-                        resultSet.getString("description")
+                        resultSet.getString("description"),
+                        resultSet.getString("release_date")
                     );
                 }
             }
