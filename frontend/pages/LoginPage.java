@@ -1,12 +1,8 @@
 package frontend.pages;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import javax.swing.*;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
 import frontend.states.UserState;
@@ -19,17 +15,19 @@ public class LoginPage implements Page, LoginPageObserver {
     private String password;
 
     private JPanel emailFieldPanel;
-    JPanel passwordFieldPanel;
+    private JPanel passwordFieldPanel;
+    private JPanel editPanel;
+    private JButton loginButton;
+
+    private Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
 
     private LoginPage() {
         // Initialize UI components
-        Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
-
         emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
         passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
-
+        loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
         // Register with MovieState
-        UserState.getInstance().addLoginPageObserver(this);
+        // UserState.getInstance().addLoginPageObserver(this);
     }
 
     /** Returns single instance of LoginPage */
@@ -48,13 +46,14 @@ public class LoginPage implements Page, LoginPageObserver {
             // JPanel footerPanel = DecoratorHelpers.createFooterPanel("confirmInfo");
 
             // Profile panel
-            JPanel editPanel = new JPanel();
+            editPanel = new JPanel();
             editPanel.setLayout(new FlowLayout());
-            editPanel.setBorder(BorderFactory.createTitledBorder("Edit Profile"));
+            editPanel.setBorder(BorderFactory.createTitledBorder("Login"));
 
             // Add components to panel
             editPanel.add(emailFieldPanel);
             editPanel.add(passwordFieldPanel);
+            editPanel.add(createLoginButton());
 
             // Combine all panels in main layout
             JPanel mainPanel = new PanelBuilder()
@@ -71,8 +70,34 @@ public class LoginPage implements Page, LoginPageObserver {
         }
     }
 
+    private JButton createLoginButton() {
+        JButton loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
+        loginButton.addActionListener(e -> checkForLogin());
+        return loginButton;
+    }
+
     /** Check the login info with database / cached data */
     private Boolean checkForLogin() {
+        Component[] emailPanelComponents = emailFieldPanel.getComponents();
+        Component[] passwordPanelComponents = passwordFieldPanel.getComponents();
+
+        for (Component component : emailPanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("Email")) {
+                JTextField j = (JTextField) component;
+                email = j.getText();
+                break;
+            }
+        }
+
+        for (Component component : passwordPanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("Password")) {
+                JTextField j = (JTextField) component;
+                password = j.getText();
+                break;
+            }
+        }
+
+        System.out.println(UserState.getInstance().logInUser(email, password));
         return true;
     }
 

@@ -23,11 +23,6 @@ public class UserState {
         return instance;
     }
 
-    // Add LoginPage objects as an observer for movie-related changes
-    public void addLoginPageObserver(LoginPageObserver observer) {
-        observersLogin.add(observer);
-    }
-
     public void addProfilePageObserver(ProfilePageObserver observer) {
         observersProfile.add(observer);
     }
@@ -48,9 +43,13 @@ public class UserState {
         return user;
     }
 
-    public void logInUser(String email, String password) {
+    public boolean logInUser(String email, String password) {
         user = DatabaseAccessor.loginUser(email, password);
         notifyUserObservers("User", user);
+        if (user == null)
+            return false; // If the login attempt failed return false
+        else
+            return true;
     }
 
     public void logOutUser() {
