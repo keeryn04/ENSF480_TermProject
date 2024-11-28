@@ -1,5 +1,7 @@
 package frontend.pages;
+
 import frontend.decorators.DecoratorHelpers;
+import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
@@ -18,7 +20,7 @@ import javax.swing.JPanel;
 import backend.Movie;
 import backend.Screen;
 
-/**Makes the HomePage to be displayed with Window*/
+/** Makes the HomePage to be displayed with Window */
 public class HomePage implements Page {
     JPanel movieSelectionPanel;
 
@@ -27,28 +29,31 @@ public class HomePage implements Page {
         movieSelectionPanel.setBackground(Color.WHITE);
     }
 
-    /**Creates the Homepage elements. 
-     * Uses PageBuilder to create the different aspects of the page (Ex. Label, Button, etc.),
-     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
-    */
+    /**
+     * Creates the Homepage elements.
+     * Uses PageBuilder to create the different aspects of the page (Ex. Label,
+     * Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those
+     * aspects.
+     */
     @SuppressWarnings("unused")
     @Override
     public JPanel createPage() {
         try {
-            //Create fonts
+            // Create fonts
             Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
 
-            //Panels
-            JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
+            // Panels
+            JPanel headerPanel = new HeaderPanel();
             JPanel contentPanel = new JPanel(new BorderLayout());
 
-            //Assign data to pages based on movie chosen
+            // Assign data to pages based on movie chosen
             populateMovieData(buttonFont);
 
-            //Use builder to add all panels in main layout
+            // Use builder to add all panels in main layout
             JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
-                    .addComponent(titlePanel, BorderLayout.NORTH)
+                    .addComponent(headerPanel, BorderLayout.NORTH)
                     .addComponent(movieSelectionPanel, BorderLayout.CENTER)
                     .addComponent(contentPanel, BorderLayout.SOUTH)
                     .build();
@@ -60,27 +65,26 @@ public class HomePage implements Page {
         }
     }
 
-    /**Creates movie panels for HomePage based on data in Appstate */
+    /** Creates movie panels for HomePage based on data in Appstate */
     private void populateMovieData(Font buttonFont) {
-        movieSelectionPanel.removeAll(); //Clear previous panels
+        movieSelectionPanel.removeAll(); // Clear previous panels
 
         AppState appState = AppState.getInstance();
 
-        //Get movie data from AppState
+        // Get movie data from AppState
         Map<Integer, Movie> movies = appState.getMovies();
         Map<Integer, Screen> screens = appState.getScreens();
         Map<Integer, Integer> movieScreenMapping = new HashMap<>();
         Integer screenNumber = 1;
 
-        //Map movies to screens
+        // Map movies to screens
         for (Map.Entry<Integer, Movie> entry : movies.entrySet()) {
             Integer movieId = entry.getKey();
-            movieScreenMapping.put(movieId, screenNumber); 
+            movieScreenMapping.put(movieId, screenNumber);
             screenNumber++;
         }
 
-
-        //Make movie panel and seatmap for each movie / screen
+        // Make movie panel and seatmap for each movie / screen
         for (Map.Entry<Integer, Movie> entry : movies.entrySet()) {
             Integer movieId = entry.getKey();
             Movie movieDetails = entry.getValue();
@@ -91,11 +95,13 @@ public class HomePage implements Page {
             String movieRating = movieDetails.getRating();
             String movieRuntime = movieDetails.getDuration();
 
-            //Create movie panel
-            JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDesc, imagePath, Color.DARK_GRAY, buttonFont);
+            // Create movie panel
+            JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDesc, imagePath, Color.DARK_GRAY,
+                    buttonFont);
             JButton movieButton = (JButton) moviePanel.getComponent(1);
             ActionListener listener = e -> {
-                //Update Movie Data in Movie State
+                // Update Movie Data in Movie State
+                // Update Movie Data in Movie State
                 MovieState.getInstance().setMovieId(movieId);
                 MovieState.getInstance().setMovieTitle(movieTitle);
                 MovieState.getInstance().setMovieDetails(movieDesc);
@@ -104,26 +110,27 @@ public class HomePage implements Page {
                 MovieState.getInstance().setMovieRating(movieRating);
                 MovieState.getInstance().setMovieRuntime(movieRuntime);
 
-                Integer screenNum = movieScreenMapping.get(movieId); //Screen assigned to each movie
+                Integer screenNum = movieScreenMapping.get(movieId); // Screen assigned to each movie
                 if (screenNum != null) {
+                    // Set the seat rows and columns in SeatMapState
                     Screen screenDetails = screens.get(screenNum);
                     Integer rows = screenDetails.getRows();
                     Integer cols = screenDetails.getCols();
-                    
-                    //Set the seat rows and columns in SeatMapState
+
+                    // Set the seat rows and columns in SeatMapState
                     SeatMapState.getInstance().setScreenId(screenNum);
                     SeatMapState.getInstance().setSeatRows(rows);
                     SeatMapState.getInstance().setSeatCols(cols);
                 }
             };
-        
+
             movieButton.addActionListener(listener);
 
-            //Add movie panel to the UI
+            // Add movie panel to the UI
             movieSelectionPanel.add(moviePanel);
         }
 
-        //Remake the panel
+        // Remake the panel
         movieSelectionPanel.revalidate();
         movieSelectionPanel.repaint();
     }

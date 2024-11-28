@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS Users (
     name VARCHAR(100),
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
+    address VARCHAR(100),
     card_number VARCHAR(16),
     card_exp_date VARCHAR(5),
     card_cvv VARCHAR(3),

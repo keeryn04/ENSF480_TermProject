@@ -25,7 +25,7 @@ Group Number: L01-02
 -Then enter a terminal inside ENSF480_TermProject folder and input: "javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java frontend/states/*.java frontend/panels/*.java backend/*.java"
 ⚠️ *** /\ONLY DO THIS STEP IF Main.class DOES NOT EXIST OR Main.class NEEDS TO BE UPDATED/\ *** ⚠️
 
--To run, simply enter: "java -cp ".;lib\mysql-connector-j-9.1.0.jar"Main" once the .class file has been made
+-To run, simply enter: "java -cp ".;lib\mysql-connector-j-9.1.0.jar" Main" once the .class file has been made
 
 ## How to Use the Program
 

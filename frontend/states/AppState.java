@@ -38,7 +38,7 @@ public class AppState {
         loadMovies();
         loadScreens();
         loadShowtimes();
-        //loadUserEmails();
+        // loadUserEmails();
     }
 
     // Singleton management
@@ -64,11 +64,12 @@ public class AppState {
     public User getCurrentUser() {
         return currentUser;
     }
+
     /*
-    public void logInUser(String email, String password) {
-        currentUser = DatabaseAccessor.loginUser(email, password);
-    }
-    */
+     * public void logInUser(String email, String password) {
+     * currentUser = DatabaseAccessor.loginUser(email, password);
+     * }
+     */
     public void logOutUser() {
         currentUser = null;
     }
@@ -90,15 +91,15 @@ public class AppState {
             screenId++;
         }
     }
-    /*
+
     private void loadUserEmails() {
         int userId = 1;
         String email;
         while ((email = DatabaseAccessor.getUserEmail(userId)) != null) {
             userEmails.add(email);
+            userId++;
         }
     }
-        */
 
     private void loadShowtimes() {
         int showtimeId = 1;
@@ -106,6 +107,6 @@ public class AppState {
         while ((showtime = DatabaseAccessor.getShowtimeDetails(showtimeId)) != null) {
             showtimes.put(showtimeId, showtime);
             showtimeId++;
-        } 
+        }
     }
 }

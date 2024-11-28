@@ -1,6 +1,5 @@
 USE AcmePlexDB;
 SET SQL_SAFE_UPDATES = 0;
-
 -- Clear Existing Data
 DELETE FROM Payments WHERE payment_id IS NOT NULL;
 DELETE FROM Tickets WHERE ticket_id IS NOT NULL;
@@ -77,13 +76,12 @@ VALUES
 
 -- Insert Payments
 INSERT INTO Payments (user_id, amount, method)
-VALUES
-    (1, 20.00, 'Credit Card'),
+VALUES (1, 20.00, 'Credit Card'),
     (2, 10.00, 'Store Credit'),
     (3, 15.00, 'PayPal'),
-    (4, 25.00, 'Credit Card')
-ON DUPLICATE KEY UPDATE
-    amount = VALUES(amount),
-    method = VALUES(method);
-    
+    (4, 25.00, 'Credit Card') ON DUPLICATE KEY
+UPDATE amount =
+VALUES(amount),
+    method =
+VALUES(method);
 SET SQL_SAFE_UPDATES = 1;
