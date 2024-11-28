@@ -74,52 +74,54 @@ public class DatabaseAccessor {
     }
 
     // Retrieve Tickets by userId
-    public static List<Ticket> getTicketsByUser(int userId) {
-        String query = "SELECT ticket_id, showtime_id, row, column FROM Tickets WHERE user_id = ?";
-        List<Ticket> tickets = new ArrayList<>();
-        try (Connection conn = DatabaseConfig.connect();
-                PreparedStatement statement = conn.prepareStatement(query)) {
+public static List<Ticket> getTicketsByUser(int userId) {
+    String query = "SELECT ticket_id, showtime_id, seat_row, seat_col FROM Tickets WHERE user_id = ?";
+    List<Ticket> tickets = new ArrayList<>();
+    try (Connection conn = DatabaseConfig.connect();
+         PreparedStatement statement = conn.prepareStatement(query)) {
 
-            statement.setInt(1, userId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    tickets.add(new Ticket(
-                            resultSet.getInt("ticket_id"),
-                            userId,
-                            resultSet.getInt("showtime_id"),
-                            resultSet.getString("seat_row"),
-                            resultSet.getInt("seat_col")));
-                }
+        statement.setInt(1, userId);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                tickets.add(new Ticket(
+                        resultSet.getInt("ticket_id"),
+                        userId,
+                        resultSet.getInt("showtime_id"),
+                        resultSet.getString("seat_row"),
+                        resultSet.getInt("seat_col")));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return tickets;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return tickets;
+}
+
 
     // Retrieve Tickets by showtimeId
-    public static List<Ticket> getTicketsByShowtime(int showtimeId) {
-        String query = "SELECT ticket_id, user_id, row, column FROM Tickets WHERE user_id = ?";
-        List<Ticket> tickets = new ArrayList<>();
-        try (Connection conn = DatabaseConfig.connect();
-                PreparedStatement statement = conn.prepareStatement(query)) {
+public static List<Ticket> getTicketsByShowtime(int showtimeId) {
+    String query = "SELECT ticket_id, user_id, seat_row, seat_col FROM Tickets WHERE showtime_id = ?";
+    List<Ticket> tickets = new ArrayList<>();
+    try (Connection conn = DatabaseConfig.connect();
+         PreparedStatement statement = conn.prepareStatement(query)) {
 
-            statement.setInt(1, showtimeId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    tickets.add(new Ticket(
-                            resultSet.getInt("ticket_id"),
-                            resultSet.getInt("user_id"),
-                            showtimeId,
-                            resultSet.getString("seat_row"),
-                            resultSet.getInt("seat_col")));
-                }
+        statement.setInt(1, showtimeId);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                tickets.add(new Ticket(
+                        resultSet.getInt("ticket_id"),
+                        resultSet.getInt("user_id"),
+                        showtimeId,
+                        resultSet.getString("seat_row"),
+                        resultSet.getInt("seat_col")));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return tickets;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return tickets;
+}
+
 
     // Retrieve Payments by userId
     public static List<Payment> getPaymentsByUser(int userId) {
@@ -193,20 +195,40 @@ public class DatabaseAccessor {
         return null;
     }
 
-    //Store ticket in the database
-    public static void addTicket(User user, int showtimeId, String seatRow, int seatCol) {
-        String query = "INSERT INTO Tickets (user_id, showtime_id, seat_row, seat_col) VALUES (?, ?, ?, ?)";
+    // Store ticket in the database
+public static void addTicket(User user, int showtimeId, String seatRow, int seatCol) {
+    String query = "INSERT INTO Tickets (user_id, showtime_id, seat_row, seat_col) VALUES (?, ?, ?, ?)";
+    try (Connection conn = DatabaseConfig.connect();
+         PreparedStatement statement = conn.prepareStatement(query)) {
+
+        statement.setInt(1, user.getID());
+        statement.setInt(2, showtimeId);
+        statement.setString(3, seatRow);
+        statement.setInt(4, seatCol);
+        statement.executeUpdate();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+
+    public static boolean checkIfSeatIsTaken(Integer showtimeId, String seatLabel) {
+        String query = "SELECT COUNT(*) FROM tickets WHERE showtime_id = ? AND seat_label = ?";
         try (Connection conn = DatabaseConfig.connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+        PreparedStatement statement = conn.prepareStatement(query)) {
     
-            statement.setInt(1, user.getID());
-            statement.setInt(2, showtimeId);
-            statement.setString(3, seatRow);
-            statement.setInt(4, seatCol);
-            statement.executeUpdate();
+            statement.setInt(1, showtimeId);
+            statement.setString(2, seatLabel);
     
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0; // Returns true if at least one ticket exists
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+        return false; // Default to false if there's an error or no ticket found
+    }    
 }

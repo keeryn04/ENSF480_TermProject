@@ -66,16 +66,13 @@ VALUES
 ON DUPLICATE KEY UPDATE
     screening = VALUES(screening);
 
--- Insert Tickets
-INSERT INTO Tickets (user_id, showtime_id, seat_row, seat_col)
+INSERT INTO Tickets (user_id, showtime_id, seat_label)
 VALUES
-    (1, 1, 'A', 1), -- John Doe reserves seat A1 for Inception
-    (2, 1, 'A', 2), -- Jane Smith reserves seat A2 for Inception
-    (3, 2, 'B', 3), -- Alice Johnson reserves seat B3 for The Dark Knight
-    (4, 3, 'C', 4)  -- Bob Brown reserves seat C4 for Interstellar
-ON DUPLICATE KEY UPDATE
-    seat_row = VALUES(seat_row),
-    seat_col = VALUES(seat_col);
+    (1, 1, "D2"), -- John Doe reserves seat A1 for Inception
+    (2, 1, "A2"), -- Jane Smith reserves seat A2 for Inception
+    (3, 2, "B3"), -- Alice Johnson reserves seat B3 for The Dark Knight
+    (4, 3, "C4"); -- Bob Brown reserves seat C4 for Interstellar
+
 
 -- Insert Payments
 INSERT INTO Payments (user_id, amount, method)

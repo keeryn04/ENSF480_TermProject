@@ -45,17 +45,16 @@ CREATE TABLE IF NOT EXISTS Showtimes (
     FOREIGN KEY (screen_id) REFERENCES Screens(screen_id) ON DELETE CASCADE
 );
 
--- Tickets Table
 CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     showtime_id INT NOT NULL,
-    seat_row CHAR(1) NOT NULL,
-    seat_col INT NOT NULL,
+    seat_label VARCHAR(2) NOT NULL,
     FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    UNIQUE (showtime_id, seat_row, seat_col) -- Ensure no duplicate tickets
+    UNIQUE (showtime_id, seat_label) -- Ensure no duplicate tickets for a showtime
 );
+
 
 -- Payments Table
 CREATE TABLE IF NOT EXISTS Payments (
