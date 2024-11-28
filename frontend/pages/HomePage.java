@@ -94,6 +94,7 @@ public class HomePage implements Page {
             String movieGenre = movieDetails.getGenre();
             String movieRating = movieDetails.getRating();
             String movieRuntime = movieDetails.getDuration();
+            String releaseDate = movieDetails.getReleaseDate();
 
             // Create movie panel
             JPanel moviePanel = MoviePage.createMoviePanel(movieTitle, movieDesc, imagePath, Color.DARK_GRAY,
@@ -109,6 +110,7 @@ public class HomePage implements Page {
                 MovieState.getInstance().setMovieGenre(movieGenre);
                 MovieState.getInstance().setMovieRating(movieRating);
                 MovieState.getInstance().setMovieRuntime(movieRuntime);
+                MovieState.getInstance().setReleaseDate(releaseDate);
 
                 Integer screenNum = movieScreenMapping.get(movieId); // Screen assigned to each movie
                 if (screenNum != null) {

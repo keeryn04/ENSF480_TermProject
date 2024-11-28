@@ -136,6 +136,10 @@ public class MovieState {
         notifyMovieObservers("screenNum", screenNum);
     }
 
+    public String geReleaseDate() {
+        return releaseDate;
+    }
+
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
         notifyMovieObservers("releaseDate", releaseDate);
