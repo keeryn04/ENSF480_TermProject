@@ -26,10 +26,10 @@ public class EditProfilePage implements Page  {
             JPanel editPanel = new JPanel();
             editPanel.setLayout(new FlowLayout());
             editPanel.setBorder(BorderFactory.createTitledBorder("Edit Profile"));
-            JPanel nameFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Name", labelFont, 20, null);
-            JPanel addressFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Address", labelFont, 20, null);
-            JPanel paymentNumFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", labelFont, 20, null);
-            JPanel paymentDateFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Expiration Date: ", labelFont, 20, null);
+            JPanel nameFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Name", labelFont, 20, null, null);
+            JPanel addressFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Address", labelFont, 20, null, null);
+            JPanel paymentNumFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", labelFont, 20, null, null);
+            JPanel paymentDateFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Expiration Date: ", labelFont, 20, null, null);
             /*
             JTextField nameField = (JTextField) nameFieldPanel.getComponent(1);  // Get the JTextField from the JPanel
             JTextField addressField = (JTextField) addressFieldPanel.getComponent(1);

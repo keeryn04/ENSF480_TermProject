@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 
 import backend.Movie;
 import backend.Screen;
-import backend.Showtime;
 
 /**Makes the HomePage to be displayed with Window*/
 public class HomePage implements Page {

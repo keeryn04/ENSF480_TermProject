@@ -10,8 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-import backend.DatabaseAccessor;
 import backend.Movie;
 import backend.Showtime;
 import frontend.decorators.ActionListenerDecorator;
@@ -50,7 +49,11 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private String movieGenre = "Comedy";
     private String movieRating = "3.6";
     private String movieRuntime = "120";
-    private Integer screenId = 1; 
+    private Integer screenId = 1;
+    private String releaseDate = "2020-10-31";
+
+    //Date today
+    LocalDate currentDate = LocalDate.now();
 
     //UI components
     private JLabel titleLabel;
@@ -121,7 +124,18 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
         try {
             //Make header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
-            FooterPanel footerPanel = new FooterPanel("movieTicket");
+
+            FooterPanel footerPanel;
+
+            //ParsedReleaseDate
+            LocalDate storedDate = LocalDate.parse(releaseDate);
+
+            if(currentDate.isBefore(storedDate)){
+                footerPanel = new FooterPanel("heldMovieTicket");
+            }
+            else{
+                footerPanel = new FooterPanel("movieTicket");
+            }
 
             //Title panel with titleLabel
             JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -225,6 +239,10 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
                 movieRuntime = (String) value;
                 updateContent();
                 break;
+            case "releaseDate":
+                releaseDate = (String) value;
+                updateContent();
+                break;
             default:
                 break;
         }
@@ -238,7 +256,7 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             screenLabel.setText(String.valueOf(screenId));
 
             if (posterImage != null) {
-                Image scaledImage = posterImage.getScaledInstance(250, 400, Image.SCALE_SMOOTH);
+                Image scaledImage = posterImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
                 posterLabel.setIcon(new ImageIcon(scaledImage));
             } else {
                 posterLabel.setText("Image not found");
@@ -338,5 +356,44 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
                 timeDropdown.addItem(showtime);
             }
         }
+
+        timeDropdown.addActionListener(e -> {
+            //Get the selected item
+            String selectedShowtime = (String) timeDropdown.getSelectedItem();
+        
+            //Ensure it's not null or the placeholder text
+            if (selectedShowtime != null && !selectedShowtime.equals("No Showtimes Available")) {
+                handleDropdownChange(selectedShowtime);
+            }
+        });
     }
+
+    private void handleDropdownChange(String selectedShowtime) {
+        //Extract details if the showtime includes runtime or screen info
+        System.out.println("Selected Showtime: " + selectedShowtime);
+    
+        // Optionally, update the screenId or other movie-related data
+        Showtime selectedShowtimeData = findShowtimeData(selectedShowtime);
+        if (selectedShowtimeData != null) {
+            screenId = selectedShowtimeData.getScreenId();
+            int showtimeId = selectedShowtimeData.getShowtimeId(); //Local as its not displayed anywhere, just stored for db access
+            MovieState.getInstance().setShowtimeId(showtimeId);
+            updateContent(); //Refresh content on the page
+        }
+    }
+    
+    private Showtime findShowtimeData(String selectedShowtime) {
+        Map<Integer, Showtime> showtimes = AppState.getInstance().getShowtimes();
+    
+        // Loop through showtimes to find the matching one
+        for (Showtime showtime : showtimes.values()) {
+            String formattedTime = showtime.getFormattedScreeningTime("yyyy-MM-dd HH:mm", movieRuntime != null ? Integer.parseInt(movieRuntime) : 0);
+            if (formattedTime.equals(selectedShowtime)) {
+                return showtime;
+            }
+        }
+    
+        return null; // No matching showtime found
+    }
+    
 }

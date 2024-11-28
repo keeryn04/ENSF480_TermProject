@@ -25,8 +25,8 @@ public class LoginPage implements Page, LoginPageObserver {
         //Initialize UI components
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
 
-        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
-        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
+        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null, null);
+        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null, null);
 
         //Register with MovieState
         LoginState.getInstance().addLoginObserver(this);
