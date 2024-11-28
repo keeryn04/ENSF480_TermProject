@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS Users (
     password VARCHAR(100) NOT NULL,
     address VARCHAR(100),
     card_number VARCHAR(16),
+    card_exp_date VARCHAR(5),
+    card_cvv VARCHAR(3),
     credit_balance DECIMAL(10, 2) DEFAULT 0.00,
     is_registered BOOLEAN DEFAULT FALSE,
     annual_fee_paid BOOLEAN DEFAULT FALSE,
@@ -25,13 +27,13 @@ CREATE TABLE IF NOT EXISTS Movies (
     duration INT,
     rating DECIMAL(2, 1),
     poster_path VARCHAR(255),
-    description TEXT
+    description TEXT,
+    release_date VARCHAR(50)
 );
 
 -- Screens Table
 CREATE TABLE IF NOT EXISTS Screens (
     screen_id INT AUTO_INCREMENT PRIMARY KEY,
-    screen_rows INT NOT NULL,
     screen_cols INT NOT NULL
 );
 
@@ -41,21 +43,20 @@ CREATE TABLE IF NOT EXISTS Showtimes (
     movie_id INT NOT NULL,
     screen_id INT NOT NULL,
     screening DATETIME NOT NULL,
-    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
-    FOREIGN KEY (screen_id) REFERENCES Screens(screen_id)
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (screen_id) REFERENCES Screens(screen_id) ON DELETE CASCADE
 );
 
--- Tickets Table
 CREATE TABLE IF NOT EXISTS Tickets (
     ticket_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     showtime_id INT NOT NULL,
-    seat_row CHAR(2) NOT NULL,
-    seat_col INT NOT NULL,
+    seat_label VARCHAR(2) NOT NULL,
     FOREIGN KEY (showtime_id) REFERENCES Showtimes(showtime_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    UNIQUE (showtime_id, seat_row, seat_col) -- Ensure no duplicate tickets
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    UNIQUE (showtime_id, seat_label) -- Ensure no duplicate tickets for a showtime
 );
+
 
 -- Payments Table
 CREATE TABLE IF NOT EXISTS Payments (
@@ -64,5 +65,5 @@ CREATE TABLE IF NOT EXISTS Payments (
     amount DECIMAL(8, 2) NOT NULL,
     payment_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     method VARCHAR(50),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );

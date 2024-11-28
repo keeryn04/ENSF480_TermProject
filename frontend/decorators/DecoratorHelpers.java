@@ -53,10 +53,14 @@ public class DecoratorHelpers {
      * 
      * @param size The size of the editable text area
      * @param font The font of the text in the cmp
+     * @param text The text you want to autofill the field with
      */
-    public static JTextField makeTextField(int size, Font font) {
+    public static JTextField makeTextField(int size, Font font, String text) {
         JTextField textField = new JTextField(size);
         textField = (JTextField) new FontDecorator(textField, font).getDecoratedComponent();
+        if (text != null) {
+            textField.setText(text);
+        }
         return textField;
     }
 
@@ -68,14 +72,21 @@ public class DecoratorHelpers {
      * @param labelText        The text of the label for the text area
      * @param font             The font of the label and text in the cmp
      * @param textFieldColumns The size of the editable text area
+     * @param autofillText     If you want text to appear in the input area, can be
+     *                         null
+     * @param preferredSize    If you want a specific size of the labeled field
      */
+
     public static JPanel makeLabeledField(Color labelColor, String labelText, Font font, int textFieldColumns,
-            Dimension preferredSize) {
+            String autofillText, Dimension preferredSize) {
         JLabel label = makeLabel(labelColor, labelText, font);
-        JTextField textField = makeTextField(textFieldColumns, font);
+        JTextField textField = makeTextField(textFieldColumns, font, autofillText);
         textField.setName(labelText);
         if (preferredSize != null) {
             textField.setMaximumSize(preferredSize);
+        }
+        if (autofillText != null) {
+            textField.setText(autofillText);
         }
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.add(label, BorderLayout.WEST);

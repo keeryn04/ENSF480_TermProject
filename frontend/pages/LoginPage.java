@@ -23,8 +23,9 @@ public class LoginPage implements Page, LoginPageObserver {
 
     private LoginPage() {
         // Initialize UI components
-        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
-        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
+        //FIX THIS EVAN ME I HAVE TO
+        //emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
+        //passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
         loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
         // Register with MovieState
         // UserState.getInstance().addLoginPageObserver(this);

@@ -11,9 +11,10 @@ import frontend.observers.SeatMapObserver;
 public class SeatMapState {
     private static SeatMapState instance;
     private final List<SeatMapObserver> observersSeatMap = new ArrayList<>();
-    private final List<String> selectedSeatList = new ArrayList<>();
+    private final ArrayList<String> selectedSeatList = new ArrayList<>();
 
     // SeatMap dimensions
+    private int screenId;
     private int seatRows = 0;
     private int seatCols = 0;
 
@@ -40,7 +41,7 @@ public class SeatMapState {
     }
 
     // Seat selection management
-    public List<String> getSelectedSeats() {
+    public ArrayList<String> getSelectedSeats() {
         return selectedSeatList;
     }
 
@@ -63,6 +64,11 @@ public class SeatMapState {
     }
 
     // Seat map configuration
+    public void setScreenId(int screenId) {
+        this.screenId = screenId;
+        notifySeatMapObservers("screenId", screenId);
+    }
+
     public void setSeatRows(int seatRows) {
         this.seatRows = seatRows;
         notifySeatMapObservers("seatRows", seatRows);

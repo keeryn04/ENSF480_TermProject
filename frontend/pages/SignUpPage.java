@@ -26,11 +26,11 @@ public class SignUpPage implements Page {
     private SignUpPage() {
         // Initialize UI components
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
-
-        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
-        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
-        passwordReEntryFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "ReEnter Password", labelFont, 20,
-                null);
+        //FIX THIS EVAN ITS ME I WILL DO IT TRUST ME
+        //emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
+        //passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
+        //passwordReEntryFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "ReEnter Password", labelFont, 20,
+        //        null);
 
         // Register with MovieState
         // UserState.getInstance().addSignupPageObserver(this);

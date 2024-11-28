@@ -98,5 +98,9 @@ public class Window {
         PaymentPage payment = PaymentPage.getInstance();
         JPanel paymentPanel = payment.createPage();
         window.addPanel("PaymentPage", paymentPanel);   
+
+        PaymentSuccessPage paymentSuccess = PaymentSuccessPage.getInstance();
+        JPanel paymentSuccessPanel = paymentSuccess.createPage();
+        window.addPanel("PaymentSuccessPage", paymentSuccessPanel);  
     }
 }

@@ -15,8 +15,10 @@ import frontend.decorators.BorderDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
+import frontend.states.MovieState;
 import frontend.states.PaymentState;
 import frontend.states.SeatMapState;
+import backend.DatabaseAccessor;
 
 public class SeatMapPage implements Page, SeatMapObserver {
     private static SeatMapPage instance; // Singleton instance
@@ -90,10 +92,19 @@ public class SeatMapPage implements Page, SeatMapObserver {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
+                // Seat label (e.g., A1, B2)
+                String seatLabel = "" + (char) ('A' + row) + (col + 1);
+
+                // Check if a ticket exists for this seat and showtime
+                boolean isSeatTaken = DatabaseAccessor.checkIfSeatIsTaken(MovieState.getInstance().getShowtimeId(), seatLabel);
+
+                // Set seat color based on availability
+                Color seatColor = isSeatTaken ? Color.GRAY : Color.LIGHT_GRAY;
+
                 JButton seatButton = DecoratorHelpers.makeButton(
-                        Color.LIGHT_GRAY,
+                        seatColor,
                         Color.BLACK,
-                        "Seat " + (row * cols + col + 1),
+                        "" + (char) ('A' + row) + (col + 1),
                         seatFont
                 );
 
@@ -102,7 +113,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
                     if (seatButton.getBackground().equals(Color.LIGHT_GRAY)) {
                         seatButton.setBackground(Color.GREEN); //Selected
                         SeatMapState.getInstance().addSelectedSeat(seatButton.getText());
-                    } else {
+                    } else if (seatButton.getBackground().equals(Color.GREEN)) {
                         seatButton.setBackground(Color.LIGHT_GRAY); //Deselected
                         SeatMapState.getInstance().removeSelectedSeat(seatButton.getText());
                     }
@@ -140,7 +151,15 @@ public class SeatMapPage implements Page, SeatMapObserver {
         for (int row = 0; row < seats.length; row++) {
             for (int col = 0; col < seats[row].length; col++) {
                 if (seats[row][col] != null) {
-                    seats[row][col].setBackground(Color.LIGHT_GRAY); //Reset the color to default
+                    // Seat label (e.g., A1, B2)
+                    String seatLabel = "" + (char) ('A' + row) + (col + 1);
+
+                    // Check if a ticket exists for this seat and showtime
+                    boolean isSeatTaken = DatabaseAccessor.checkIfSeatIsTaken(MovieState.getInstance().getShowtimeId(), seatLabel);
+
+                    // Set seat color based on availability
+                    Color seatColor = isSeatTaken ? Color.GRAY : Color.LIGHT_GRAY;
+                    seats[row][col].setBackground(seatColor); //Reset the color to default
                 }
             }
         }

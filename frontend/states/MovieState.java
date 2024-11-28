@@ -10,15 +10,16 @@ public class MovieState {
     private final List<MoviePageObserver> observersMovie = new ArrayList<>();
 
     //Movie info
+    private Integer movieId;
+    private Integer showtimeId;
     private String movieTitle;
     private String movieDetails;
     private String moviePoster;
     private String movieGenre;
     private String movieRating;
     private String movieRuntime;
-    private String movieStarttime;
-    private String movieEndtime;
     private Integer screenNum;
+    private String releaseDate;
 
     //Singleton management
     public static MovieState getInstance() {
@@ -26,6 +27,19 @@ public class MovieState {
             instance = new MovieState();
         }
         return instance;
+    }
+
+    private MovieState() {
+        movieId = 1;
+        showtimeId = 1;
+        movieTitle = "Movie Title";
+        movieDetails = "Movie Description";
+        moviePoster = "Movie Poster";
+        movieGenre = "Genre";
+        movieRating = "Rating";
+        movieRuntime = "123";
+        screenNum = 1;
+        releaseDate = "2020-10-31";
     }
 
     //Add MoviePage objects as an observer for movie-related changes
@@ -39,6 +53,24 @@ public class MovieState {
             observer.onMovieSelected(key, value);
             //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
+    }
+
+    public Integer getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Integer movieId) {
+        this.movieId = movieId;
+        notifyMovieObservers("movieId", movieId);
+    }
+
+    public Integer getShowtimeId() {
+        return showtimeId;
+    }
+
+    public void setShowtimeId(Integer showtimeId) {
+        this.showtimeId = showtimeId;
+        notifyMovieObservers("showtimeId", showtimeId);
     }
 
     public String getMovieTitle() {
@@ -95,24 +127,6 @@ public class MovieState {
         notifyMovieObservers("movieRuntime", movieRuntime);
     }
 
-    public String getMovieStarttime() {
-        return movieStarttime;
-    }
-
-    public void setMovieStarttime(String movieStarttime) {
-        this.movieStarttime = movieStarttime;
-        notifyMovieObservers("movieStarttime", movieStarttime);
-    }
-
-    public String getMovieEndtime() {
-        return movieEndtime;
-    }
-
-    public void setMovieEndtime(String movieEndtime) {
-        this.movieEndtime = movieEndtime;
-        notifyMovieObservers("movieEndtime", movieEndtime);
-    }
-
     public int getScreenNum() {
         return screenNum;
     }
@@ -121,5 +135,9 @@ public class MovieState {
         this.screenNum = screenNum;
         notifyMovieObservers("screenNum", screenNum);
     }
-    
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+        notifyMovieObservers("releaseDate", releaseDate);
+    }
 }
