@@ -29,14 +29,14 @@ import java.time.format.DateTimeFormatter;
 
 import backend.Movie;
 import backend.Showtime;
+import frontend.controllers.AppState;
+import frontend.controllers.MoviePageController;
+import frontend.controllers.SeatMapPageController;
 import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
-import frontend.states.AppState;
-import frontend.states.MovieState;
-import frontend.states.SeatMapState;
 
 public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private static MoviePage instance; // Singleton
@@ -91,7 +91,7 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
         screenLabel = DecoratorHelpers.makeLabel(Color.BLACK, String.valueOf(screenId), dataFont);
 
         timeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Screening Time: ", dataTitleFont);
-        timeDropdown = new JComboBox<>();
+        timeDropdown = MoviePageController.getInstance().makeDropdownOfShowtimes();
         
         genreTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Genre: ", dataTitleFont);
         genreLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieGenre, dataFont);
@@ -101,10 +101,6 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
 
         runtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Runtime: ", dataTitleFont);
         runtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieRuntime, dataFont);
-
-        //Register with MovieState and SeatMapState
-        MovieState.getInstance().addMovieObserver(this);
-        SeatMapState.getInstance().addSeatMapObserver(this);
     }
 
     /**Returns single instance of MoviePage */
@@ -148,9 +144,6 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             JPanel screenPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             screenPanel.add(screenTitle);
             screenPanel.add(screenLabel);
-
-            //Times dropdown panel (start and end), load data then add component
-            loadShowtimesDropdowns(movieId);
 
             JPanel timesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             timesPanel.add(timeTitle);
@@ -204,196 +197,4 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             return null;
         }
     }
-
-    /**Update movie data based on MovieState data */
-    @Override
-    public void onMovieSelected(String key, Object value) {
-        //React to changes from AppState
-        switch (key) {
-            case "movieId":
-                movieId = (Integer) value;
-                updateContent();
-                updateDropdown();
-                break;
-            case "movieTitle":
-                movieTitle = (String) value;
-                updateContent();
-                break;
-            case "movieDetails":
-                movieDescription = (String) value;
-                updateContent();
-                break;
-            case "moviePoster":
-                posterImage = loadImage((String) value);
-                updateContent();
-                break;
-            case "movieGenre":
-                movieGenre = (String) value;
-                updateContent();
-                break;
-            case "movieRating":
-                movieRating = (String) value;
-                updateContent();
-                break;
-            case "movieRuntime":
-                movieRuntime = (String) value;
-                updateContent();
-                break;
-            case "releaseDate":
-                releaseDate = (String) value;
-                updateContent();
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**Change the aspects of the MoviePage based on App data retrieved by observer */
-    private void updateContent() {
-        SwingUtilities.invokeLater(() -> {
-            titleLabel.setText(movieTitle);
-            descriptionArea.setText(movieDescription);
-            screenLabel.setText(String.valueOf(screenId));
-
-            if (posterImage != null) {
-                Image scaledImage = posterImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
-                posterLabel.setIcon(new ImageIcon(scaledImage));
-            } else {
-                posterLabel.setText("Image not found");
-                posterLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-
-            genreLabel.setText(movieGenre);
-            ratingLabel.setText(movieRating);
-            runtimeLabel.setText(movieRuntime);
-        });
-    }
-
-    //Separate update for heavy processing in comparison to changing text
-    private void updateDropdown() {
-        loadShowtimesDropdowns(movieId);
-    }
-
-    @Override
-    public void onSeatMapUpdate(String key, Object value) {
-        switch (key) {
-            case "screenId":
-                screenId = (Integer) value;
-                updateContent();
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**Helper function for loading image */
-    private BufferedImage loadImage(String path) {
-        try {
-            return ImageIO.read(new File(path));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**Make a movie panel to add to the main content*/
-    @SuppressWarnings("unused")
-    public static JPanel createMoviePanel(String movieTitle, String movieDesc, String imagePath, Color buttonColor, Font buttonFont) {
-        JPanel moviePanel = new JPanel(new BorderLayout());
-
-        //Load the image
-        try {
-            BufferedImage movieImage = ImageIO.read(new File(imagePath));
-            Image scaledImage = movieImage.getScaledInstance(150, 250, Image.SCALE_SMOOTH);
-            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-            moviePanel.add(picLabel, BorderLayout.CENTER);
-        } catch (IOException e) {
-            e.printStackTrace();
-            JLabel errorLabel = new JLabel("Image not found", SwingConstants.CENTER);
-            moviePanel.add(errorLabel, BorderLayout.CENTER);
-        }
-
-        //Create button with specified color and font
-        JButton movieButton = DecoratorHelpers.makeButton(buttonColor, Color.WHITE, movieTitle, buttonFont);
-        ActionListener listener = e -> {
-            MoviePage.getInstance().updateContent();
-            Window.getInstance().showPanel("MoviePage");
-        };
-
-        ActionListenerDecorator accountDecorator = new ActionListenerDecorator(movieButton, movieButton, listener);
-        moviePanel.add(movieButton, BorderLayout.SOUTH);
-
-        return moviePanel;
-    }
-
-    private List<String> getShowtimesForMovie(Integer movieId) {
-        Map<Integer, Showtime> showtimes = AppState.getInstance().getShowtimes();
-        List<String> filteredShowtimes = new ArrayList<>();
-
-        Movie movie = AppState.getInstance().getMovies().get(movieId);
-        Integer runtimeMinutes = movie != null ? movie.getDurationInt() : 0;
-
-        for (Showtime showtime : showtimes.values()) {
-            if (showtime.getMovieId().equals(movieId)) {
-                // Format start and end times for the dropdown
-                filteredShowtimes.add(showtime.getFormattedScreeningTime("yyyy-MM-dd HH:mm", runtimeMinutes));
-            }
-        }
-
-        return filteredShowtimes;
-    }
-
-
-    private void loadShowtimesDropdowns(Integer movieId) {
-        List<String> showtimes = getShowtimesForMovie(movieId);
-    
-        timeDropdown.removeAllItems();
-    
-        if (showtimes.isEmpty()) {
-            timeDropdown.addItem("No Showtimes Available");
-        } else {
-            for (String showtime : showtimes) {
-                timeDropdown.addItem(showtime);
-            }
-        }
-
-        timeDropdown.addActionListener(e -> {
-            //Get the selected item
-            String selectedShowtime = (String) timeDropdown.getSelectedItem();
-        
-            //Ensure it's not null or the placeholder text
-            if (selectedShowtime != null && !selectedShowtime.equals("No Showtimes Available")) {
-                handleDropdownChange(selectedShowtime);
-            }
-        });
-    }
-
-    private void handleDropdownChange(String selectedShowtime) {
-        //Extract details if the showtime includes runtime or screen info
-        System.out.println("Selected Showtime: " + selectedShowtime);
-    
-        // Optionally, update the screenId or other movie-related data
-        Showtime selectedShowtimeData = findShowtimeData(selectedShowtime);
-        if (selectedShowtimeData != null) {
-            screenId = selectedShowtimeData.getScreenId();
-            int showtimeId = selectedShowtimeData.getShowtimeId(); //Local as its not displayed anywhere, just stored for db access
-            MovieState.getInstance().setShowtimeId(showtimeId);
-            updateContent(); //Refresh content on the page
-        }
-    }
-    
-    private Showtime findShowtimeData(String selectedShowtime) {
-        Map<Integer, Showtime> showtimes = AppState.getInstance().getShowtimes();
-    
-        // Loop through showtimes to find the matching one
-        for (Showtime showtime : showtimes.values()) {
-            String formattedTime = showtime.getFormattedScreeningTime("yyyy-MM-dd HH:mm", movieRuntime != null ? Integer.parseInt(movieRuntime) : 0);
-            if (formattedTime.equals(selectedShowtime)) {
-                return showtime;
-            }
-        }
-    
-        return null; // No matching showtime found
-    }
-    
 }

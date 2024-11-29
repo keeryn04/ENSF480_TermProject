@@ -1,18 +1,19 @@
 package backend;
 
 public class Screen {
-    private Integer rows;
     private Integer cols;
     private Integer screenId;
 
-    public Screen(int screenId, int cols) {
+    public Screen() {}
+
+    public Screen(Integer screenId, Integer cols) {
         this.screenId = screenId;
-        this.rows = 10;
         this.cols = cols;
     }
 
-    // Getters and setters
-    public Integer getRows() { return rows; }
-    public Integer getCols() { return cols; }
+    //Getters and setters
     public Integer getScreenId() { return screenId; }
+    public void setScreenId(Integer screenId) { this.screenId = screenId; }
+    public Integer getCols() { return cols; }
+    public void setCols(Integer cols) { this.cols = cols; }
 }

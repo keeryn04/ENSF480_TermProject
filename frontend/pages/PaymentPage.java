@@ -20,13 +20,13 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import backend.User;
+import frontend.controllers.AppState;
+import frontend.controllers.MoviePageController;
+import frontend.controllers.PaymentPageController;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.PaymentPageObserver;
 import frontend.panels.FooterPanel;
-import frontend.states.AppState;
-import frontend.states.MovieState;
-import frontend.states.PaymentState;
 
 public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver {
     private static PaymentPage instance; // Singleton
@@ -93,8 +93,8 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         cardDatePanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Expiration Date: ", dataTitleFont, 20,null, null);
         cardCVVPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card CVV: ", dataTitleFont, 3, null, null);
 
-        PaymentState.getInstance().addPaymentObserver(this);
-        MovieState.getInstance().addMovieObserver(this);
+        PaymentPageController.getInstance().addPaymentObserver(this);
+        MoviePageController.getInstance().addMovieObserver(this);
     }
 
     /**Returns single instance of PaymentPage */
@@ -108,6 +108,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     @Override
     public JPanel createPage() {
         try {
+            /* AUTOFILL NEED TO CHANGE
             if (AppState.getInstance().getCurrentUser() != null) {
                 User currentUser = AppState.getInstance().getCurrentUser();
                 if (currentUser != null) { //User is logged in, has data stored to autofill
@@ -121,6 +122,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
                     cardCVVPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card CVV: ", dataTitleFont, 20, cardCVV, null);
                 }
             }
+            */
             
             //Make header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
@@ -208,101 +210,6 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         }
     }
 
-    /**Handles updates to payment info, used for refreshing page info */
-    @Override
-    public void onPaymentConfirmed(String key, Object value) {
-        //React to changes from AppState
-        switch (key) {
-            case "paymentCVV":
-                cardCVV = (String) value;
-                break;
-            case "paymentAmount":
-                amount = (Integer) value;
-                updateContent();
-                break;
-            case "paymentItemPurchased":
-                itemPurchased = (String) value;
-                updateContent();
-                break;
-            case "paymentPrice":
-                price = (Double) value;
-                updateContent();
-                break;
-            case "paymentTicketList":
-                ticketList = (String) value;
-                updateContent();
-                break;
-            case "paymentTicketFlag":
-                ticketFlag = (Boolean) value;
-                if (ticketFlag == true) { //Handle if it should be registration or ticket purchasing
-                    itemPurchased = "Tickets";
-                    refreshPage(); 
-                } else {
-                    itemPurchased = "Registration";
-                    price = 20;
-                    refreshPage(); 
-                }
-                updateContent();
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**For movie poster updating*/
-    @Override
-    public void onMovieSelected(String key, Object value) {
-        switch (key) {
-            case "moviePoster":
-                posterImage = loadImage((String) value);
-                updateContent();
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**Helper function for loading image 
-     * @param path The path of the image to be loaded
-     * @return The image that was loaded from the path
-    */
-    private BufferedImage loadImage(String path) {
-        try {
-            return ImageIO.read(new File(path));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /*Update the page content based on observers */
-    private void updateContent() {
-        SwingUtilities.invokeLater(() -> {
-           priceLabel.setText("$" + String.valueOf(price));
-           amountLabel.setText(String.valueOf(amount));
-           itemPurchasedLabel.setText(itemPurchased);
-           ticketListLabel.setText(ticketList);
-           if (posterImage != null) {
-                Image scaledImage = posterImage.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
-                posterLabel.setIcon(new ImageIcon(scaledImage));
-            } else {
-                posterLabel.setText("Image not found");
-                posterLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-        });
-    }
-
-    /**For updating the page when swapping from registration to tickets */
-    private void refreshPage() {
-        JPanel newPage = createPage();
-        Window.getInstance().addPanel("PaymentPage", newPage);  
-    }
-
-    /**Makes a titled label with placement, background and spacings
-     * @param labels The components you want to add
-     * @param alignment The alignment you want the returned panel to have
-     * @return A formatted panel with title and label
-     */
     private JPanel createSectionPanel(JLabel[] labels, int alignment) {
         JPanel sectionPanel = new JPanel(new FlowLayout(alignment, 10, 10)); 
         sectionPanel.setBackground(Color.WHITE);

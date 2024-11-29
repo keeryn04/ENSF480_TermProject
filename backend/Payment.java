@@ -17,10 +17,16 @@ public class Payment {
         this.method = method;
     }
 
-    // Getters
+    //Getters and setters
     public int getPaymentId() { return paymentId; }
+    public void setPaymentId(int paymentId) { this.paymentId = paymentId; }
     public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
     public double getAmount() { return amount; }
+    public void setAmount(double amount) { this.amount = amount; }
     public LocalDateTime getPaymentTime() { return paymentTime; }
+    public void setPaymentTime(LocalDateTime paymentTime) { this.paymentTime = paymentTime; }
     public String getMethod() { return method; }
+    public void setMethod(String method) { this.method = method; }
 }
+

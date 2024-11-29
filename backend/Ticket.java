@@ -1,24 +1,28 @@
 package backend;
 
 public class Ticket {
-    private int ticketId;
-    private int userId;
-    private int showtimeId;
-    private String row;
-    private int column;
+    private Integer ticketId;
+    private User user;
+    private Showtime showtime;
+    private Seat seat;
 
-    public Ticket(int ticketId, int userId, int showtimeId, String row, int column) {
+    public Ticket() {}
+
+    public Ticket(Integer ticketId, User user, Showtime showtime, Seat seat) {
         this.ticketId = ticketId;
-        this.userId = userId;
-        this.showtimeId = showtimeId;
-        this.row = row;
-        this.column = column;
+        this.user = user;
+        this.showtime = showtime;
+        this.seat = seat;
     }
 
-    // Getters
-    public int getTicketId() { return ticketId; }
-    public int getUserId() { return userId; }
-    public int getShowtimeId() { return showtimeId; }
-    public String getRow() { return row; }
-    public int getColumn() { return column; }
+    //Setters and Getters
+    public Integer getTicketId() { return ticketId; }
+    public void setTicketId(Integer ticketId) { this.ticketId = ticketId; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    public Showtime getShowtime() { return showtime; }
+    public void setShowtime(Showtime showtime) { this.showtime = showtime; }
+    public Seat getSeat() { return seat; }
+    public void setSeat(Seat seat) { this.seat = seat; }
+
 }

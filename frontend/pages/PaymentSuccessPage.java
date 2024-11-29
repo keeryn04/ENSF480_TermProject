@@ -11,10 +11,10 @@ import backend.User;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import frontend.controllers.MoviePageController;
+import frontend.controllers.SeatMapPageController;
 import frontend.decorators.DecoratorHelpers;
 import frontend.panels.FooterPanel;
-import frontend.states.MovieState;
-import frontend.states.SeatMapState;
 
 public class PaymentSuccessPage implements Page {
     private static PaymentSuccessPage instance; //Singleton
@@ -43,9 +43,9 @@ public class PaymentSuccessPage implements Page {
     //Process the successful payment and display the ticket
     public void processPaymentSuccess(User user) {
         //Get the selected ticket information
-        int movieId = MovieState.getInstance().getMovieId();
-        int showtimeId = MovieState.getInstance().getShowtimeId();
-        ArrayList<String> selectedSeats = SeatMapState.getInstance().getSelectedSeats(); 
+        int movieId = MoviePageController.getInstance().getMovieId();
+        int showtimeId = MoviePageController.getInstance().getShowtimeId();
+        ArrayList<String> selectedSeats = SeatMapPageController.getInstance().getSelectedSeats(); 
         System.out.println("Found data for payment: movieId is" + movieId + " & showtimeId is " + showtimeId);
         
         //Store each ticket in the database

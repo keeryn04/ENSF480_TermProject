@@ -1,4 +1,4 @@
-package frontend.states;
+package frontend.controllers;
 
 import java.util.ArrayList;
 import java.util.List;

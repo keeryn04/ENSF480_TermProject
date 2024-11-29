@@ -7,9 +7,10 @@ import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
+import frontend.controllers.UserState;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
-import frontend.states.UserState;
 
 public class SignUpPage implements Page {
     private static SignUpPage instance; // Singleton

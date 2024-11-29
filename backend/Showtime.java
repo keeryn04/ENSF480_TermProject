@@ -1,31 +1,31 @@
 package backend;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class Showtime {
     private Integer showtimeId;
-    private Integer movieId;
-    private Integer screenId;
+    private Screen screen;
+    private ArrayList<Seat> seatmap;
     private LocalDateTime screeningTime;
 
-    public Showtime(Integer showtimeId, Integer movieId, Integer screenId, LocalDateTime screeningTime) {
+    public Showtime() {}
+
+    public Showtime(Integer showtimeId, Screen screen, LocalDateTime screeningTime, ArrayList<Seat> seatmap) {
         this.showtimeId = showtimeId;
-        this.movieId = movieId;
-        this.screenId = screenId;
+        this.screen = screen;
         this.screeningTime = screeningTime;
+        this.seatmap = seatmap;
     }
 
-    // Getters
+    //Setters and Getters
     public Integer getShowtimeId() { return showtimeId; }
-    public Integer getMovieId() { return movieId; }
-    public Integer getScreenId() { return screenId; }
-
-    //Helper for MoviePage dropdown formatting
-    public String getFormattedScreeningTime(String pattern, Integer runtimeMinutes) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        String startTimeFormatted = screeningTime.format(formatter); // Format screeningTime
-        String endTimeFormatted = screeningTime.plusMinutes(runtimeMinutes).format(formatter);
-        return startTimeFormatted + " to " + endTimeFormatted;
-    }
+    public void setShowtimeId(Integer showtimeId) { this.showtimeId = showtimeId; }
+    public Screen getScreen() { return screen; }
+    public void setScreen(Screen screen) { this.screen = screen; }
+    public LocalDateTime getScreeningTime() { return screeningTime; }
+    public void setScreeningTime(LocalDateTime screeningTime) { this.screeningTime = screeningTime; }
+    public ArrayList<Seat> getSeatMap() { return seatmap; }
+    public void setSeatMap(ArrayList<Seat> seatmap) { this.seatmap = seatmap; }
 }
+

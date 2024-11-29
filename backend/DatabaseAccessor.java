@@ -8,8 +8,9 @@ import java.util.List;
 public class DatabaseAccessor {
 
     // Retrieve a Movie by movieId
-    public static Movie getMovieDetails(int movieId) {
+    public static Movie getMovie(int movieId) {
         String query = "SELECT title, genre, duration, rating, poster_path, description, release_date FROM Movies WHERE movie_id = ?";
+        ArrayList<Showtime> showtimes = getShowtimes(movieId);
         try (Connection conn = DatabaseConfig.connect();
                 PreparedStatement statement = conn.prepareStatement(query)) {
 
@@ -24,7 +25,9 @@ public class DatabaseAccessor {
                             resultSet.getDouble("rating"),
                             resultSet.getString("poster_path"),
                             resultSet.getString("description"),
-                            resultSet.getString("release_date"));
+                            resultSet.getString("release_date"), 
+                            showtimes
+                            );
                 }
             }
         } catch (SQLException e) {
@@ -33,47 +36,96 @@ public class DatabaseAccessor {
         return null;
     }
 
-    // Retrieve a Screen by screenId
-    public static Screen getScreenDetails(int screenId) {
+    public static ArrayList<Showtime> getShowtimes(int movieId) {
+        String query = "SELECT showtime_id, screen_id, screening_time FROM Showtime WHERE movie_id = ?";
+        ArrayList<Showtime> showtimes = new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.connect(); 
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, movieId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int screenId = resultSet.getInt("screen_id");  
+                    int showtimeId = resultSet.getInt("showtime_id");
+                    Screen screen = getScreen(screenId);
+                    ArrayList<Seat> seatmap = getSeatmap(showtimeId, screenId);
+                    Showtime showtime = new Showtime(
+                            showtimeId,
+                            screen,
+                            resultSet.getTimestamp("screening_time").toLocalDateTime(),
+                            seatmap
+                    );
+
+                    showtimes.add(showtime);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return showtimes;
+    }
+
+    public static Screen getScreen(int screenId) {
         String query = "SELECT screen_cols FROM Screens WHERE screen_id = ?";
         try (Connection conn = DatabaseConfig.connect();
-                PreparedStatement statement = conn.prepareStatement(query)) {
+             PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, screenId);
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Screen(screenId, resultSet.getInt("screen_cols")); // Rows are fixed at 10
+                    return new Screen(screenId, resultSet.getInt("screen_cols"));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
-    // Retrieve a Showtime by showtimeId
-    public static Showtime getShowtimeDetails(int showtimeId) {
-        String query = "SELECT movie_id, screen_id, screening FROM Showtimes WHERE showtime_id = ?";
-        try (Connection conn = DatabaseConfig.connect();
-                PreparedStatement statement = conn.prepareStatement(query)) {
-            // public Showtime(Integer showtimeId, Integer movieId, Integer screenId,
-            // LocalDateTime screeningTime)
+    public static ArrayList<Seat> getSeatmap(int showtimeId, int screenId) {
+        ArrayList<Seat> seatmap = new ArrayList<>();
+        int screenCols = getScreen(screenId).getCols();
+        int screenRows = 10; //10 rows for each screen
+
+        //Initialize seatmap with empty Seat objects
+        for (int row = 0; row < screenRows; row++) {
+            for (int col = 0; col < screenCols; col++) {
+                seatmap.add(new Seat(String.valueOf((char) ('A' + row)), col + 1, false));
+            }
+        }
+
+        //Update booked seats from seatmap
+        String query = "SELECT seat_label FROM Tickets WHERE showtime_id = ? AND screen_id = ?";
+        try (Connection conn = DatabaseConfig.connect(); 
+            PreparedStatement statement = conn.prepareStatement(query)) {
+
             statement.setInt(1, showtimeId);
+            statement.setInt(2, screenId);
+
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return new Showtime(
-                            showtimeId,
-                            resultSet.getInt("movie_id"),
-                            resultSet.getInt("screen_id"),
-                            resultSet.getTimestamp("screening").toLocalDateTime());
+                while (resultSet.next()) {
+                    String seatLabel = resultSet.getString("seat_label");
+                    String row = seatLabel.substring(0, 1); 
+                    Integer column = Integer.parseInt(seatLabel.substring(1)); 
+
+                    boolean booked = resultSet.getString("status").equals("booked"); 
+
+                    seatmap.add(new Seat(row, column, booked));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return seatmap;
     }
 
+    /*
     // Retrieve Tickets by userId
     public static List<Ticket> getTicketsByUser(int userId) {
         String query = "SELECT ticket_id, showtime_id, seat_row, seat_col FROM Tickets WHERE user_id = ?";
@@ -173,6 +225,11 @@ public class DatabaseAccessor {
             statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    PaymentCard paymentCard = new PaymentCard(resultSet.getInt("card_number"),
+                    resultSet.getString("card_exp_date"), 
+                    resultSet.getString("card_cvv")
+                    );
+                    
                     return new User(resultSet.getInt("id"),
                             resultSet.getString("name"),
                             resultSet.getString("email"),
@@ -228,4 +285,5 @@ public class DatabaseAccessor {
         }
         return false; // Default to false if there's an error or no ticket found
     }
+    */
 }

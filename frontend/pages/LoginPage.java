@@ -3,9 +3,10 @@ package frontend.pages;
 import java.awt.*;
 
 import javax.swing.*;
+
+import frontend.controllers.UserState;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
-import frontend.states.UserState;
 
 public class LoginPage implements Page, LoginPageObserver {
     private static LoginPage instance; // Singleton

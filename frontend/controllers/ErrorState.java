@@ -1,4 +1,4 @@
-package frontend.states;
+package frontend.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ErrorState {
     }
 
     public void clearError() {
-        setError(""); // Clear the error
+        setError(""); //Clear the error
     }
 
     public String getErrorMessage() {

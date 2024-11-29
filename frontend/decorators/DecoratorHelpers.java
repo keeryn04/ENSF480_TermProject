@@ -27,7 +27,6 @@ public class DecoratorHelpers {
         button = (JButton) new ForegroundColorDecorator(button, foregroundColor).getDecoratedComponent();
         button = (JButton) new TextDecorator(button, text).getDecoratedComponent();
         button = (JButton) new FontDecorator(button, font).getDecoratedComponent();
-        button = (JButton) new ActionListenerDecorator(button, button, null).getDecoratedComponent();
 
         return button;
     }

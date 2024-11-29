@@ -2,9 +2,9 @@ package frontend.panels;
 
 import javax.swing.*;
 
+import frontend.controllers.UserState;
 import frontend.decorators.DecoratorHelpers;
 import frontend.pages.Window;
-import frontend.states.UserState;
 
 import java.awt.*;
 import java.awt.event.ActionListener;

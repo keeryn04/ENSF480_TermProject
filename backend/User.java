@@ -1,84 +1,73 @@
 package backend;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 public class User {
-    private int id;
+    private Integer userID;
     private String name;
     private String email;
     private String password;
     private String address;
-    private int card_number;
-    private String card_exp_date;
-    private String card_cvv;
-    private boolean is_registered;
-    private double credit_balance;
-    private String last_payment_date;
+    private PaymentCard paymentInfo;
+    private boolean isRegistered;
+    private LocalDateTime lastPaymentDate;
+    private Double creditBalance;
+    private ArrayList<Ticket> purchasedTickets;
+    private ArrayList<Transaction> transactionHistory;
 
-    public User(int id, 
-            String name, 
-            String email, 
-            String password, 
-            String address, 
-            int card_number,
-            String card_exp_date,
-            String card_cvv,
-            boolean is_registered,
-            String account_recharge,
-            double credit_balance) {
-        this.id = id;
+    public User() {}
+
+    public User(Integer userID, 
+                String name, 
+                String email, 
+                String password, 
+                String address, 
+                PaymentCard paymentInfo,
+                boolean isRegistered,
+                ArrayList<Ticket> purchasedTickets,
+                ArrayList<Transaction> transactionHistory,
+                LocalDateTime lastPaymentDate,
+                Double creditBalance) {
+        this.userID = userID;
         this.name = name;
         this.email = email;
         this.password = password;
         this.address = address;
-        this.card_number = card_number;
-        this.card_exp_date = card_exp_date;
-        this.card_cvv = card_cvv;
-        this.is_registered = is_registered;
-        this.credit_balance = credit_balance;
-        this.last_payment_date = last_payment_date;
+        this.paymentInfo = paymentInfo;
+        this.isRegistered = isRegistered;
+        this.purchasedTickets = purchasedTickets;
+        this.transactionHistory = transactionHistory;
+        this.creditBalance = creditBalance;
+        this.lastPaymentDate = lastPaymentDate;
     }
 
-    // Getters and setters
-    public int getID() {
-        return id;
-    }
+    public Integer getUserID() { return userID; }
+    public void setUserID(Integer userID) { this.userID = userID; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    public PaymentCard getPaymentInfo() { return paymentInfo; }
+    public void setPaymentInfo(PaymentCard paymentInfo) { this.paymentInfo = paymentInfo; }
+    public boolean isRegistered() { return isRegistered; }
+    public void setRegistered(boolean isRegistered) { this.isRegistered = isRegistered; }
+    public LocalDateTime getLastPaymentDate() { return lastPaymentDate; }
+    public void setLastPaymentDate(LocalDateTime lastPaymentDate) { this.lastPaymentDate = lastPaymentDate; }
+    public Double getCreditBalance() { return creditBalance; }
+    public void setCreditBalance(Double creditBalance) { this.creditBalance = creditBalance; }
+    public ArrayList<Ticket> getPurchasedTickets() { return purchasedTickets; }
+    public void setPurchasedTickets(ArrayList<Ticket> purchasedTickets) { this.purchasedTickets = purchasedTickets; }
+    public ArrayList<Transaction> getTransactionHistory() { return transactionHistory; }
+    public void setTransactionHistory(ArrayList<Transaction> transactionHistory) { this.transactionHistory = transactionHistory; }
 
-    public String getName() {
-        return name;
-    }
+    private void addTicket(Ticket newTicket) {purchasedTickets.add(newTicket); }
+    private void removeTicket(Ticket deletedTicket) {purchasedTickets.remove(deletedTicket); }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public int getCardNumber() {
-        return card_number;
-    }
-
-    public String getCardExpiry() {
-        return card_exp_date;
-    }
-
-    public String getCardCvv() {
-        return card_cvv;
-    }
-
-    public boolean getRegisteredStatus() {
-        return is_registered;
-    }
-
-    public String getLastPaymentDate() {
-        return last_payment_date;
-    }
-
-    public double getCreditBalance() {
-        return credit_balance;
-    }
+    private void addTransaction(Transaction newTransaction) {transactionHistory.add(newTransaction); }
+    private void removeTransaction(Transaction deletedTicket) {transactionHistory.remove(deletedTicket); }
 }
