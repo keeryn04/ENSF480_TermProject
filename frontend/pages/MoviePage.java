@@ -35,6 +35,7 @@ import frontend.observers.MoviePageObserver;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
 import frontend.states.AppState;
+import frontend.states.UserState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
 
@@ -129,8 +130,9 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
 
             //ParsedReleaseDate
             LocalDate storedDate = LocalDate.parse(releaseDate);
+            boolean isUserRegistered = UserState.getInstance().isUserRegistered();
 
-            if(currentDate.isBefore(storedDate)){
+            if(currentDate.isBefore(storedDate) && (isUserRegistered == false)){
                 footerPanel = new FooterPanel("heldMovieTicket");
             }
             else{

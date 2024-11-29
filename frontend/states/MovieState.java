@@ -136,7 +136,7 @@ public class MovieState {
         notifyMovieObservers("screenNum", screenNum);
     }
 
-    public String geReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
