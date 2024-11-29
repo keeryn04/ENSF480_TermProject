@@ -103,4 +103,40 @@ public class Window {
         JPanel paymentSuccessPanel = paymentSuccess.createPage();
         window.addPanel("PaymentSuccessPage", paymentSuccessPanel);  
     }
+
+    public void refreshPages() {
+        Window window = Window.getInstance();
+
+        HomePage home = new HomePage();
+        JPanel homePanel = home.createPage();
+        window.addPanel("Home", homePanel);
+
+        LoginPage login = LoginPage.getInstance();
+        JPanel loginPanel = login.createPage();
+        window.addPanel("LoginPage", loginPanel);   
+
+        ProfilePage profile = ProfilePage.getInstance();
+        JPanel profilePanel = profile.createPage();
+        window.addPanel("ProfilePage", profilePanel);
+
+        EditProfilePage profileEdit = new EditProfilePage();
+        JPanel profileEditPanel = profileEdit.createPage();
+        window.addPanel("ProfileEditPage", profileEditPanel);
+
+        MoviePage movie = MoviePage.getInstance();
+        JPanel moviePanel = movie.createPage();
+        window.addPanel("MoviePage", moviePanel);      
+
+        SeatMapPage seatmap = SeatMapPage.getInstance();
+        JPanel seatPanel = seatmap.createPage();
+        window.addPanel("SeatMapPage", seatPanel);        
+
+        PaymentPage payment = PaymentPage.getInstance();
+        JPanel paymentPanel = payment.createPage();
+        window.addPanel("PaymentPage", paymentPanel);   
+
+        PaymentSuccessPage paymentSuccess = PaymentSuccessPage.getInstance();
+        JPanel paymentSuccessPanel = paymentSuccess.createPage();
+        window.addPanel("PaymentSuccessPage", paymentSuccessPanel);  
+    }
 }

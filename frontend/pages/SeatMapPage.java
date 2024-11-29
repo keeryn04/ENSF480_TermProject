@@ -15,6 +15,7 @@ import frontend.decorators.BorderDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.MovieState;
 import frontend.states.PaymentState;
 import frontend.states.SeatMapState;
@@ -60,7 +61,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
     public JPanel createPage() {
         try {            
             //Create header and footer
-            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
+            JPanel headerPanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("continuePurchase");
 
             //Layout setup

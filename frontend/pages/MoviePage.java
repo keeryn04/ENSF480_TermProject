@@ -34,6 +34,7 @@ import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
@@ -123,7 +124,7 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     public JPanel createPage() {
         try {
             //Make header and footer
-            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
+            JPanel headerPanel = new HeaderPanel();
 
             FooterPanel footerPanel;
 

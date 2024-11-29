@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import frontend.decorators.DecoratorHelpers;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 
 /**Page where user edits their personal info */
 public class EditProfilePage implements Page  {
@@ -19,7 +20,7 @@ public class EditProfilePage implements Page  {
             //Create fonts
             Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
             
-            JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
+            JPanel titlePanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("confirmInfo");
 
             //Profile panel

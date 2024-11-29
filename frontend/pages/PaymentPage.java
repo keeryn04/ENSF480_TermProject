@@ -24,6 +24,7 @@ import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.PaymentPageObserver;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.PaymentState;
@@ -123,7 +124,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
             }
             
             //Make header and footer
-            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
+            JPanel headerPanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("paymentConfirm");
 
             //Shopping cart panel

@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import frontend.decorators.DecoratorHelpers;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
 
@@ -65,7 +66,7 @@ public class PaymentSuccessPage implements Page {
     //Create the success page UI
     @Override
     public JPanel createPage() {
-        JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
+        JPanel headerPanel = new HeaderPanel();
         FooterPanel footerPanel = new FooterPanel("default");
 
         JLabel successLabel = new JLabel("Payment Successful! Your tickets are confirmed.");
