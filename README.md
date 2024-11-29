@@ -1,5 +1,3 @@
----
-
 # Movie Theatre Reservation App  
 **ENSF 3480 Term Project**  
 
@@ -33,9 +31,9 @@ This application has been tested on **Windows 11**.
 If `Main.class` does not exist or needs to be updated, follow these steps:  
 1. Open a terminal in the project directory: `ENSF3480_TermProject`.  
 2. Run the following command:  
-   ```bash
-   javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java frontend/states/*.java frontend/panels/*.java backend/*.java
-   ```
+```bash
+javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java frontend/states/*.java frontend/panels/*.java backend/*.java
+```
 
 ### Running the Application  
 Once the `.class` files are compiled, run the application by entering:  
@@ -69,7 +67,7 @@ java -cp ".;lib\mysql-connector-j-9.1.0.jar" Main
    - Users can cancel a reservation up to 72 hours before the show.  
      - **Ordinary Users** pay a 15% administrative fee.  
      - **Registered Users** do not pay administrative fees.
-     - Both receive a credit valid for one year.(Up to Dec 31 each year)
+     - Both receive a credit valid for one year. (Up to Dec 31 each year)
 
 7. **Receive News Updates**  
    - Registered Users receive faux movie news before the public.  
