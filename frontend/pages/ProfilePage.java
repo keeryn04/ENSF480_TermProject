@@ -31,8 +31,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
     // private String cardDate = "01/01";
 
     // UI components
+    private JLabel emailLabel;
     private JLabel nameLabel;
     private JLabel addressLabel;
+    private JLabel creditBalanceLabel;
     private JLabel cardNumLabel;
     private JLabel cardDateLabel;
     private JPanel contentPanel;
@@ -42,10 +44,16 @@ public class ProfilePage implements Page, ProfilePageObserver {
         Font nameFont = new Font("Times New Roman", Font.BOLD, 24);
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
 
-        nameLabel = DecoratorHelpers.makeLabel(Color.BLACK, "name", nameFont);
-        addressLabel = DecoratorHelpers.makeLabel(Color.BLACK, "address", labelFont);
-        cardNumLabel = DecoratorHelpers.makeLabel(Color.BLACK, "cardNum", labelFont);
-        cardDateLabel = DecoratorHelpers.makeLabel(Color.BLACK, "cardDate", labelFont);
+        
+
+
+        emailLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Email: ", labelFont);
+        nameLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Name: ", nameFont);
+        addressLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Address: ", labelFont);
+        creditBalanceLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Credit Balance: ", labelFont);
+        cardNumLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Credit Card Number: ", labelFont);
+        cardDateLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Exiration Date: ", labelFont);
+        
 
         contentPanel = new JPanel();
 
@@ -74,15 +82,32 @@ public class ProfilePage implements Page, ProfilePageObserver {
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
             contentPanel = (JPanel) new BackgroundColorDecorator(contentPanel, Color.WHITE).getDecoratedComponent();
             contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
+            user = UserState.getInstance().getUser();
+            if (user != null) {
+                if (user.getRegisteredStatus() == false)    //What to show if the user isn't registered
+                {
+                    contentPanel.add(emailLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
+                    contentPanel.add(creditBalanceLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
+                }
+                else //What to show if the uses is registered
+                {
+                    contentPanel.add(nameLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
+                    contentPanel.add(emailLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
+                    contentPanel.add(addressLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
+                    contentPanel.add(creditBalanceLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
+                    contentPanel.add(cardNumLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
+                    contentPanel.add(cardDateLabel);
+                }
+            }
             // Add labels to the panel
-            contentPanel.add(nameLabel);
-            contentPanel.add(Box.createVerticalStrut(10));
-            contentPanel.add(addressLabel);
-            contentPanel.add(Box.createVerticalStrut(10));
-            contentPanel.add(cardNumLabel);
-            contentPanel.add(Box.createVerticalStrut(10));
-            contentPanel.add(cardDateLabel);
+            
 
             // Combine all panels in the main layout
             JPanel mainPanel = new PanelBuilder()
@@ -121,7 +146,9 @@ public class ProfilePage implements Page, ProfilePageObserver {
             if (UserState.getInstance().getUser() != null) {
                 user = UserState.getInstance().getUser();
                 nameLabel.setText("Hi " + user.getName() + "!");
+                emailLabel.setText("Email: " + user.getEmail());
                 addressLabel.setText("Address: " + user.getAddress());
+                creditBalanceLabel.setText("Credit Balanace: $" + String.valueOf(user.getCreditBalance()));
                 cardNumLabel.setText("Credit / Debit Card Number: " + user.getCardNumber());
                 cardDateLabel.setText("Credit / Debit Expiration Date: ");// WE DONT HAVE A CARD DATE IN THE SQL
 
