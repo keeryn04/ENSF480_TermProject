@@ -6,7 +6,7 @@ public class User {
     private String email;
     private String password;
     private String address;
-    private int card_number;
+    private long card_number;
     private String card_exp_date;
     private String card_cvv;
     private boolean is_registered;
@@ -18,7 +18,7 @@ public class User {
             String email, 
             String password, 
             String address, 
-            int card_number,
+            long card_number,
             String card_exp_date,
             String card_cvv,
             boolean is_registered,
@@ -58,7 +58,7 @@ public class User {
         return address;
     }
 
-    public int getCardNumber() {
+    public long getCardNumber() {
         return card_number;
     }
 

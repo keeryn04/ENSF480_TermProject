@@ -7,6 +7,7 @@ import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
 import frontend.states.UserState;
 
+import backend.User;
 public class LoginPage implements Page, LoginPageObserver {
     private static LoginPage instance; // Singleton
 
@@ -24,8 +25,8 @@ public class LoginPage implements Page, LoginPageObserver {
     private LoginPage() {
         // Initialize UI components
         //FIX THIS EVAN ME I HAVE TO
-        //emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
-        //passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
+        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null, new Dimension(10, 1));
+        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null, new Dimension(10, 1));
         loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
         // Register with MovieState
         // UserState.getInstance().addLoginPageObserver(this);
@@ -73,12 +74,12 @@ public class LoginPage implements Page, LoginPageObserver {
 
     private JButton createLoginButton() {
         JButton loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
-        loginButton.addActionListener(e -> checkForLogin());
+        loginButton.addActionListener(e -> authenticate());
         return loginButton;
     }
 
     /** Check the login info with database / cached data */
-    private Boolean checkForLogin() {
+    private void authenticate() {
         Component[] emailPanelComponents = emailFieldPanel.getComponents();
         Component[] passwordPanelComponents = passwordFieldPanel.getComponents();
 
@@ -98,8 +99,9 @@ public class LoginPage implements Page, LoginPageObserver {
             }
         }
 
-        System.out.println(UserState.getInstance().logInUser(email, password));
-        return true;
+        boolean loggedIn = UserState.getInstance().logInUser(email, password);
+        if (loggedIn)
+            Window.getInstance().showPanel("ProfilePage");
     }
 
     /** Update login data based on LoginState data */
