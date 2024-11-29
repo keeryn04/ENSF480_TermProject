@@ -8,6 +8,7 @@ import frontend.pages.Window;
 import frontend.states.AppState;
 import frontend.states.ErrorState;
 import frontend.states.PaymentState;
+import frontend.states.UserState;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -48,7 +49,7 @@ public class FooterPanel extends JPanel {
         BUTTON_ACTIONS.put("editInfo", e -> Window.getInstance().showPanel("ProfileEditPage"));
         BUTTON_ACTIONS.put("paymentConfirm", e -> {
             Window.getInstance().showPanel("PaymentSuccessPage");
-            PaymentSuccessPage.getInstance().processPaymentSuccess(AppState.getInstance().getCurrentUser());
+            PaymentSuccessPage.getInstance().processPaymentSuccess(UserState.getInstance().getUser());
         });
     }
 

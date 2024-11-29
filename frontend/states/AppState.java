@@ -21,7 +21,6 @@ public class AppState {
     private Map<Integer, Movie> movies;
     private Map<Integer, Screen> screens;
     private ArrayList<String> userEmails;
-    private User currentUser;
     private Map<Integer, Showtime> showtimes;
 
     DateTimeFormatter formatter;
@@ -30,15 +29,12 @@ public class AppState {
         movies = new HashMap<>();
         screens = new HashMap<>();
         showtimes = new HashMap<>();
-        userEmails = null;
-        currentUser = null; // If null, user is not logged in
+        userEmails = new ArrayList<String>();
         formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        currentUser = new User(0, "Apple", "Mapple", "123", "123 Street St.", 123413, "04/28", "734", false, null, 0);
-
         loadMovies();
         loadScreens();
         loadShowtimes();
-        // loadUserEmails();
+        loadUserEmails();
     }
 
     // Singleton management
@@ -61,17 +57,8 @@ public class AppState {
         return showtimes;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    /*
-     * public void logInUser(String email, String password) {
-     * currentUser = DatabaseAccessor.loginUser(email, password);
-     * }
-     */
-    public void logOutUser() {
-        currentUser = null;
+    public ArrayList<String> getUserEmails() {
+        return userEmails;
     }
 
     private void loadMovies() {

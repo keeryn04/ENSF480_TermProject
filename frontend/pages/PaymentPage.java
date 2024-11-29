@@ -28,6 +28,7 @@ import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.PaymentState;
+import frontend.states.UserState;
 
 public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver {
     private static PaymentPage instance; // Singleton
@@ -109,8 +110,8 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     @Override
     public JPanel createPage() {
         try {
-            if (AppState.getInstance().getCurrentUser() != null) {
-                User currentUser = AppState.getInstance().getCurrentUser();
+            if (UserState.getInstance().getUser() != null) {
+                User currentUser = UserState.getInstance().getUser();
                 if (currentUser != null) { //User is logged in, has data stored to autofill
                     cardNum = String.valueOf(currentUser.getCardNumber());
                     cardDate = currentUser.getCardExpiry();

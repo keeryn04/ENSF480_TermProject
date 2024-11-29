@@ -34,10 +34,10 @@ public class HeaderPanel extends JPanel {
         // CHANGE THE SHOW PANEL NAMES WHEN PAGES ARE ADDED! THIS IS FOR TESTING
         // PURPOSES
         // Actions buttons when not signed in
-        LEFT_BUTTON_ACTIONS.put("notSignedIn", e -> {Window.getInstance().showPanel("SignUpPage");
-                                                            LoginPage.getInstance().refreshPage();});
-        RIGHT_BUTTON_ACTIONS.put("notSignedIn", e -> {Window.getInstance().showPanel("LoginPage");
-                                                            LoginPage.getInstance().refreshPage();});
+        LEFT_BUTTON_ACTIONS.put("notSignedIn", e -> {LoginPage.getInstance().refreshPage();
+                                                            Window.getInstance().showPanel("SignUpPage");});
+        RIGHT_BUTTON_ACTIONS.put("notSignedIn", e -> {LoginPage.getInstance().refreshPage();
+                                                            Window.getInstance().showPanel("LoginPage");});
 
         // Actions for buttons when signed in
         LEFT_BUTTON_ACTIONS.put("signedIn", e -> Window.getInstance().showPanel("ProfilePage"));
