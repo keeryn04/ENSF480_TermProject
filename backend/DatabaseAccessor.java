@@ -173,12 +173,12 @@ public class DatabaseAccessor {
             statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new User(resultSet.getInt("id"),
+                    return new User(resultSet.getInt("user_id"),
                             resultSet.getString("name"),
                             resultSet.getString("email"),
                             resultSet.getString("password"),
                             resultSet.getString("address"),
-                            resultSet.getInt("card_number"),
+                            resultSet.getLong("card_number"),
                             resultSet.getString("card_exp_date"),
                             resultSet.getString("card_cvv"),
                             resultSet.getBoolean("is_registered"),

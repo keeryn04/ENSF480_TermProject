@@ -117,14 +117,16 @@ public class ProfilePage implements Page, ProfilePageObserver {
      */
     public void updateContent() {
         SwingUtilities.invokeLater(() -> {
+            if (UserState.getInstance().getUser() != null) {
+                user = UserState.getInstance().getUser();
+                nameLabel.setText("Hi " + user.getName() + "!");
+                addressLabel.setText("Address: " + user.getAddress());
+                cardNumLabel.setText("Credit / Debit Card Number: " + user.getCardNumber());
+                cardDateLabel.setText("Credit / Debit Expiration Date: ");// WE DONT HAVE A CARD DATE IN THE SQL
 
-            nameLabel.setText("Hi " + user.getName() + "!");
-            addressLabel.setText("Address: " + user.getAddress());
-            cardNumLabel.setText("Credit / Debit Card Number: " + user.getCardNumber());
-            cardDateLabel.setText("Credit / Debit Expiration Date: ");// WE DONT HAVE A CARD DATE IN THE SQL
-
-            contentPanel.revalidate();
-            contentPanel.repaint();
+                contentPanel.revalidate();
+                contentPanel.repaint();
+            }
         });
     }
 }
