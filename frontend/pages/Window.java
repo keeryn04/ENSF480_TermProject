@@ -26,6 +26,11 @@ public class Window {
             cardPanel = new JPanel(cardLayout);
             panels = new HashMap<>();
             frame.add(cardPanel);
+
+            HomePage home = new HomePage();
+            JPanel homePanel = home.createPage();
+            addPanel("Home", homePanel);
+            showPanel("Home"); //Default starting page
         }
     }
 

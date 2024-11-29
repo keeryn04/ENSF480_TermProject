@@ -5,52 +5,23 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import backend.Movie;
-import backend.Showtime;
-import frontend.controllers.AppState;
 import frontend.controllers.MoviePageController;
-import frontend.controllers.SeatMapPageController;
-import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
-import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
 
-public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
+public class MoviePage implements Page, MoviePageObserver {
     private static MoviePage instance; // Singleton
-
-    //Data fields for movie details
-    private Integer movieId = 1;
-    private String movieTitle = "Movie Title";
-    private String movieDescription = "Movie Description";
-    private BufferedImage posterImage;
-    private String movieGenre = "Comedy";
-    private String movieRating = "3.6";
-    private String movieRuntime = "120";
-    private Integer screenId = 1;
-    private String releaseDate = "2020-10-31";
 
     //Date today
     LocalDate currentDate = LocalDate.now();
@@ -70,38 +41,10 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private JLabel runtimeTitle;
     private JLabel runtimeLabel;
 
-    private MoviePage() {
-        //Initialize UI components
-        Font titleFont = new Font("Times New Roman", Font.BOLD, 36);
-        Font dataTitleFont = new Font("Times New Roman", Font.BOLD, 20);
-        Font dataFont = new Font("Times New Roman", Font.PLAIN, 18);
-        Font descriptionFont = new Font("Times New Roman", Font.BOLD, 18);
+    private JPanel headerPanel;
+    private JPanel footerPanel;
 
-        titleLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieTitle, titleFont);
-
-        posterLabel = new JLabel(); //Poster image
-
-        descriptionArea = new JTextArea(movieDescription);
-        descriptionArea.setFont(descriptionFont);
-        descriptionArea.setLineWrap(true);
-        descriptionArea.setWrapStyleWord(true);
-        descriptionArea.setEditable(false);
-
-        screenTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Screen: ", dataTitleFont);
-        screenLabel = DecoratorHelpers.makeLabel(Color.BLACK, String.valueOf(screenId), dataFont);
-
-        timeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Screening Time: ", dataTitleFont);
-        timeDropdown = MoviePageController.getInstance().makeDropdownOfShowtimes();
-        
-        genreTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Genre: ", dataTitleFont);
-        genreLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieGenre, dataFont);
-
-        ratingTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Rating: ", dataTitleFont);
-        ratingLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieRating, dataFont);
-
-        runtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Runtime: ", dataTitleFont);
-        runtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, movieRuntime, dataFont);
-    }
+    private MoviePage() { MoviePageController.getInstance().onLoad(); }
 
     /**Returns single instance of MoviePage */
     public static MoviePage getInstance() {
@@ -118,20 +61,40 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     @Override
     public JPanel createPage() {
         try {
+            //Fonts
+            Font titleFont = new Font("Times New Roman", Font.BOLD, 36);
+            Font dataTitleFont = new Font("Times New Roman", Font.BOLD, 20);
+            Font dataFont = new Font("Times New Roman", Font.PLAIN, 18);
+            Font descriptionFont = new Font("Times New Roman", Font.BOLD, 18);
+
             //Make header and footer
-            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
-
-            FooterPanel footerPanel;
-
-            //ParsedReleaseDate
-            LocalDate storedDate = LocalDate.parse(releaseDate);
-
-            if(currentDate.isBefore(storedDate)){
-                footerPanel = new FooterPanel("heldMovieTicket");
-            }
-            else{
-                footerPanel = new FooterPanel("movieTicket");
-            }
+            headerPanel = DecoratorHelpers.createHeaderPanel();
+            footerPanel = new JPanel();
+    
+            titleLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Movie Title", titleFont);
+    
+            posterLabel = new JLabel(); //Poster image
+    
+            descriptionArea = new JTextArea("Movie Description");
+            descriptionArea.setFont(descriptionFont);
+            descriptionArea.setLineWrap(true);
+            descriptionArea.setWrapStyleWord(true);
+            descriptionArea.setEditable(false);
+    
+            screenTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Screen: ", dataTitleFont);
+            screenLabel = DecoratorHelpers.makeLabel(Color.BLACK, "0", dataFont);
+    
+            timeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Screening Time: ", dataTitleFont);
+            timeDropdown = new JComboBox<>();
+            
+            genreTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Genre: ", dataTitleFont);
+            genreLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Movie Genre", dataFont);
+    
+            ratingTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Rating: ", dataTitleFont);
+            ratingLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Movie Rating", dataFont);
+    
+            runtimeTitle = DecoratorHelpers.makeLabel(Color.BLACK, "Runtime: ", dataTitleFont);
+            runtimeLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Movie Runtime", dataFont);
 
             //Title panel with titleLabel
             JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -141,10 +104,12 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             JPanel posterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             posterPanel.add(posterLabel);
 
+            //Screen Panel
             JPanel screenPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             screenPanel.add(screenTitle);
             screenPanel.add(screenLabel);
 
+            //Time Dropdown Panel
             JPanel timesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             timesPanel.add(timeTitle);
             timesPanel.add(timeDropdown);
@@ -195,6 +160,27 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
         } catch (Exception e) {
             System.out.printf("Error making Movie Page: %s%n", e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public void onMovieSelected(Object value) {
+        Movie currentMovie = (Movie) value;
+        timeDropdown = MoviePageController.getInstance().makeDropdownOfShowtimes();
+        titleLabel.setText(currentMovie.getTitle());
+        descriptionArea.setText(currentMovie.getDescription());
+        posterLabel.setIcon(new ImageIcon(currentMovie.getPosterPath()));
+        genreLabel.setText(currentMovie.getGenre());
+        ratingLabel.setText(String.valueOf(currentMovie.getRating()));
+        runtimeLabel.setText(String.valueOf(currentMovie.getRuntime()));
+
+        LocalDate storedDate = LocalDate.parse(currentMovie.getReleaseDate());
+
+        if(currentDate.isBefore(storedDate)){
+            footerPanel = new FooterPanel("heldMovieTicket");
+        }
+        else{
+            footerPanel = new FooterPanel("movieTicket");
         }
     }
 }

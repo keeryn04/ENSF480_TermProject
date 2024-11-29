@@ -21,6 +21,7 @@ import backend.Movie;
 import backend.User;
 import frontend.decorators.ActionListenerDecorator;
 import frontend.decorators.DecoratorHelpers;
+import frontend.pages.MoviePage;
 import frontend.pages.Window;
 
 public class HomePageController implements PageController {
@@ -98,6 +99,9 @@ public class HomePageController implements PageController {
 
         JButton movieButton = DecoratorHelpers.makeButton(buttonColor, Color.WHITE, movieTitle, buttonFont);
         ActionListener listener = e -> {
+            MoviePage movie = MoviePage.getInstance();
+            JPanel moviePage = movie.createPage();
+            Window.getInstance().addPanel("MoviePage", moviePage);
             Window.getInstance().showPanel("MoviePage");
         };
 

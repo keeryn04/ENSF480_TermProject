@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 
 import backend.Movie;
 import backend.Showtime;
 import frontend.observers.MoviePageObserver;
+import frontend.pages.MoviePage;
+import frontend.pages.Window;
 
 public class MoviePageController implements PageController {
     private static MoviePageController instance;
@@ -35,13 +38,16 @@ public class MoviePageController implements PageController {
     private void notifyMovieObservers(Movie value) {
         for (MoviePageObserver observer : observersMovie) {
             observer.onMovieSelected(value);
-            //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
+            System.out.println("Notified Observer: " + observer + " about " + value);
         }
     }
 
     //Setter and Getter
     public Movie getCurrentMovie() { return currentMovie; }
-    public void setCurrentMovie(Movie currentMovie) { this.currentMovie = currentMovie; }
+    public void setCurrentMovie(Movie currentMovie) { 
+        this.currentMovie = currentMovie; 
+        notifyMovieObservers(this.currentMovie);
+    }
 
     public void onUpdate() {
 

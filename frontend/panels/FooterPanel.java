@@ -2,11 +2,8 @@ package frontend.panels;
 
 import javax.swing.*;
 
-import frontend.controllers.AppState;
 import frontend.controllers.ErrorState;
-import frontend.controllers.PaymentPageController;
 import frontend.decorators.DecoratorHelpers;
-import frontend.pages.PaymentSuccessPage;
 import frontend.pages.Window;
 
 import java.awt.*;
@@ -34,21 +31,11 @@ public class FooterPanel extends JPanel {
 
         // Populate button actions
         BUTTON_ACTIONS.put("movieTicket", e -> Window.getInstance().showPanel("SeatMapPage"));
-        BUTTON_ACTIONS.put("continuePurchase", e -> {
-            PaymentPageController paymentState = PaymentPageController.getInstance();
-            if (paymentState.getTicketAmount() == 0) {
-                ErrorState.getInstance().setError("No Tickets Selected");
-            } else {
-                PaymentPageController.getInstance().submitTicketConfirm();
-                ErrorState.getInstance().clearError();
-                Window.getInstance().showPanel("PaymentPage");
-            }
-        });
+        BUTTON_ACTIONS.put("continuePurchase", e -> Window.getInstance().showPanel("PaymentPage"));
         BUTTON_ACTIONS.put("confirmInfo", e -> Window.getInstance().showPanel("ProfilePage"));
         BUTTON_ACTIONS.put("editInfo", e -> Window.getInstance().showPanel("ProfileEditPage"));
         BUTTON_ACTIONS.put("paymentConfirm", e -> {
             Window.getInstance().showPanel("PaymentSuccessPage");
-            PaymentSuccessPage.getInstance().processPaymentSuccess(AppState.getInstance().getCurrentUser());
         });
     }
 
