@@ -8,20 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 
 import backend.Movie;
 import backend.Showtime;
 import frontend.observers.MoviePageObserver;
-import frontend.pages.MoviePage;
-import frontend.pages.Window;
 
 public class MoviePageController implements PageController {
     private static MoviePageController instance;
     private final List<MoviePageObserver> observersMovie = new ArrayList<>();
 
     private Movie currentMovie;
-    private Showtime currentShowtime;
 
     //Singleton management
     public static MoviePageController getInstance() {
@@ -33,6 +29,7 @@ public class MoviePageController implements PageController {
 
     public void addMovieObserver(MoviePageObserver observer) {
         observersMovie.add(observer);
+        System.out.println("Added Observer: " + observer);
     }
 
     private void notifyMovieObservers(Movie value) {
@@ -46,7 +43,7 @@ public class MoviePageController implements PageController {
     public Movie getCurrentMovie() { return currentMovie; }
     public void setCurrentMovie(Movie currentMovie) { 
         this.currentMovie = currentMovie; 
-        notifyMovieObservers(this.currentMovie);
+        notifyMovieObservers(currentMovie);
     }
 
     public void onUpdate() {
@@ -54,7 +51,7 @@ public class MoviePageController implements PageController {
     }
 
     public void onLoad() {
-        notifyMovieObservers(currentMovie);
+
     }
 
     //Helper for making the showtimes dropdown
@@ -79,7 +76,7 @@ public class MoviePageController implements PageController {
             String selectedShowtime = (String) timeDropdown.getSelectedItem(); //Dropdown item selected
         
             if (selectedShowtime != null && !selectedShowtime.equals("No Showtimes Available")) {
-                this.currentShowtime = showtimeMap.get(selectedShowtime);
+                SeatMapPageController.getInstance().setCurrentShowtime(showtimeMap.get(selectedShowtime)); //Update Current Showtime in SeatMapPageController
             }
         });
 

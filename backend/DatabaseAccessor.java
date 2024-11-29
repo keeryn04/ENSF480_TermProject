@@ -1,8 +1,8 @@
 package backend;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 /** Handles database interactions */
 public class DatabaseAccessor {
@@ -11,6 +11,7 @@ public class DatabaseAccessor {
     public static Movie getMovie(int movieId) {
         String query = "SELECT title, genre, duration, rating, poster_path, description, release_date FROM Movies WHERE movie_id = ?";
         ArrayList<Showtime> showtimes = getShowtimes(movieId);
+        Screen screen = getScreen(movieId);
         try (Connection conn = DatabaseConfig.connect();
                 PreparedStatement statement = conn.prepareStatement(query)) {
 
@@ -26,6 +27,7 @@ public class DatabaseAccessor {
                             resultSet.getString("poster_path"),
                             resultSet.getString("description"),
                             resultSet.getString("release_date"), 
+                            movieId, //Screen number is the same as the movie ID
                             showtimes
                             );
                 }
@@ -37,7 +39,7 @@ public class DatabaseAccessor {
     }
 
     public static ArrayList<Showtime> getShowtimes(int movieId) {
-        String query = "SELECT showtime_id, screen_id, screening_time FROM Showtime WHERE movie_id = ?";
+        String query = "SELECT showtime_id, screen_id, screening FROM Showtimes WHERE movie_id = ?";
         ArrayList<Showtime> showtimes = new ArrayList<>();
 
         try (Connection conn = DatabaseConfig.connect(); 
@@ -51,10 +53,11 @@ public class DatabaseAccessor {
                     int showtimeId = resultSet.getInt("showtime_id");
                     Screen screen = getScreen(screenId);
                     ArrayList<Seat> seatmap = getSeatmap(showtimeId, screenId);
+                    LocalDateTime screeningDate = resultSet.getTimestamp("screening").toLocalDateTime();
                     Showtime showtime = new Showtime(
                             showtimeId,
                             screen,
-                            resultSet.getTimestamp("screening_time").toLocalDateTime(),
+                            screeningDate,
                             seatmap
                     );
 
@@ -89,7 +92,7 @@ public class DatabaseAccessor {
 
     public static ArrayList<Seat> getSeatmap(int showtimeId, int screenId) {
         ArrayList<Seat> seatmap = new ArrayList<>();
-        int screenCols = getScreen(screenId).getCols();
+        int screenCols = getScreen(screenId).getScreenCols();
         int screenRows = 10; //10 rows for each screen
 
         //Initialize seatmap with empty Seat objects
@@ -100,12 +103,11 @@ public class DatabaseAccessor {
         }
 
         //Update booked seats from seatmap
-        String query = "SELECT seat_label FROM Tickets WHERE showtime_id = ? AND screen_id = ?";
+        String query = "SELECT seat_label FROM Tickets WHERE showtime_id = ?";
         try (Connection conn = DatabaseConfig.connect(); 
             PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, showtimeId);
-            statement.setInt(2, screenId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -113,7 +115,7 @@ public class DatabaseAccessor {
                     String row = seatLabel.substring(0, 1); 
                     Integer column = Integer.parseInt(seatLabel.substring(1)); 
 
-                    boolean booked = resultSet.getString("status").equals("booked"); 
+                    boolean booked = checkIfSeatIsTaken(showtimeId, seatLabel); 
 
                     seatmap.add(new Seat(row, column, booked));
                 }
@@ -123,6 +125,25 @@ public class DatabaseAccessor {
         }
 
         return seatmap;
+    }
+
+    public static boolean checkIfSeatIsTaken(Integer showtimeId, String seatLabel) {
+        String query = "SELECT COUNT(*) FROM tickets WHERE showtime_id = ? AND seat_label = ?";
+        try (Connection conn = DatabaseConfig.connect();
+                PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, showtimeId);
+            statement.setString(2, seatLabel);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0; // Returns true if at least one ticket exists
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Default to false if there's an error or no ticket found
     }
 
     /*
@@ -265,25 +286,6 @@ public class DatabaseAccessor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public static boolean checkIfSeatIsTaken(Integer showtimeId, String seatLabel) {
-        String query = "SELECT COUNT(*) FROM tickets WHERE showtime_id = ? AND seat_label = ?";
-        try (Connection conn = DatabaseConfig.connect();
-                PreparedStatement statement = conn.prepareStatement(query)) {
-
-            statement.setInt(1, showtimeId);
-            statement.setString(2, seatLabel);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt(1) > 0; // Returns true if at least one ticket exists
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; // Default to false if there's an error or no ticket found
     }
     */
 }

@@ -3,7 +3,10 @@ package frontend.panels;
 import javax.swing.*;
 
 import frontend.controllers.ErrorState;
+import frontend.controllers.MoviePageController;
+import frontend.controllers.SeatMapPageController;
 import frontend.decorators.DecoratorHelpers;
+import frontend.pages.MoviePage;
 import frontend.pages.Window;
 
 import java.awt.*;
@@ -30,7 +33,11 @@ public class FooterPanel extends JPanel {
         BUTTON_LABELS.put("default", null);
 
         // Populate button actions
-        BUTTON_ACTIONS.put("movieTicket", e -> Window.getInstance().showPanel("SeatMapPage"));
+        BUTTON_ACTIONS.put("movieTicket", e -> {
+            //Window.getInstance().addPanel("SeatMapPage", SeatMapPage.getInstance().createPage()); //Make the page
+            //SeatMapPageController.getInstance().getCurrentShowtime(); //Update the page content
+            Window.getInstance().showPanel("SeatMapPage");
+        });
         BUTTON_ACTIONS.put("continuePurchase", e -> Window.getInstance().showPanel("PaymentPage"));
         BUTTON_ACTIONS.put("confirmInfo", e -> Window.getInstance().showPanel("ProfilePage"));
         BUTTON_ACTIONS.put("editInfo", e -> Window.getInstance().showPanel("ProfileEditPage"));

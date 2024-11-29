@@ -1,13 +1,11 @@
 package frontend.pages;
 
 import frontend.controllers.HomePageController;
-import frontend.controllers.MoviePageController;
 import frontend.panels.HeaderPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import javax.swing.JPanel;
 
 /** Makes the HomePage to be displayed with Window */

@@ -30,7 +30,10 @@ public class HomePageController implements PageController {
     private ArrayList<Movie> allMovies;
     private User currentUser;
 
-    public HomePageController() { onLoad(); }
+    public HomePageController() { 
+        allMovies = new ArrayList<>();
+        onLoad();
+    }
 
     //Singleton management
     public static HomePageController getInstance() {
@@ -66,12 +69,12 @@ public class HomePageController implements PageController {
     public JPanel makeMovieSelectionPanel() {
         JPanel movieSelectionPanel = new JPanel();
         Font buttonFont = new Font("Times New Roman", Font.PLAIN, 20);
-
         for (Movie movie : allMovies) {
             JPanel moviePanel = createMoviePanel(movie.getTitle(), movie.getDescription(), movie.getPosterPath(), Color.DARK_GRAY, buttonFont);
             JButton movieButton = (JButton) moviePanel.getComponent(1);
             ActionListener listener = e -> {
-                MoviePageController.getInstance().setCurrentMovie(movie);
+                Window.getInstance().addPanel("MoviePage", MoviePage.getInstance().createPage()); //Make the page
+                MoviePageController.getInstance().setCurrentMovie(movie); //Update the page content
             };
 
             movieButton.addActionListener(listener);
@@ -99,9 +102,6 @@ public class HomePageController implements PageController {
 
         JButton movieButton = DecoratorHelpers.makeButton(buttonColor, Color.WHITE, movieTitle, buttonFont);
         ActionListener listener = e -> {
-            MoviePage movie = MoviePage.getInstance();
-            JPanel moviePage = movie.createPage();
-            Window.getInstance().addPanel("MoviePage", moviePage);
             Window.getInstance().showPanel("MoviePage");
         };
 

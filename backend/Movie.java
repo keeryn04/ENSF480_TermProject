@@ -12,9 +12,10 @@ public class Movie {
     private String posterPath;
     private String description;
     private String releaseDate;
+    private Integer screenNum; //Stores Screen ID for database access
     private ArrayList<Showtime> showtimes;
 
-    public Movie(int movieId, String title, String genre, int runtime, double rating, String posterPath, String description, String releaseDate, ArrayList<Showtime> showtimes) {
+    public Movie(int movieId, String title, String genre, int runtime, double rating, String posterPath, String description, String releaseDate, Integer screenNum, ArrayList<Showtime> showtimes) {
         this.movieId = movieId;
         this.title = title;
         this.genre = genre;
@@ -23,6 +24,7 @@ public class Movie {
         this.posterPath = "./frontend" + posterPath;
         this.description = description;
         this.releaseDate = releaseDate;
+        this.screenNum = screenNum;
         this.showtimes = showtimes;
     }
     

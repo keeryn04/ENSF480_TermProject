@@ -26,6 +26,9 @@ public class MoviePage implements Page, MoviePageObserver {
     //Date today
     LocalDate currentDate = LocalDate.now();
 
+    private JPanel mainPanel;
+    private JPanel timesPanel;
+
     //UI components
     private JLabel titleLabel;
     private JLabel posterLabel;
@@ -44,7 +47,9 @@ public class MoviePage implements Page, MoviePageObserver {
     private JPanel headerPanel;
     private JPanel footerPanel;
 
-    private MoviePage() { MoviePageController.getInstance().onLoad(); }
+    private MoviePage() { 
+        MoviePageController.getInstance().addMovieObserver(this); //Tie MoviePage to MoviePageController
+    }
 
     /**Returns single instance of MoviePage */
     public static MoviePage getInstance() {
@@ -110,7 +115,7 @@ public class MoviePage implements Page, MoviePageObserver {
             screenPanel.add(screenLabel);
 
             //Time Dropdown Panel
-            JPanel timesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            timesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             timesPanel.add(timeTitle);
             timesPanel.add(timeDropdown);
 
@@ -149,7 +154,7 @@ public class MoviePage implements Page, MoviePageObserver {
                     .build();
 
             //Use builder to add all panels in the main layout
-            JPanel mainPanel = new PanelBuilder()
+            mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(headerPanel, BorderLayout.NORTH)
                     .addComponent(contentPanel, BorderLayout.CENTER)
@@ -166,7 +171,11 @@ public class MoviePage implements Page, MoviePageObserver {
     @Override
     public void onMovieSelected(Object value) {
         Movie currentMovie = (Movie) value;
-        timeDropdown = MoviePageController.getInstance().makeDropdownOfShowtimes();
+        JComboBox<String> newDropdown = MoviePageController.getInstance().makeDropdownOfShowtimes(); //Make dropdown based on movie selected
+        timesPanel.remove(timeDropdown); 
+        timesPanel.add(newDropdown);    
+        timeDropdown = newDropdown; //Update dropdown accordingly
+
         titleLabel.setText(currentMovie.getTitle());
         descriptionArea.setText(currentMovie.getDescription());
         posterLabel.setIcon(new ImageIcon(currentMovie.getPosterPath()));
@@ -182,5 +191,8 @@ public class MoviePage implements Page, MoviePageObserver {
         else{
             footerPanel = new FooterPanel("movieTicket");
         }
+
+        mainPanel.revalidate();
+        mainPanel.repaint();
     }
 }
