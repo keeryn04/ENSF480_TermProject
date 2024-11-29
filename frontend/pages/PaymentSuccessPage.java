@@ -54,10 +54,10 @@ public class PaymentSuccessPage implements Page {
             System.out.println("Seat: " + seat);
             String seatRow = seat.replaceAll("[^A-Za-z]", ""); //Extract the alphabetical part
             String colPart = seat.replaceAll("[^0-9]", "");   //Extract the numerical part
-            int seatCol = Integer.parseInt(colPart); //Get integer from string
+            String seat_label = seatRow + colPart;
 
             //Store the ticket in the database
-            DatabaseAccessor.addTicket(user, showtimeId, seatRow, seatCol);
+            DatabaseAccessor.addTicket(user, showtimeId, seat_label);
         }
 
         showEmailPopup(selectedSeats);

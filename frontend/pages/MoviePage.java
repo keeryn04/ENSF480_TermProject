@@ -38,9 +38,12 @@ import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
+import frontend.states.UserState;
 
 public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private static MoviePage instance; // Singleton
+
+    boolean isUserRegistered = false;
 
     //Data fields for movie details
     private Integer movieId = 1;
@@ -124,19 +127,34 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     public JPanel createPage() {
         try {
             //Make header and footer
-            JPanel headerPanel = new HeaderPanel();
+            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
 
+            // Get or create the footer panel
             FooterPanel footerPanel;
+            boolean falseUserInfo = false;
 
-            //ParsedReleaseDate
+            // ParsedReleaseDate
+            releaseDate = MovieState.getInstance().getReleaseDate();
             LocalDate storedDate = LocalDate.parse(releaseDate);
+        
+            try {
+                // Attempt to check the registered status
+                isUserRegistered = UserState.getInstance().isUserRegistered();
+            } catch (Exception e) {
+                falseUserInfo = true;
+            }
 
-            if(currentDate.isBefore(storedDate)){
-                footerPanel = new FooterPanel("heldMovieTicket");
+            String footerType;
+
+            if (currentDate.isBefore(storedDate) && !isUserRegistered) {
+                footerType = "heldMovieTicket";
+            } else if (currentDate.isAfter(storedDate) && !falseUserInfo) {
+                footerType = "movieTicket";
+            } else {
+                footerType = "missingAccount";
             }
-            else{
-                footerPanel = new FooterPanel("movieTicket");
-            }
+
+            footerPanel = new FooterPanel(footerType);
 
             //Title panel with titleLabel
             JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
