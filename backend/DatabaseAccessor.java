@@ -209,15 +209,14 @@ public class DatabaseAccessor {
     }
 
     // Store ticket in the database
-    public static void addTicket(User user, int showtimeId, String seatRow, int seatCol) {
-        String query = "INSERT INTO Tickets (user_id, showtime_id, seat_row, seat_col) VALUES (?, ?, ?, ?)";
+    public static void addTicket(User user, int showtimeId, String seat_label) {
+        String query = "INSERT INTO Tickets (user_id, showtime_id, seat_label) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConfig.connect();
                 PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, user.getID());
             statement.setInt(2, showtimeId);
-            statement.setString(3, seatRow);
-            statement.setInt(4, seatCol);
+            statement.setString(3, seat_label);
             statement.executeUpdate();
 
         } catch (SQLException e) {

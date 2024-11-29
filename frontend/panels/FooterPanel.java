@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FooterPanel extends JPanel {
+public class FooterPanel extends JPanel{
     private JButton backButton;
     private JButton rightButton;
     private JLabel errorLabel;
@@ -27,6 +27,7 @@ public class FooterPanel extends JPanel {
         // Populate button labels
         BUTTON_LABELS.put("movieTicket", "Purchase a Ticket");
         BUTTON_LABELS.put("heldMovieTicket", "Tickets Unavailable: Movie Not Released");
+        BUTTON_LABELS.put("missingAccount", "Tickets Unavailable: Please Log In");
         BUTTON_LABELS.put("continuePurchase", "Continue to Payment");
         BUTTON_LABELS.put("confirmInfo", "Confirm");
         BUTTON_LABELS.put("editInfo", "Edit Info");

@@ -56,4 +56,13 @@ public class UserState {
         user = null;
         notifyUserObservers("User", user);
     }
+
+    public boolean isUserRegistered() {
+        if(user.getRegisteredStatus() == true){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

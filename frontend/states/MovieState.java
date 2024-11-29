@@ -51,7 +51,7 @@ public class MovieState {
     private void notifyMovieObservers(String key, Object value) {
         for (MoviePageObserver observer : observersMovie) {
             observer.onMovieSelected(key, value);
-            //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
+            System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
     }
 
@@ -136,7 +136,7 @@ public class MovieState {
         notifyMovieObservers("screenNum", screenNum);
     }
 
-    public String geReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
