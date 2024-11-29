@@ -42,6 +42,8 @@ import frontend.states.SeatMapState;
 public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private static MoviePage instance; // Singleton
 
+    boolean isUserRegistered = false;
+
     //Data fields for movie details
     private Integer movieId = 1;
     private String movieTitle = "Movie Title";
@@ -127,16 +129,29 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
 
             FooterPanel footerPanel;
+            boolean falseUserInfo = false;
 
             //ParsedReleaseDate
             LocalDate storedDate = LocalDate.parse(releaseDate);
-            boolean isUserRegistered = UserState.getInstance().isUserRegistered();
+            
+            try {
+                // Attempt to check the registered status
+                isUserRegistered = UserState.getInstance().isUserRegistered();
+            } catch (Exception e) {
+                // Handle the exception and log it
+                System.out.println("Error checking user registered status: " + e.getMessage());
+                // Fallback to default value
+                falseUserInfo = true;
+            }
 
             if(currentDate.isBefore(storedDate) && (isUserRegistered == false)){
                 footerPanel = new FooterPanel("heldMovieTicket");
             }
-            else{
+            else if (currentDate.isAfter(storedDate) && (falseUserInfo == false)) {
                 footerPanel = new FooterPanel("movieTicket");
+            }
+            else {
+                footerPanel = new FooterPanel("missingAccount");
             }
 
             //Title panel with titleLabel
