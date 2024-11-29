@@ -1,5 +1,5 @@
 # Movie Theatre Reservation App  
-**ENSF 3480 Term Project**  
+**ENSF 480 Term Project**  
 
 **Group Number**: L01-02  
 
