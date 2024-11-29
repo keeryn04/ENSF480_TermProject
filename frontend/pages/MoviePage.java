@@ -140,14 +140,12 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             try {
                 // Attempt to check the registered status
                 isUserRegistered = UserState.getInstance().isUserRegistered();
+                falseUserInfo = false;
             } catch (Exception e) {
-                // Handle the exception and log it
-                System.out.println("Error checking user registered status: " + e.getMessage());
-                // Fallback to default value
                 falseUserInfo = true;
             }
 
-            String footerType; // Hold the footer type here
+            String footerType;
 
             if (currentDate.isBefore(storedDate) && !isUserRegistered) {
                 footerType = "heldMovieTicket";
@@ -157,7 +155,6 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
                 footerType = "missingAccount";
             }
 
-            // Create the footer panel
             footerPanel = new FooterPanel(footerType);
 
             //Title panel with titleLabel
@@ -289,6 +286,32 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             genreLabel.setText(movieGenre);
             ratingLabel.setText(movieRating);
             runtimeLabel.setText(movieRuntime);
+
+            // Get or create the footer panel
+            FooterPanel footerPanel;
+            boolean falseUserInfo = false;
+
+            // ParsedReleaseDate
+            releaseDate = MovieState.getInstance().getReleaseDate();
+            LocalDate storedDate = LocalDate.parse(releaseDate);
+        
+            try {
+                // Attempt to check the registered status
+                isUserRegistered = UserState.getInstance().isUserRegistered();
+                falseUserInfo = false;
+            } catch (Exception e) {
+                falseUserInfo = true;
+            }
+
+            String footerType;
+
+            if (currentDate.isBefore(storedDate) && !isUserRegistered) {
+                footerType = "heldMovieTicket";
+            } else if (currentDate.isAfter(storedDate) && !falseUserInfo) {
+                footerType = "movieTicket";
+            } else {
+                footerType = "missingAccount";
+            }
         });
     }
 

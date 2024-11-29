@@ -1,14 +1,16 @@
 package frontend.pages;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.border.Border;
+
+import backend.DatabaseAccessor;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
+import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
+import frontend.states.AppState;
 import frontend.states.UserState;
 
 public class SignUpPage implements Page {
@@ -23,17 +25,14 @@ public class SignUpPage implements Page {
     private JPanel passwordFieldPanel;
     private JPanel passwordReEntryFieldPanel;
 
+    private Font labelFont;
+
     private SignUpPage() {
         // Initialize UI components
-        Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
-        //FIX THIS EVAN ITS ME I WILL DO IT TRUST ME
-        //emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
-        //passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
-        //passwordReEntryFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "ReEnter Password", labelFont, 20,
-        //        null);
-
-        // Register with MovieState
-        // UserState.getInstance().addSignupPageObserver(this);
+        labelFont = new Font("Times New Roman", Font.BOLD, 18);
+        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 40, null, new Dimension(10, 1));
+        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 40, null, new Dimension(10, 1));
+        passwordReEntryFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "ReEnter Password", labelFont, 40, null, new Dimension(10, 1));
     }
 
     /** Returns single instance of LoginPage */
@@ -48,35 +47,82 @@ public class SignUpPage implements Page {
     public JPanel createPage() {
         try {
             // Header and Footer
-            JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
-            // JPanel footerPanel = DecoratorHelpers.createFooterPanel("confirmInfo");
+            JPanel titlePanel = new HeaderPanel();
+            JPanel footerPanel = new FooterPanel("default");
 
             // Profile panel
             JPanel editPanel = new JPanel();
-            editPanel.setLayout(new FlowLayout());
-            editPanel.setBorder(BorderFactory.createTitledBorder("Edit Profile"));
-
+            editPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+            
             // Add components to panel
             editPanel.add(emailFieldPanel);
             editPanel.add(passwordFieldPanel);
+            editPanel.add(passwordReEntryFieldPanel);
+            editPanel.add(createSignUpButton());
 
             // Combine all panels in main layout
             JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(editPanel, BorderLayout.CENTER)
-                    // .addComponent(footerPanel, BorderLayout.SOUTH)
+                    .addComponent(footerPanel, BorderLayout.SOUTH)
                     .build();
 
             return mainPanel;
         } catch (Exception e) {
-            System.out.printf("Error making Login Page: %s%n", e.getMessage());
+            System.out.printf("Error making Signup Page: %s%n", e.getMessage());
             return null;
         }
     }
 
+    private JButton createSignUpButton() {
+        JButton signUpButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Sign Up", labelFont);
+        signUpButton.addActionListener(e -> validateSignUp());
+        return signUpButton;
+    }
+
+
     /** Check the login info with database / cached data */
-    private Boolean checkForLogin() {
+    private Boolean validateSignUp() {
+        Component[] emailPanelComponents = emailFieldPanel.getComponents();
+        Component[] passwordPanelComponents = passwordFieldPanel.getComponents();
+        Component[] passwordReEntryPanelComponents = passwordReEntryFieldPanel.getComponents();
+
+        for (Component component : emailPanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("Email")) {
+                JTextField j = (JTextField) component;
+                email = j.getText();
+                break;
+            }
+        }
+
+        for (Component component : passwordPanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("Password")) {
+                JTextField j = (JTextField) component;
+                password = j.getText();
+                break;
+            }
+        }
+
+        for (Component component : passwordReEntryPanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("ReEnter Password")) {
+                JTextField j = (JTextField) component;
+                password_ReEntry = j.getText();
+                break;
+            }
+        }
+
+        if (!password.equals(password_ReEntry)) {
+            System.err.println("Passwords dont match");
+            System.err.println(password);
+            System.err.println(password_ReEntry);
+        }
+        else if (AppState.getInstance().getUserEmails().contains(email))
+            System.err.println("User email already exists");
+        else {
+            DatabaseAccessor.addNewUser(email, password);
+            Window.getInstance().showPanel("Home");
+        }
         return true;
     }
 
