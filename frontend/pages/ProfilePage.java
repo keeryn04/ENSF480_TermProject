@@ -15,6 +15,7 @@ import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.UserState;
 
 import backend.User;
@@ -66,7 +67,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
     public JPanel createPage() {
         try {
             // Header and Footer Panels
-            JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
+            JPanel titlePanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("editInfo");
 
             // Profile panel

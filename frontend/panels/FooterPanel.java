@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FooterPanel extends JPanel {
+public class FooterPanel extends JPanel{
     private JButton backButton;
     private JButton rightButton;
     private JLabel errorLabel;
@@ -59,7 +59,7 @@ public class FooterPanel extends JPanel {
 
         Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
 
-        backButton = createBackButton(buttonFont);
+        backButton = createBackButton(type, buttonFont);
         rightButton = createRightButton(type, buttonFont);
         errorLabel = createErrorLabel();
 
@@ -71,8 +71,9 @@ public class FooterPanel extends JPanel {
         ErrorState.getInstance().addErrorObserver(this::updateErrorLabel);
     }
 
-    private JButton createBackButton(Font font) {
+    private JButton createBackButton(String type, Font font) {
         JButton backButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Back to Home", font);
+
         backButton.addActionListener(e -> {
             Window.getInstance().showPanel("Home");
             ErrorState.getInstance().clearError();

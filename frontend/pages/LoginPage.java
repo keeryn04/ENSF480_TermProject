@@ -5,6 +5,8 @@ import java.awt.*;
 import javax.swing.*;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
+import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.UserState;
 
 import backend.User;
@@ -24,12 +26,7 @@ public class LoginPage implements Page, LoginPageObserver {
 
     private LoginPage() {
         // Initialize UI components
-        //FIX THIS EVAN ME I HAVE TO
-        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null, new Dimension(10, 1));
-        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null, new Dimension(10, 1));
         loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
-        // Register with MovieState
-        // UserState.getInstance().addLoginPageObserver(this);
     }
 
     /** Returns single instance of LoginPage */
@@ -44,7 +41,11 @@ public class LoginPage implements Page, LoginPageObserver {
     public JPanel createPage() {
         try {
             // Header and Footer
-            JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
+            emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null, new Dimension(10, 1));
+            passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null, new Dimension(10, 1));
+        
+            JPanel titlePanel = new HeaderPanel();
+            JPanel footerPanel = new FooterPanel("login");
             // JPanel footerPanel = DecoratorHelpers.createFooterPanel("confirmInfo");
 
             // Profile panel
@@ -62,7 +63,7 @@ public class LoginPage implements Page, LoginPageObserver {
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(editPanel, BorderLayout.CENTER)
-                    // .addComponent(footerPanel, BorderLayout.SOUTH)
+                    .addComponent(footerPanel, BorderLayout.SOUTH)
                     .build();
 
             return mainPanel;
@@ -100,8 +101,16 @@ public class LoginPage implements Page, LoginPageObserver {
         }
 
         boolean loggedIn = UserState.getInstance().logInUser(email, password);
-        if (loggedIn)
+        if (loggedIn) {
+            Window.getInstance().refreshPages();
             Window.getInstance().showPanel("ProfilePage");
+            
+        }
+    }
+
+    public void refreshPage() {
+        JPanel page = createPage();
+        Window.getInstance().addPanel("LoginPage", page);
     }
 
     /** Update login data based on LoginState data */

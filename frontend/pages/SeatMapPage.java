@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,6 +15,7 @@ import frontend.decorators.BorderDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.MovieState;
 import frontend.states.PaymentState;
 import frontend.states.SeatMapState;
@@ -26,9 +26,6 @@ public class SeatMapPage implements Page, SeatMapObserver {
 
     private Integer rows;
     private Integer cols;
-
-    //Date today
-    LocalDate currentDate = LocalDate.now();
 
     //UI components
     private JPanel seatmapPanel;
@@ -64,7 +61,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
     public JPanel createPage() {
         try {            
             //Create header and footer
-            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
+            JPanel headerPanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("continuePurchase");
 
             //Layout setup
@@ -93,59 +90,40 @@ public class SeatMapPage implements Page, SeatMapObserver {
 
         Font seatFont = new Font("Times New Roman", Font.PLAIN, 12);
         Font screenFont = new Font("Times New Roman", Font.BOLD, 20);
-        String releaseDate = MovieState.getInstance().getReleaseDate();
-        LocalDate storedDate = LocalDate.parse(releaseDate);
-        JButton seatButton;
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                if (currentDate.isBefore(storedDate) && row != 4) {
-                    // Set seat color based on availability
-                    Color seatColor = Color.GRAY;
-        
-                    seatButton = DecoratorHelpers.makeButton(
+                // Seat label (e.g., A1, B2)
+                String seatLabel = "" + (char) ('A' + row) + (col + 1);
+
+                // Check if a ticket exists for this seat and showtime
+                boolean isSeatTaken = DatabaseAccessor.checkIfSeatIsTaken(MovieState.getInstance().getShowtimeId(), seatLabel);
+
+                // Set seat color based on availability
+                Color seatColor = isSeatTaken ? Color.GRAY : Color.LIGHT_GRAY;
+
+                JButton seatButton = DecoratorHelpers.makeButton(
                         seatColor,
                         Color.BLACK,
                         "" + (char) ('A' + row) + (col + 1),
                         seatFont
-                    );
-                } else {
-                    // Seat label (e.g., A1, B2)
-                    String seatLabel = "" + (char) ('A' + row) + (col + 1);
-        
-                    // Check if a ticket exists for this seat and showtime
-                    boolean isSeatTaken = DatabaseAccessor.checkIfSeatIsTaken(MovieState.getInstance().getShowtimeId(), seatLabel);
-        
-                    // Set seat color based on availability
-                    Color seatColor = isSeatTaken ? Color.GRAY : Color.LIGHT_GRAY;
-        
-                    seatButton = DecoratorHelpers.makeButton(
-                        seatColor,
-                        Color.BLACK,
-                        "" + (char) ('A' + row) + (col + 1),
-                        seatFont
-                    );
-                }
-        
-                // Create a final copy of seatButton
-                final JButton finalSeatButton = seatButton;
-        
-                // Add color-changing functionality to each seat
-                finalSeatButton.addActionListener(e -> {
-                    if (finalSeatButton.getBackground().equals(Color.LIGHT_GRAY)) {
-                        finalSeatButton.setBackground(Color.GREEN); // Selected
-                        SeatMapState.getInstance().addSelectedSeat(finalSeatButton.getText());
-                    } else if (finalSeatButton.getBackground().equals(Color.GREEN)) {
-                        finalSeatButton.setBackground(Color.LIGHT_GRAY); // Deselected
-                        SeatMapState.getInstance().removeSelectedSeat(finalSeatButton.getText());
+                );
+
+                //Add color-changing functionality to each seat
+                seatButton.addActionListener(e -> {
+                    if (seatButton.getBackground().equals(Color.LIGHT_GRAY)) {
+                        seatButton.setBackground(Color.GREEN); //Selected
+                        SeatMapState.getInstance().addSelectedSeat(seatButton.getText());
+                    } else if (seatButton.getBackground().equals(Color.GREEN)) {
+                        seatButton.setBackground(Color.LIGHT_GRAY); //Deselected
+                        SeatMapState.getInstance().removeSelectedSeat(seatButton.getText());
                     }
                 });
-        
-                seats[row][col] = finalSeatButton;
-                seatPanel.add(finalSeatButton);
+
+                seats[row][col] = seatButton;
+                seatPanel.add(seatButton);
             }
         }
-        
 
         resetSeats(seats); //Initialize seat colors
 

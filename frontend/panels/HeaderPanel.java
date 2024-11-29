@@ -3,6 +3,7 @@ package frontend.panels;
 import javax.swing.*;
 
 import frontend.decorators.DecoratorHelpers;
+import frontend.pages.LoginPage;
 import frontend.pages.Window;
 import frontend.states.UserState;
 
@@ -33,12 +34,16 @@ public class HeaderPanel extends JPanel {
         // CHANGE THE SHOW PANEL NAMES WHEN PAGES ARE ADDED! THIS IS FOR TESTING
         // PURPOSES
         // Actions buttons when not signed in
-        LEFT_BUTTON_ACTIONS.put("notSignedIn", e -> Window.getInstance().showPanel("LoginPage"));
-        RIGHT_BUTTON_ACTIONS.put("notSignedIn", e -> Window.getInstance().showPanel("LoginPage"));
+        LEFT_BUTTON_ACTIONS.put("notSignedIn", e -> {Window.getInstance().showPanel("LoginPage");
+                                                            LoginPage.getInstance().refreshPage();});
+        RIGHT_BUTTON_ACTIONS.put("notSignedIn", e -> {Window.getInstance().showPanel("LoginPage");
+                                                            LoginPage.getInstance().refreshPage();});
 
         // Actions for buttons when signed in
-        LEFT_BUTTON_ACTIONS.put("signedIn", e -> Window.getInstance().showPanel("LoginPage"));
-        RIGHT_BUTTON_ACTIONS.put("signedIn", e -> Window.getInstance().showPanel("LoginPage"));
+        LEFT_BUTTON_ACTIONS.put("signedIn", e -> Window.getInstance().showPanel("ProfilePage"));
+        RIGHT_BUTTON_ACTIONS.put("signedIn", e -> { UserState.getInstance().logOutUser();
+                                                        Window.getInstance().refreshPages();
+                                                        Window.getInstance().showPanel("Home");});
 
     }
 

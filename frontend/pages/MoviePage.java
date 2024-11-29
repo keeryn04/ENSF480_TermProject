@@ -34,10 +34,11 @@ import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
-import frontend.states.UserState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
+import frontend.states.UserState;
 
 public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private static MoviePage instance; // Singleton
@@ -128,12 +129,14 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             //Make header and footer
             JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
 
+            // Get or create the footer panel
             FooterPanel footerPanel;
             boolean falseUserInfo = false;
 
-            //ParsedReleaseDate
+            // ParsedReleaseDate
+            releaseDate = MovieState.getInstance().getReleaseDate();
             LocalDate storedDate = LocalDate.parse(releaseDate);
-            
+        
             try {
                 // Attempt to check the registered status
                 isUserRegistered = UserState.getInstance().isUserRegistered();
@@ -144,15 +147,18 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
                 falseUserInfo = true;
             }
 
-            if(currentDate.isBefore(storedDate) && (isUserRegistered == false)){
-                footerPanel = new FooterPanel("heldMovieTicket");
+            String footerType; // Hold the footer type here
+
+            if (currentDate.isBefore(storedDate) && !isUserRegistered) {
+                footerType = "heldMovieTicket";
+            } else if (currentDate.isAfter(storedDate) && !falseUserInfo) {
+                footerType = "movieTicket";
+            } else {
+                footerType = "missingAccount";
             }
-            else if (currentDate.isAfter(storedDate) && (falseUserInfo == false)) {
-                footerPanel = new FooterPanel("movieTicket");
-            }
-            else {
-                footerPanel = new FooterPanel("missingAccount");
-            }
+
+            // Create the footer panel
+            footerPanel = new FooterPanel(footerType);
 
             //Title panel with titleLabel
             JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
