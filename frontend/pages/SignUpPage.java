@@ -1,14 +1,12 @@
 package frontend.pages;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import javax.swing.*;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
+import frontend.panels.FooterPanel;
+import frontend.panels.HeaderPanel;
 import frontend.states.UserState;
 
 public class SignUpPage implements Page {
@@ -26,14 +24,9 @@ public class SignUpPage implements Page {
     private SignUpPage() {
         // Initialize UI components
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
-        //FIX THIS EVAN ITS ME I WILL DO IT TRUST ME
-        //emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null);
-        //passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null);
-        //passwordReEntryFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "ReEnter Password", labelFont, 20,
-        //        null);
-
-        // Register with MovieState
-        // UserState.getInstance().addSignupPageObserver(this);
+        emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 20, null, new Dimension(10, 1));
+        passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 20, null, new Dimension(10, 1));
+        passwordReEntryFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "ReEnter Password", labelFont, 20, null, new Dimension(10, 1));
     }
 
     /** Returns single instance of LoginPage */
@@ -48,29 +41,29 @@ public class SignUpPage implements Page {
     public JPanel createPage() {
         try {
             // Header and Footer
-            JPanel titlePanel = DecoratorHelpers.createHeaderPanel();
-            // JPanel footerPanel = DecoratorHelpers.createFooterPanel("confirmInfo");
+            JPanel titlePanel = new HeaderPanel();
+            JPanel footerPanel = new FooterPanel("default");
 
             // Profile panel
             JPanel editPanel = new JPanel();
             editPanel.setLayout(new FlowLayout());
-            editPanel.setBorder(BorderFactory.createTitledBorder("Edit Profile"));
-
+            
             // Add components to panel
             editPanel.add(emailFieldPanel);
             editPanel.add(passwordFieldPanel);
+            editPanel.add(passwordReEntryFieldPanel);
 
             // Combine all panels in main layout
             JPanel mainPanel = new PanelBuilder()
                     .setLayout(new BorderLayout())
                     .addComponent(titlePanel, BorderLayout.NORTH)
                     .addComponent(editPanel, BorderLayout.CENTER)
-                    // .addComponent(footerPanel, BorderLayout.SOUTH)
+                    .addComponent(footerPanel, BorderLayout.SOUTH)
                     .build();
 
             return mainPanel;
         } catch (Exception e) {
-            System.out.printf("Error making Login Page: %s%n", e.getMessage());
+            System.out.printf("Error making Signup Page: %s%n", e.getMessage());
             return null;
         }
     }

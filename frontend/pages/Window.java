@@ -77,7 +77,11 @@ public class Window {
 
         LoginPage login = LoginPage.getInstance();
         JPanel loginPanel = login.createPage();
-        window.addPanel("LoginPage", loginPanel);   
+        window.addPanel("LoginPage", loginPanel);  
+
+        SignUpPage signUp = SignUpPage.getInstance();
+        JPanel signUpPanel = signUp.createPage();
+        window.addPanel("SignUpPage", signUpPanel);
 
         ProfilePage profile = ProfilePage.getInstance();
         JPanel profilePanel = profile.createPage();
@@ -113,7 +117,11 @@ public class Window {
 
         LoginPage login = LoginPage.getInstance();
         JPanel loginPanel = login.createPage();
-        window.addPanel("LoginPage", loginPanel);   
+        window.addPanel("LoginPage", loginPanel);  
+        
+        SignUpPage signUp = SignUpPage.getInstance();
+        JPanel signUpPanel = signUp.createPage();
+        window.addPanel("SignUpPage", signUpPanel);
 
         ProfilePage profile = ProfilePage.getInstance();
         JPanel profilePanel = profile.createPage();
