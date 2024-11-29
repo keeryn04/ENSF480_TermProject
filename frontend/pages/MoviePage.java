@@ -140,6 +140,7 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             try {
                 // Attempt to check the registered status
                 isUserRegistered = UserState.getInstance().isUserRegistered();
+                falseUserInfo = false;
             } catch (Exception e) {
                 falseUserInfo = true;
             }
@@ -285,6 +286,32 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             genreLabel.setText(movieGenre);
             ratingLabel.setText(movieRating);
             runtimeLabel.setText(movieRuntime);
+
+            // Get or create the footer panel
+            FooterPanel footerPanel;
+            boolean falseUserInfo = false;
+
+            // ParsedReleaseDate
+            releaseDate = MovieState.getInstance().getReleaseDate();
+            LocalDate storedDate = LocalDate.parse(releaseDate);
+        
+            try {
+                // Attempt to check the registered status
+                isUserRegistered = UserState.getInstance().isUserRegistered();
+                falseUserInfo = false;
+            } catch (Exception e) {
+                falseUserInfo = true;
+            }
+
+            String footerType;
+
+            if (currentDate.isBefore(storedDate) && !isUserRegistered) {
+                footerType = "heldMovieTicket";
+            } else if (currentDate.isAfter(storedDate) && !falseUserInfo) {
+                footerType = "movieTicket";
+            } else {
+                footerType = "missingAccount";
+            }
         });
     }
 

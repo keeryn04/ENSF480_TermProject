@@ -52,14 +52,8 @@ public class PaymentSuccessPage implements Page {
         //Store each ticket in the database
         for (String seat : selectedSeats) {
             System.out.println("Seat: " + seat);
-            String seatRow = seat.replaceAll("[^A-Za-z]", ""); //Extract the alphabetical part
-            String colPart = seat.replaceAll("[^0-9]", "");   //Extract the numerical part
-            String seat_label = seatRow + colPart;
-
-            //Store the ticket in the database
-            DatabaseAccessor.addTicket(user, showtimeId, seat_label);
+            DatabaseAccessor.addTicket(user, showtimeId, seat);
         }
-
         showEmailPopup(selectedSeats);
     }
 
