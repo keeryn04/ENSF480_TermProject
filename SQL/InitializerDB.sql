@@ -70,6 +70,7 @@ INSERT INTO Tickets (user_id, showtime_id, seat_label)
 VALUES
     (1, 1, "E2"), -- John Doe reserves seat A1 for Inception
     (2, 4, "E4"), -- Jane Smith reserves seat A2 for Inception
+    (3, 5, "A1"), -- Alice Johnson has a ticket A1 for Venom at 16:00:00
     (3, 2, "B3"), -- Alice Johnson reserves seat B3 for The Dark Knight
     (4, 3, "C4"); -- Bob Brown reserves seat C4 for Interstellar
 

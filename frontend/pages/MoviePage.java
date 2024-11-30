@@ -25,7 +25,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import backend.Movie;
 import backend.Showtime;
@@ -34,7 +33,6 @@ import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.SeatMapObserver;
 import frontend.panels.FooterPanel;
-import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
@@ -288,7 +286,6 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             runtimeLabel.setText(movieRuntime);
 
             // Get or create the footer panel
-            FooterPanel footerPanel;
             boolean falseUserInfo = false;
 
             // ParsedReleaseDate
@@ -363,6 +360,7 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
         JButton movieButton = DecoratorHelpers.makeButton(buttonColor, Color.WHITE, movieTitle, buttonFont);
         ActionListener listener = e -> {
             MoviePage.getInstance().updateContent();
+            MoviePage.getInstance().updateDropdown();
             Window.getInstance().showPanel("MoviePage");
         };
 
@@ -393,13 +391,20 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private void loadShowtimesDropdowns(Integer movieId) {
         List<String> showtimes = getShowtimesForMovie(movieId);
     
-        timeDropdown.removeAllItems();
+        timeDropdown.removeAllItems(); //Remove old items
     
         if (showtimes.isEmpty()) {
             timeDropdown.addItem("No Showtimes Available");
         } else {
             for (String showtime : showtimes) {
                 timeDropdown.addItem(showtime);
+            }
+
+            if (timeDropdown.getItemCount() > 0) {
+                String selectedShowtime = (String) timeDropdown.getSelectedItem();
+                if (selectedShowtime != null) {
+                    handleDropdownChange(selectedShowtime); //Update showtimeId
+                }
             }
         }
 
@@ -416,15 +421,13 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
 
     private void handleDropdownChange(String selectedShowtime) {
         //Extract details if the showtime includes runtime or screen info
-        System.out.println("Selected Showtime: " + selectedShowtime);
-    
-        // Optionally, update the screenId or other movie-related data
         Showtime selectedShowtimeData = findShowtimeData(selectedShowtime);
         if (selectedShowtimeData != null) {
             screenId = selectedShowtimeData.getScreenId();
             int showtimeId = selectedShowtimeData.getShowtimeId(); //Local as its not displayed anywhere, just stored for db access
             MovieState.getInstance().setShowtimeId(showtimeId);
             updateContent(); //Refresh content on the page
+            SeatMapPage.getInstance().updateContent();
         }
     }
     

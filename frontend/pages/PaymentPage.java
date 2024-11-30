@@ -36,7 +36,6 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     //Stored info (For signed in user)
     private String cardNum;
     private String cardDate;
-    //private String cardCVV;
 
     //Update depending on what purchased
     private String itemPurchased;
@@ -115,7 +114,6 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
                 if (currentUser != null) { //User is logged in, has data stored to autofill
                     cardNum = String.valueOf(currentUser.getCardNumber());
                     cardDate = currentUser.getCardExpiry();
-                    //cardCVV = currentUser.getCardCvv();
 
                     //Autofill fields
                     cardNumPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", dataTitleFont, 20, cardNum, null);
