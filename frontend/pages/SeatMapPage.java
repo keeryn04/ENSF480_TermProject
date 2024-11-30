@@ -46,13 +46,6 @@ public class SeatMapPage implements Page, SeatMapObserver {
 
         contentPanel = new JPanel();
 
-        String showtimeId = String.valueOf(MovieState.getInstance().getShowtimeId());
-        if (showtimeId == null || showtimeId.isEmpty()) {
-            // Handle case where showtimeId is not available yet
-            System.out.println("Showtime ID is not available. Wait until it's fetched.");
-            return; // Or show a loading spinner, or retry after a delay
-        }
-
         //Register with SeatMapState
         SeatMapState.getInstance().addSeatMapObserver(this); 
     }
