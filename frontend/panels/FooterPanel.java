@@ -3,6 +3,7 @@ package frontend.panels;
 import javax.swing.*;
 
 import frontend.decorators.DecoratorHelpers;
+import frontend.pages.EditProfilePage;
 import frontend.pages.PaymentSuccessPage;
 import frontend.pages.Window;
 import frontend.states.AppState;
@@ -47,7 +48,7 @@ public class FooterPanel extends JPanel{
             }
         });
         BUTTON_ACTIONS.put("confirmInfo", e -> Window.getInstance().showPanel("ProfilePage"));
-        BUTTON_ACTIONS.put("editInfo", e -> Window.getInstance().showPanel("ProfileEditPage"));
+        BUTTON_ACTIONS.put("editInfo", e -> {EditProfilePage.getInstance().refreshPage(); Window.getInstance().showPanel("ProfileEditPage");});
         BUTTON_ACTIONS.put("paymentConfirm", e -> {
             Window.getInstance().showPanel("PaymentSuccessPage");
             PaymentSuccessPage.getInstance().processPaymentSuccess(UserState.getInstance().getUser());

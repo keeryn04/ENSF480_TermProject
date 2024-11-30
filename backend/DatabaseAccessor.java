@@ -224,13 +224,32 @@ public class DatabaseAccessor {
             statement.setString(5, creditCardExpDate);
             statement.setDate(6, Date.valueOf(LocalDate.now()));
             statement.setString(7, email);
-            System.err.println(String.valueOf(statement));
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         UserState.getInstance().logInUser(email, UserState.getInstance().getUser().getPassword());
+    }
+
+    public static void updateUser(String name, String email, String password, String address, Long creditCardNum, String creditCardExpDate) {
+        String query = "UPDATE users SET name = ?, email = ?, password = ?, address = ?, card_number = ?, card_exp_date = ? WHERE email = ?";
+        try (Connection conn = DatabaseConfig.connect();
+                PreparedStatement statement = conn.prepareStatement(query)) {
+            
+            statement.setString(1, name);
+            statement.setString(2, email);
+            statement.setString(3, password);
+            statement.setString(4, address);
+            statement.setLong(5, creditCardNum);
+            statement.setString(6, creditCardExpDate);
+            statement.setString(7, UserState.getInstance().getUser().getEmail());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        UserState.getInstance().logInUser(email, password);
     }
 
     // Store ticket in the database

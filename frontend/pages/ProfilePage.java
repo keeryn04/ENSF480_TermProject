@@ -151,7 +151,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
                 addressLabel.setText("Address: " + user.getAddress());
                 creditBalanceLabel.setText("Credit Balanace: $" + String.valueOf(user.getCreditBalance()));
                 cardNumLabel.setText("Credit / Debit Card Number: " + user.getCardNumber());
-                cardDateLabel.setText("Credit / Debit Expiration Date: ");// WE DONT HAVE A CARD DATE IN THE SQL
+                cardDateLabel.setText("Credit / Debit Expiration Date: " + user.getCardExpiry());
 
                 contentPanel.revalidate();
                 contentPanel.repaint();
