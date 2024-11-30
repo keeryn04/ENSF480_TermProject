@@ -37,6 +37,7 @@ import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
 import frontend.states.UserState;
+import frontend.panels.HeaderPanel;
 
 public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private static MoviePage instance; // Singleton
