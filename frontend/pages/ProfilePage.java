@@ -43,10 +43,11 @@ public class ProfilePage implements Page, ProfilePageObserver {
     private JScrollPane listScroller;
 
     private ProfilePage() {
-        // Fonts and Labels
+        // Fonts
         Font nameFont = new Font("Times New Roman", Font.BOLD, 24);
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
 
+        //Labels
         emailLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Email: ", labelFont);
         nameLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Name: ", nameFont);
         addressLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Address: ", labelFont);
@@ -54,15 +55,18 @@ public class ProfilePage implements Page, ProfilePageObserver {
         cardNumLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Credit Card Number: ", labelFont);
         cardDateLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Exiration Date: ", labelFont);
         
+        //Buttons
         registerButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Register Your Account", labelFont);
         registerButton.addActionListener(e -> {Window.getInstance().showPanel("RegisterPage");});
-
         cancelTicketButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Cancel Selected Tickets", labelFont);
         cancelTicketButton.addActionListener(e -> {cancelSelectedTickets();});
 
+        //List for the tickets
         ticketList = new JList<String>(); //data has type Object[]
 
-        // Register with ProfileState
+        // Adding profile observers to User state and the payment success page
+        //If user is updated, the page is updated
+        //If a payment is made and tickets are purchased the same happens
         UserState.getInstance().addProfilePageObserver(this);
         PaymentSuccessPage.getInstance().addProfileObserver(this);
     }
@@ -81,19 +85,20 @@ public class ProfilePage implements Page, ProfilePageObserver {
     public JPanel createPage() {
         try {
             // Header and Footer Panels
-            contentPanel = new JPanel();
             JPanel titlePanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("editInfo");
             
 
             // Profile panel
+            contentPanel = new JPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
             contentPanel = (JPanel) new BackgroundColorDecorator(contentPanel, Color.WHITE).getDecoratedComponent();
             contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
             user = UserState.getInstance().getUser();
             if (user != null) {
-                if (user.getRegisteredStatus() == false)    //What to show if the user isn't registered
+                if (user.getRegisteredStatus() == false)    
                 {
+                    //What to show if the user isn't registered
                     contentPanel.add(nameLabel);
                     contentPanel.add(Box.createVerticalStrut(10));
                     contentPanel.add(emailLabel);
@@ -102,8 +107,9 @@ public class ProfilePage implements Page, ProfilePageObserver {
                     contentPanel.add(Box.createVerticalStrut(50));
                     contentPanel.add(registerButton);
                 }
-                else //What to show if the uses is registered
+                else 
                 {
+                    //What to show if the uses is registered
                     contentPanel.add(nameLabel);
                     contentPanel.add(Box.createVerticalStrut(10));
                     contentPanel.add(emailLabel);
@@ -117,9 +123,8 @@ public class ProfilePage implements Page, ProfilePageObserver {
                     contentPanel.add(cardDateLabel);
                 }
             }
+            //Add the button for canceling tickets
             contentPanel.add(cancelTicketButton);
-            // Add labels to the panel
-            
 
             // Combine all panels in the main layout
             JPanel mainPanel = new PanelBuilder()
@@ -142,11 +147,11 @@ public class ProfilePage implements Page, ProfilePageObserver {
         // React to changes from AppState
         switch (key) {
             case "User":
-                user = (User) value;
+                user = (User) value;    //User updated
                 updateContent();
                 break;
             case "Tickets Bought":
-                updateContent();
+                updateContent();    //Tickets purchased
                 break;
             default:
                 break;
@@ -155,6 +160,8 @@ public class ProfilePage implements Page, ProfilePageObserver {
 
     /**
      * Updates the ProfilePage data and UI components.
+     * Changes the value stored in each label based on what the current user is 
+     * Also updates the ticket list
      */
     public void updateContent() {
         SwingUtilities.invokeLater(() -> {
@@ -180,6 +187,11 @@ public class ProfilePage implements Page, ProfilePageObserver {
         });
     }
 
+    /*
+     * Updates the ticket list
+     * This gets all the tickets for the user, stores them, then loops over each adding them, plus all relavant data to the list model
+     * It then removes whatever current list is there and adds a new one created from the list model all within a scroll panel for scrolling through them
+     */
     private void updateTicketList() {
         userTickets = DatabaseAccessor.getTicketsByUser(UserState.getInstance().getUser().getID());
         DefaultListModel<String> listModel = new DefaultListModel<String>();
@@ -205,6 +217,13 @@ public class ProfilePage implements Page, ProfilePageObserver {
         contentPanel.add(listScroller);
     }
 
+    /*
+     * Action for the cancel tickets button
+     * Gets all the currently selected indicies from the list 
+     * Then goes through each and removes them from the database
+     * Then updates the users credit balance accordingly (based on if they are registered or not)
+     * Finally updates the content of the page again manually
+     */
     private void cancelSelectedTickets() {
         int[] indexes = ticketList.getSelectedIndices(); // Get selected indices from the list
         double amountOfCreditToAdd = UserState.getInstance().getUser().getCreditBalance();
