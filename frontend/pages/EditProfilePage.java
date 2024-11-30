@@ -12,10 +12,16 @@ import frontend.observers.LoginPageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
+import frontend.states.ErrorState;
 import frontend.states.UserState;
 
 public class EditProfilePage implements Page{
     private static EditProfilePage instance; // Singleton
+
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+    private static final String CARD_NUM_REGEX = "^\\d{16}$";
+    private static final String EXP_DATE_REGEX = "^(0[1-9]|1[0-2])\\/\\d{2}$";
+    private static final String CVV_REGEX = "^\\d{3}$";
 
     // Signup Data
     private String name;
@@ -188,14 +194,29 @@ public class EditProfilePage implements Page{
             }
         }
 
+        if (!email.matches(EMAIL_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Email");
+            return false;
+        } else if (!creditCardNum.matches(CARD_NUM_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Card Number");
+            return false;
+        } else if (!creditCardExpDate.matches(EXP_DATE_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Card Expiration Date");
+            return false;
+        } else if (name.isEmpty() || address.isEmpty() || password.isEmpty()) {
+            ErrorState.getInstance().setError("Empty Field");
+            return false;
+        } 
+
         if (!password.equals(password_ReEntry)) {
-            System.err.println("Passwords dont match");
-            System.err.println(password);
-            System.err.println(password_ReEntry);
+            ErrorState.getInstance().setError("Passwords Don't Match");
+            return false;
         }
-        else if (AppState.getInstance().getUserEmails().contains(email))
-            System.err.println("User email already exists");
-        else {
+        else if (AppState.getInstance().getUserEmails().contains(email)) {
+            ErrorState.getInstance().setError("User Already Exists");
+            return false;
+        } else {
+            ErrorState.getInstance().clearError();
             DatabaseAccessor.updateUser(name, email, password, address, Long.valueOf(creditCardNum), creditCardExpDate);
             Window.getInstance().showPanel("Home");
         }

@@ -7,11 +7,14 @@ import frontend.decorators.DecoratorHelpers;
 import frontend.observers.LoginPageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
+import frontend.states.ErrorState;
 import frontend.states.UserState;
 
 import backend.User;
 public class LoginPage implements Page, LoginPageObserver {
     private static LoginPage instance; // Singleton
+
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     // Login Data
     private String email;
@@ -46,7 +49,6 @@ public class LoginPage implements Page, LoginPageObserver {
         
             JPanel titlePanel = new HeaderPanel();
             JPanel footerPanel = new FooterPanel("login");
-            // JPanel footerPanel = DecoratorHelpers.createFooterPanel("confirmInfo");
 
             // Profile panel
             editPanel = new JPanel();
@@ -100,12 +102,22 @@ public class LoginPage implements Page, LoginPageObserver {
             }
         }
 
+        if (!email.matches(EMAIL_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Email");
+            return;
+        } else {
+            ErrorState.getInstance().clearError();
+        }
+
         boolean loggedIn = UserState.getInstance().logInUser(email, password);
         if (loggedIn) {
+            ErrorState.getInstance().clearError();
             ProfilePage.getInstance().updateContent();
             Window.getInstance().refreshPages();
             Window.getInstance().showPanel("ProfilePage");
             
+        } else {
+            ErrorState.getInstance().setError("Incorrect credentials");
         }
     }
 

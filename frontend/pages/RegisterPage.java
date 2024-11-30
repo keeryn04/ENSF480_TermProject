@@ -3,18 +3,19 @@ package frontend.pages;
 import java.awt.*;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 
 import backend.DatabaseAccessor;
 import frontend.decorators.DecoratorHelpers;
-import frontend.observers.LoginPageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
-import frontend.states.AppState;
+import frontend.states.ErrorState;
 import frontend.states.UserState;
 
 public class RegisterPage implements Page{
     private static RegisterPage instance; // Singleton
+
+    String CARD_NUM_REGEX = "^\\d{16}$";
+    String EXP_DATE_REGEX = "^(0[1-9]|1[0-2])\\/\\d{2}$";
 
     // Signup Data
     private String name;
@@ -76,7 +77,7 @@ public class RegisterPage implements Page{
 
             return mainPanel;
         } catch (Exception e) {
-            System.out.printf("Error making Login Page: %s%n", e.getMessage());
+            System.out.printf("Error making Register Page: %s%n", e.getMessage());
             return null;
         }
     }
@@ -119,6 +120,22 @@ public class RegisterPage implements Page{
                 creditCardExpDate = j.getText();
                 break;
             }
+        }
+
+        if (!creditCardNum.matches(CARD_NUM_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Card Number");
+            return false;
+        } else if (!creditCardExpDate.matches(EXP_DATE_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Card Expiration Date");
+            return false;
+        } else if (name.isEmpty() ) {
+            ErrorState.getInstance().setError("Invalid Name");
+            return false;
+        } else if (address.isEmpty() ) {
+            ErrorState.getInstance().setError("Invalid Address");
+            return false;
+        } else {
+            ErrorState.getInstance().clearError();
         }
 
         DatabaseAccessor.registerUser(UserState.getInstance().getUser().getEmail(), name, address, Long.valueOf(creditCardNum), creditCardExpDate);

@@ -3,18 +3,17 @@ package frontend.pages;
 import java.awt.*;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-
 import backend.DatabaseAccessor;
 import frontend.decorators.DecoratorHelpers;
-import frontend.observers.LoginPageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
-import frontend.states.UserState;
+import frontend.states.ErrorState;
 
 public class SignUpPage implements Page {
     private static SignUpPage instance; // Singleton
+
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     // Signup Data
     private String email;
@@ -112,34 +111,26 @@ public class SignUpPage implements Page {
             }
         }
 
-        if (!password.equals(password_ReEntry)) {
-            System.err.println("Passwords dont match");
-            System.err.println(password);
-            System.err.println(password_ReEntry);
+        if (!email.matches(EMAIL_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Email");
+            return false;
+        } else if (password.isEmpty()) {
+            ErrorState.getInstance().setError("Invalid Password");
+            return false;
         }
-        else if (AppState.getInstance().getUserEmails().contains(email))
-            System.err.println("User email already exists");
-        else {
+
+        if (!password.equals(password_ReEntry)) {
+            ErrorState.getInstance().setError("Passwords Don't Match");
+            return false;
+        }
+        else if (AppState.getInstance().getUserEmails().contains(email)) {
+            ErrorState.getInstance().setError("User Already Exists");
+            return false;
+        } else {
+            ErrorState.getInstance().clearError();
             DatabaseAccessor.addNewUser(email, password);
             Window.getInstance().showPanel("Home");
+            return true;
         }
-        return true;
     }
-
-    /** Update login data based on LoginState data */
-    /*
-     * @Override
-     * public void onLoginChange(String key, Object value) {
-     * switch (key) {
-     * case "email":
-     * email = (String) value;
-     * break;
-     * case "password":
-     * password = (String) value;
-     * break;
-     * default:
-     * break;
-     * }
-     * }
-     */
 }
