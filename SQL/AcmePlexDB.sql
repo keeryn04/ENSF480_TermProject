@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS Users (
     address VARCHAR(100),
     card_number VARCHAR(16),
     card_exp_date VARCHAR(5),
-    card_cvv VARCHAR(3),
     credit_balance DECIMAL(10, 2) DEFAULT 0.00,
     is_registered BOOLEAN DEFAULT FALSE,
     annual_fee_paid BOOLEAN DEFAULT FALSE,

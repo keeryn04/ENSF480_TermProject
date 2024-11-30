@@ -20,7 +20,6 @@ public class User {
             String address, 
             long card_number,
             String card_exp_date,
-            String card_cvv,
             boolean is_registered,
             String account_recharge,
             double credit_balance) {
@@ -31,7 +30,6 @@ public class User {
         this.address = address;
         this.card_number = card_number;
         this.card_exp_date = card_exp_date;
-        this.card_cvv = card_cvv;
         this.is_registered = is_registered;
         this.credit_balance = credit_balance;
         this.last_payment_date = last_payment_date;
@@ -64,10 +62,6 @@ public class User {
 
     public String getCardExpiry() {
         return card_exp_date;
-    }
-
-    public String getCardCvv() {
-        return card_cvv;
     }
 
     public boolean getRegisteredStatus() {

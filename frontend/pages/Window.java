@@ -87,6 +87,10 @@ public class Window {
         JPanel profilePanel = profile.createPage();
         window.addPanel("ProfilePage", profilePanel);
 
+        RegisterPage register = RegisterPage.getInstance();
+        JPanel registerPanel = register.createPage();
+        window.addPanel("RegisterPage", registerPanel);
+
         EditProfilePage profileEdit = new EditProfilePage();
         JPanel profileEditPanel = profileEdit.createPage();
         window.addPanel("ProfileEditPage", profileEditPanel);
@@ -126,6 +130,10 @@ public class Window {
         ProfilePage profile = ProfilePage.getInstance();
         JPanel profilePanel = profile.createPage();
         window.addPanel("ProfilePage", profilePanel);
+
+        RegisterPage register = RegisterPage.getInstance();
+        JPanel registerPanel = register.createPage();
+        window.addPanel("RegisterPage", registerPanel);
 
         EditProfilePage profileEdit = new EditProfilePage();
         JPanel profileEditPanel = profileEdit.createPage();

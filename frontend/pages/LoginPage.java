@@ -102,6 +102,7 @@ public class LoginPage implements Page, LoginPageObserver {
 
         boolean loggedIn = UserState.getInstance().logInUser(email, password);
         if (loggedIn) {
+            ProfilePage.getInstance().updateContent();
             Window.getInstance().refreshPages();
             Window.getInstance().showPanel("ProfilePage");
             

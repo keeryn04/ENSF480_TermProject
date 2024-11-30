@@ -1,15 +1,8 @@
 package frontend.pages;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.DecoratorHelpers;
@@ -38,14 +31,12 @@ public class ProfilePage implements Page, ProfilePageObserver {
     private JLabel cardNumLabel;
     private JLabel cardDateLabel;
     private JPanel contentPanel;
+    private JButton registerButton;
 
     private ProfilePage() {
         // Fonts and Labels
         Font nameFont = new Font("Times New Roman", Font.BOLD, 24);
         Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
-
-        
-
 
         emailLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Email: ", labelFont);
         nameLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Name: ", nameFont);
@@ -54,8 +45,8 @@ public class ProfilePage implements Page, ProfilePageObserver {
         cardNumLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Credit Card Number: ", labelFont);
         cardDateLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Exiration Date: ", labelFont);
         
-
-        contentPanel = new JPanel();
+        registerButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Register Your Account", labelFont);
+        registerButton.addActionListener(e -> {Window.getInstance().showPanel("RegisterPage");});
 
         // Register with ProfileState
         UserState.getInstance().addProfilePageObserver(this);
@@ -75,8 +66,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
     public JPanel createPage() {
         try {
             // Header and Footer Panels
+            contentPanel = new JPanel();
             JPanel titlePanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("editInfo");
+
 
             // Profile panel
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
@@ -86,10 +79,13 @@ public class ProfilePage implements Page, ProfilePageObserver {
             if (user != null) {
                 if (user.getRegisteredStatus() == false)    //What to show if the user isn't registered
                 {
+                    contentPanel.add(nameLabel);
+                    contentPanel.add(Box.createVerticalStrut(10));
                     contentPanel.add(emailLabel);
                     contentPanel.add(Box.createVerticalStrut(10));
                     contentPanel.add(creditBalanceLabel);
-                    contentPanel.add(Box.createVerticalStrut(10));
+                    contentPanel.add(Box.createVerticalStrut(50));
+                    contentPanel.add(registerButton);
                 }
                 else //What to show if the uses is registered
                 {
@@ -145,7 +141,12 @@ public class ProfilePage implements Page, ProfilePageObserver {
         SwingUtilities.invokeLater(() -> {
             if (UserState.getInstance().getUser() != null) {
                 user = UserState.getInstance().getUser();
-                nameLabel.setText("Hi " + user.getName() + "!");
+                if (user.getName() != null) {
+                    nameLabel.setText("Hi " + user.getName() + "!");
+                } else {
+                    nameLabel.setText("Hi Guest!");
+                }
+                
                 emailLabel.setText("Email: " + user.getEmail());
                 addressLabel.setText("Address: " + user.getAddress());
                 creditBalanceLabel.setText("Credit Balanace: $" + String.valueOf(user.getCreditBalance()));

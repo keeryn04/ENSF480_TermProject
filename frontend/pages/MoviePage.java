@@ -127,7 +127,7 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     public JPanel createPage() {
         try {
             //Make header and footer
-            JPanel headerPanel = DecoratorHelpers.createHeaderPanel();
+            JPanel headerPanel = new HeaderPanel();
 
             // Get or create the footer panel
             FooterPanel footerPanel;

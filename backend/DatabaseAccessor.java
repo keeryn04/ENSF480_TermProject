@@ -1,8 +1,13 @@
 package backend;
 
+import java.time.LocalDate;
 import java.sql.*;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import frontend.states.UserState;
 
 /** Handles database interactions */
 public class DatabaseAccessor {
@@ -180,7 +185,6 @@ public class DatabaseAccessor {
                             resultSet.getString("address"),
                             resultSet.getLong("card_number"),
                             resultSet.getString("card_exp_date"),
-                            resultSet.getString("card_cvv"),
                             resultSet.getBoolean("is_registered"),
                             resultSet.getString("last_payment_date"),
                             resultSet.getDouble("credit_balance"));
@@ -206,6 +210,27 @@ public class DatabaseAccessor {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void registerUser(String email, String name, String address, Long creditCardNum, String creditCardExpDate) {
+        String query = "UPDATE users SET name = ?, address = ?, card_number = ?, is_registered = ?, card_exp_date = ?, last_payment_date = ? WHERE email = ?";
+        try (Connection conn = DatabaseConfig.connect();
+                PreparedStatement statement = conn.prepareStatement(query)) {
+            
+            statement.setString(1, name);
+            statement.setString(2, address);
+            statement.setLong(3, creditCardNum);
+            statement.setBoolean(4, true);
+            statement.setString(5, creditCardExpDate);
+            statement.setDate(6, Date.valueOf(LocalDate.now()));
+            statement.setString(7, email);
+            System.err.println(String.valueOf(statement));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        UserState.getInstance().logInUser(email, UserState.getInstance().getUser().getPassword());
     }
 
     // Store ticket in the database

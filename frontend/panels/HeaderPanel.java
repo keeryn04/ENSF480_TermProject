@@ -52,6 +52,7 @@ public class HeaderPanel extends JPanel {
         setBackground(Color.LIGHT_GRAY);
 
         Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
+        Font titleFont = new Font("Times New Roman", Font.BOLD, 34);
         String type = "notSignedIn";
 
         if (UserState.getInstance().getUser() != null) {
@@ -66,8 +67,11 @@ public class HeaderPanel extends JPanel {
         buttonPanel.add(leftButton, BorderLayout.WEST);
         buttonPanel.add(rightButton, BorderLayout.EAST);
 
+        JLabel title = DecoratorHelpers.makeLabel(Color.BLACK, "AcmePlex", titleFont);
+        title.setBackground(Color.LIGHT_GRAY);
+        
+        add(title, BorderLayout.WEST);
         add(buttonPanel, BorderLayout.EAST);
-        // add(rightButton, BorderLayout.EAST);
     }
 
     private JButton createLeftButton(String type, Font font) {
