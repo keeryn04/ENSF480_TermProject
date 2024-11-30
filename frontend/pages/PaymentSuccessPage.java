@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.List;
 
 import backend.DatabaseAccessor;
 import javax.swing.JPanel;
@@ -19,13 +20,16 @@ import javax.swing.JOptionPane;
 import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.BorderDecorator;
 import frontend.decorators.DecoratorHelpers;
+import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
+import frontend.states.UserState;
 
 public class PaymentSuccessPage implements Page {
     private static PaymentSuccessPage instance; //Singleton
+    private final List<ProfilePageObserver> observersProfile = new ArrayList<>();
     
     private PaymentSuccessPage() {}
 
@@ -48,6 +52,16 @@ public class PaymentSuccessPage implements Page {
         JOptionPane.showMessageDialog(null, messageBuilder.toString(), "Notification", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public void addProfileObserver(ProfilePageObserver observer) {
+        observersProfile.add(observer);
+    }
+
+    private void notifyProfileObservers(String key, Object value) {
+        for (ProfilePageObserver observer : observersProfile) {
+            observer.onProfileEdited(key, value);
+        }
+    }
+
     //Process the successful payment and display the ticket
     public void processPaymentSuccess(User user) {
         //Get the selected ticket information
@@ -59,6 +73,7 @@ public class PaymentSuccessPage implements Page {
         for (String seat : selectedSeats) {
             DatabaseAccessor.addTicket(user, showtimeId, seat);
         }
+        notifyProfileObservers("Tickets Bought", null);
         showEmailPopup(selectedSeats);
     }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import frontend.observers.PaymentPageObserver;
+import frontend.observers.ProfilePageObserver;
 
 public class PaymentState {
     private static PaymentState instance;
@@ -48,6 +49,8 @@ public class PaymentState {
             //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
     }
+
+
 
     //Setters and Getters
     public String getCardCVV() {

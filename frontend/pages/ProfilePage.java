@@ -1,5 +1,9 @@
 package frontend.pages;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import java.awt.*;
 
 import javax.swing.*;
@@ -10,18 +14,18 @@ import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.UserState;
+import frontend.states.PaymentState;
 
 import backend.User;
+import backend.DatabaseAccessor;
+import backend.Movie;
+import backend.Showtime;
+import backend.Ticket;
 
 public class ProfilePage implements Page, ProfilePageObserver {
     private static ProfilePage instance; // Singleton
 
-    // Default Data
     private User user;
-    // private String name = "John Doe";
-    // private String address = "123 Address Ave.";
-    // private String cardNum = "123456789";
-    // private String cardDate = "01/01";
 
     // UI components
     private JLabel emailLabel;
@@ -32,6 +36,11 @@ public class ProfilePage implements Page, ProfilePageObserver {
     private JLabel cardDateLabel;
     private JPanel contentPanel;
     private JButton registerButton;
+    private JButton cancelTicketButton;
+
+    private List<Ticket> userTickets;
+    private JList<String> ticketList;
+    private JScrollPane listScroller;
 
     private ProfilePage() {
         // Fonts and Labels
@@ -48,8 +57,14 @@ public class ProfilePage implements Page, ProfilePageObserver {
         registerButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Register Your Account", labelFont);
         registerButton.addActionListener(e -> {Window.getInstance().showPanel("RegisterPage");});
 
+        cancelTicketButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Cancel Selected Tickets", labelFont);
+        cancelTicketButton.addActionListener(e -> {cancelSelectedTickets();});
+
+        ticketList = new JList<String>(); //data has type Object[]
+
         // Register with ProfileState
         UserState.getInstance().addProfilePageObserver(this);
+        PaymentSuccessPage.getInstance().addProfileObserver(this);
     }
 
     /**
@@ -69,7 +84,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
             contentPanel = new JPanel();
             JPanel titlePanel = new HeaderPanel();
             FooterPanel footerPanel = new FooterPanel("editInfo");
-
+            
 
             // Profile panel
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
@@ -102,6 +117,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
                     contentPanel.add(cardDateLabel);
                 }
             }
+            contentPanel.add(cancelTicketButton);
             // Add labels to the panel
             
 
@@ -129,6 +145,9 @@ public class ProfilePage implements Page, ProfilePageObserver {
                 user = (User) value;
                 updateContent();
                 break;
+            case "Tickets Bought":
+                updateContent();
+                break;
             default:
                 break;
         }
@@ -153,9 +172,54 @@ public class ProfilePage implements Page, ProfilePageObserver {
                 cardNumLabel.setText("Credit / Debit Card Number: " + user.getCardNumber());
                 cardDateLabel.setText("Credit / Debit Expiration Date: " + user.getCardExpiry());
 
+                updateTicketList();
+
                 contentPanel.revalidate();
                 contentPanel.repaint();
             }
         });
+    }
+
+    private void updateTicketList() {
+        userTickets = DatabaseAccessor.getTicketsByUser(UserState.getInstance().getUser().getID());
+        DefaultListModel<String> listModel = new DefaultListModel<String>();
+        for (Ticket t : userTickets) {
+            Showtime s = DatabaseAccessor.getShowtimeDetails(t.getShowtimeId());
+            Movie m = DatabaseAccessor.getMovieDetails(s.getMovieId());
+            
+            listModel.addElement(m.getTitle() + 
+            " | Duration: " + s.getFormattedScreeningTime("yyyy-MM-dd HH:mm", Integer.valueOf(m.getDuration())) + 
+            " | Screen: " + s.getScreenId() + 
+            " | Seat: " + t.getSeatLabel());
+        }
+        if (listScroller != null)
+            contentPanel.remove(listScroller);
+        ticketList = new JList<String>(listModel);
+        
+        ticketList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        ticketList.setLayoutOrientation(JList.VERTICAL);
+        ticketList.setVisibleRowCount(-1);
+
+        listScroller = new JScrollPane(ticketList);
+        listScroller.setPreferredSize(new Dimension(250, 80));
+        contentPanel.add(listScroller);
+    }
+
+    private void cancelSelectedTickets() {
+        int[] indexes = ticketList.getSelectedIndices(); // Get selected indices from the list
+        double amountOfCreditToAdd = UserState.getInstance().getUser().getCreditBalance();
+        // Sort indexes in descending order to avoid shifting indices when removing items
+        Arrays.sort(indexes);
+        for (int i = indexes.length - 1; i >= 0; i--) {
+            int index = indexes[i]; // Get the current index to remove
+            DatabaseAccessor.removeTicketById(userTickets.get(index).getTicketId()); // Remove from database
+            if (UserState.getInstance().getUser().getRegisteredStatus()) {
+                amountOfCreditToAdd += 10.5;
+            } else {
+                amountOfCreditToAdd += (10.5 * 0.85);
+            }
+        }
+        DatabaseAccessor.updateUserCreditByUserId(amountOfCreditToAdd, UserState.getInstance().getUser().getID());
+        updateContent(); // Refresh the UI or content
     }
 }
