@@ -1,6 +1,8 @@
 package frontend.pages;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 
 import backend.DatabaseAccessor;
@@ -8,9 +10,14 @@ import javax.swing.JPanel;
 
 import backend.User;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import frontend.decorators.BackgroundColorDecorator;
+import frontend.decorators.BorderDecorator;
 import frontend.decorators.DecoratorHelpers;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
@@ -47,29 +54,60 @@ public class PaymentSuccessPage implements Page {
         int movieId = MovieState.getInstance().getMovieId();
         int showtimeId = MovieState.getInstance().getShowtimeId();
         ArrayList<String> selectedSeats = SeatMapState.getInstance().getSelectedSeats(); 
-        System.out.println("Found data for payment: movieId is" + movieId + " & showtimeId is " + showtimeId);
         
         //Store each ticket in the database
         for (String seat : selectedSeats) {
-            System.out.println("Seat: " + seat);
             DatabaseAccessor.addTicket(user, showtimeId, seat);
         }
         showEmailPopup(selectedSeats);
     }
 
-    //Create the success page UI
     @Override
     public JPanel createPage() {
+        // Create the header panel (e.g., contains navigation or logo)
         JPanel headerPanel = new HeaderPanel();
+        
+        // Create a styled success message
+        JLabel successLabel = new JLabel("Payment Successful! Your tickets are confirmed.", JLabel.CENTER);
+        successLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        successLabel.setForeground(new Color(34, 139, 34)); // Green success color
+        successLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        
+        // Add additional success information (optional)
+        JLabel ticketInfoLabel = new JLabel("Check your email for the ticket details.", JLabel.CENTER);
+        ticketInfoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        ticketInfoLabel.setForeground(Color.DARK_GRAY);
+        ticketInfoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+        
+        // Add a decorative success icon (optional)
+        JLabel successIcon = new JLabel();
+        successIcon.setIcon(new ImageIcon("path/to/success_icon.png")); // Provide path to your success icon
+        successIcon.setHorizontalAlignment(JLabel.CENTER);
+        successIcon.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // Create the footer panel
         FooterPanel footerPanel = new FooterPanel("default");
 
-        JLabel successLabel = new JLabel("Payment Successful! Your tickets are confirmed.");
+        // Main panel setup
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE); // Clean background
+        contentPanel.add(successIcon);
+        contentPanel.add(successLabel);
+        contentPanel.add(ticketInfoLabel);
+        
+        // Decorate content panel (optional)
+        JPanel decoratedContent = (JPanel) new BackgroundColorDecorator(contentPanel, Color.WHITE).getDecoratedComponent();
+        decoratedContent = (JPanel) new BorderDecorator(decoratedContent, Color.LIGHT_GRAY, 10).getDecoratedComponent();
+
+        // Assemble the main page
         JPanel mainPanel = new PanelBuilder()
-                    .setLayout(new BorderLayout())
-                    .addComponent(headerPanel, BorderLayout.NORTH)
-                    .addComponent(successLabel, BorderLayout.CENTER)
-                    .addComponent(footerPanel, BorderLayout.SOUTH)
-                    .build();
+            .setLayout(new BorderLayout())
+            .addComponent(headerPanel, BorderLayout.NORTH)
+            .addComponent(decoratedContent, BorderLayout.CENTER)
+            .addComponent(footerPanel, BorderLayout.SOUTH)
+            .build();
+        
         return mainPanel;
     }
 }

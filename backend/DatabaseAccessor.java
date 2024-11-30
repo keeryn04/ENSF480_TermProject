@@ -224,22 +224,23 @@ public class DatabaseAccessor {
         }
     }
 
-    public static boolean checkIfSeatIsTaken(Integer showtimeId, String seatLabel) {
-        String query = "SELECT COUNT(*) FROM tickets WHERE showtime_id = ? AND seat_label = ?";
+    public static ArrayList<String> getTakenSeats(Integer showtimeId) {
+        ArrayList<String> takenSeats = new ArrayList<>();
+        String query = "SELECT * FROM tickets WHERE showtime_id = ?";
         try (Connection conn = DatabaseConfig.connect();
                 PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, showtimeId);
-            statement.setString(2, seatLabel);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt(1) > 0; // Returns true if at least one ticket exists
+                    takenSeats.add(resultSet.getString("seat_label"));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // Default to false if there's an error or no ticket found
+
+        return takenSeats;
     }
 }

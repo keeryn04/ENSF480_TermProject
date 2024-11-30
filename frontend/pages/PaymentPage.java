@@ -36,7 +36,6 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     //Stored info (For signed in user)
     private String cardNum;
     private String cardDate;
-    private String cardCVV;
 
     //Update depending on what purchased
     private String itemPurchased;
@@ -115,12 +114,11 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
                 if (currentUser != null) { //User is logged in, has data stored to autofill
                     cardNum = String.valueOf(currentUser.getCardNumber());
                     cardDate = currentUser.getCardExpiry();
-                    cardCVV = currentUser.getCardCvv();
 
                     //Autofill fields
                     cardNumPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Number: ", dataTitleFont, 20, cardNum, null);
                     cardDatePanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card Expiration Date: ", dataTitleFont, 20, cardDate, null);
-                    cardCVVPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card CVV: ", dataTitleFont, 20, cardCVV, null);
+                    cardCVVPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Credit / Debit Card CVV: ", dataTitleFont, 20, "", null);
                 }
             }
             
@@ -215,9 +213,6 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     public void onPaymentConfirmed(String key, Object value) {
         //React to changes from AppState
         switch (key) {
-            case "paymentCVV":
-                cardCVV = (String) value;
-                break;
             case "paymentAmount":
                 amount = (Integer) value;
                 updateContent();
