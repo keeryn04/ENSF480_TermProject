@@ -258,7 +258,7 @@ public class DatabaseAccessor {
             statement.setInt(1, showtimeId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
+                while (resultSet.next()) {
                     takenSeats.add(resultSet.getString("seat_label"));
                 }
             }
