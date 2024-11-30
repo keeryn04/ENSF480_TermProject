@@ -2,6 +2,7 @@ package frontend.pages;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -16,9 +17,11 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import backend.DatabaseAccessor;
 import backend.User;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
@@ -26,6 +29,7 @@ import frontend.observers.PaymentPageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
+import frontend.states.ErrorState;
 import frontend.states.MovieState;
 import frontend.states.PaymentState;
 import frontend.states.UserState;
@@ -33,9 +37,14 @@ import frontend.states.UserState;
 public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver {
     private static PaymentPage instance; // Singleton
 
+    private static final String CARD_NUM_REGEX = "^\\d{16}$";
+    private static final String EXP_DATE_REGEX = "^(0[1-9]|1[0-2])\\/\\d{2}$";
+    private static final String CVV_REGEX = "^\\d{3}$";
+
     //Stored info (For signed in user)
     private String cardNum;
     private String cardDate;
+    private String cardCVV;
 
     //Update depending on what purchased
     private String itemPurchased;
@@ -307,5 +316,51 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
             sectionPanel.add(label);
         }
         return sectionPanel;
+    }
+
+    public Boolean confirmPaymentInfo() {
+        Component[] cardNumPanelComponents = cardNumPanel.getComponents();
+        Component[] cardExpDatePanelComponents = cardDatePanel.getComponents();
+        Component[] cardCVVPanelComponents = cardCVVPanel.getComponents();
+        
+        
+        for (Component component : cardNumPanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("Credit / Debit Card Number: ")) {
+                JTextField j = (JTextField) component;
+                cardNum = j.getText();
+                break;
+            }
+        }
+
+        for (Component component : cardExpDatePanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("Credit / Debit Card Expiration Date: ")) {
+                JTextField j = (JTextField) component;
+                cardDate = j.getText();
+                break;
+            }
+        }
+
+        for (Component component : cardCVVPanelComponents) {
+            if (component instanceof JTextField && ((JTextField) component).getName().equals("Credit / Debit Card CVV: ")) {
+                JTextField j = (JTextField) component;
+                cardCVV = j.getText();
+                break;
+            }
+        }
+
+        if (!cardNum.matches(CARD_NUM_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Card Number");
+            return false;
+        } else if (!cardDate.matches(EXP_DATE_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Card Expiration Date");
+            return false;
+        } else if (!cardCVV.matches(CVV_REGEX)) {
+            ErrorState.getInstance().setError("Invalid Card CVV");
+            return false;
+        } else {
+            ErrorState.getInstance().clearError();
+        }
+        
+        return true;
     }
 }
