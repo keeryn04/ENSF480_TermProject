@@ -11,6 +11,7 @@ import frontend.panels.HeaderPanel;
 import frontend.states.ErrorState;
 import frontend.states.UserState;
 
+/**Instance of the RegisterPage which handles creating registering users and updating the database accordingly.*/
 public class RegisterPage implements Page{
     private static RegisterPage instance; // Singleton
 
@@ -32,6 +33,7 @@ public class RegisterPage implements Page{
 
     private Font labelFont;
 
+    /**Make default entry labels for the page inputs.*/
     RegisterPage() {
         // Initialize UI components
         labelFont = new Font("Times New Roman", Font.BOLD, 18);
@@ -43,7 +45,7 @@ public class RegisterPage implements Page{
         registerButton.addActionListener(e -> registerUser());
     }
 
-        /** Returns single instance of LoginPage */
+    /** Returns single instance of RegisterPage */
     public static RegisterPage getInstance() {
         if (instance == null) {
             instance = new RegisterPage();
@@ -51,6 +53,10 @@ public class RegisterPage implements Page{
         return instance;
     }
 
+    /**Creates the RegisterPage with required elements. 
+     * Uses PageBuilder to create the different aspects of the page (Ex. Panel, Label, Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
+    */
     @Override
     public JPanel createPage() {
         try {            
@@ -82,7 +88,9 @@ public class RegisterPage implements Page{
         }
     }
 
-    /** Check the login info with database / cached data */
+    /**Check the login info with database / cached data, and create a new user if the data is valid.
+     * @return The state of the user registration (True = registered, False = invalid data).
+    */
     private Boolean registerUser() {
         Component[] namePanelComponents = nameFieldPanel.getComponents();
         Component[] addressPanelComponents = addressFieldPanel.getComponents();

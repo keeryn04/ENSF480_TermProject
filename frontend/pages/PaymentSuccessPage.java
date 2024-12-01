@@ -19,20 +19,20 @@ import javax.swing.JOptionPane;
 
 import frontend.decorators.BackgroundColorDecorator;
 import frontend.decorators.BorderDecorator;
-import frontend.decorators.DecoratorHelpers;
 import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
-import frontend.states.UserState;
 
+/**Instance of the PaymentSuccessPage which handles ticket booking and updating the database accordingly.*/
 public class PaymentSuccessPage implements Page {
     private static PaymentSuccessPage instance; //Singleton
-    private final List<ProfilePageObserver> observersProfile = new ArrayList<>();
+    private final List<ProfilePageObserver> observersProfile = new ArrayList<>(); //Store observers to update ticket data elsewhere
     
     private PaymentSuccessPage() {}
 
+    /**Returns the single instance of PaymentSuccessPage.*/
     public static PaymentSuccessPage getInstance() {
         if (instance == null) {
             instance = new PaymentSuccessPage();
@@ -40,7 +40,9 @@ public class PaymentSuccessPage implements Page {
         return instance;
     }
 
-    //Show a popup message
+    /**Show popup of selected seats, confirming booking.
+     * @param selectedSeats The seats that the user booked.
+     */
     public static void showEmailPopup(ArrayList<String> selectedSeats) {
         StringBuilder messageBuilder = new StringBuilder("Success! Seats selected: \n");
 
@@ -52,20 +54,28 @@ public class PaymentSuccessPage implements Page {
         JOptionPane.showMessageDialog(null, messageBuilder.toString(), "Notification", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**Add observer to update ticket data elsewhere.
+     * @param observer The observer to add to watch payment success' data changes.
+     */
     public void addProfileObserver(ProfilePageObserver observer) {
         observersProfile.add(observer);
     }
 
+    /**Send out notification to update listeners of changed ticket confirmation data.
+     * @param key The type of the data.
+     * @param value The actual value of the data passed.
+     */
     private void notifyProfileObservers(String key, Object value) {
         for (ProfilePageObserver observer : observersProfile) {
             observer.onProfileEdited(key, value);
         }
     }
 
-    //Process the successful payment and display the ticket
+    /**Processes the booking of the user tickets, updates database with new ticket purchases and handles email popup.
+     * @param user The user that booked the ticket.
+     */
     public void processPaymentSuccess(User user) {
         //Get the selected ticket information
-        int movieId = MovieState.getInstance().getMovieId();
         int showtimeId = MovieState.getInstance().getShowtimeId();
         ArrayList<String> selectedSeats = SeatMapState.getInstance().getSelectedSeats(); 
         
@@ -77,26 +87,30 @@ public class PaymentSuccessPage implements Page {
         showEmailPopup(selectedSeats);
     }
 
+    /**Creates the PaymentSuccessPage with required elements. 
+     * Uses PageBuilder to create the different aspects of the page (Ex. Panel, Label, Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
+    */
     @Override
     public JPanel createPage() {
-        // Create the header panel (e.g., contains navigation or logo)
+        // Create the header panel
         JPanel headerPanel = new HeaderPanel();
         
-        // Create a styled success message
+        //Create styled success message
         JLabel successLabel = new JLabel("Payment Successful! Your tickets are confirmed.", JLabel.CENTER);
         successLabel.setFont(new Font("Arial", Font.BOLD, 18));
         successLabel.setForeground(new Color(34, 139, 34)); // Green success color
         successLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         
-        // Add additional success information (optional)
+        //Additional success information
         JLabel ticketInfoLabel = new JLabel("Check your email for the ticket details.", JLabel.CENTER);
         ticketInfoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         ticketInfoLabel.setForeground(Color.DARK_GRAY);
         ticketInfoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
         
-        // Add a decorative success icon (optional)
+        //Add a decorative success icon (optional)
         JLabel successIcon = new JLabel();
-        successIcon.setIcon(new ImageIcon("path/to/success_icon.png")); // Provide path to your success icon
+        successIcon.setIcon(new ImageIcon("frontend\\images\\checkmark.png")); // Provide path to your success icon
         successIcon.setHorizontalAlignment(JLabel.CENTER);
         successIcon.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         

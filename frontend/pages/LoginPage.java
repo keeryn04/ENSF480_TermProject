@@ -10,7 +10,7 @@ import frontend.panels.HeaderPanel;
 import frontend.states.ErrorState;
 import frontend.states.UserState;
 
-import backend.User;
+/**Instance of the LoginPage which handles user account login and updating the pages accordingly.*/
 public class LoginPage implements Page, LoginPageObserver {
     private static LoginPage instance; // Singleton
 
@@ -27,6 +27,7 @@ public class LoginPage implements Page, LoginPageObserver {
 
     private Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
 
+    /**Initializes the Login Button.*/
     private LoginPage() {
         // Initialize UI components
         loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
@@ -40,6 +41,10 @@ public class LoginPage implements Page, LoginPageObserver {
         return instance;
     }
 
+    /**Creates the LoginPage elements. 
+     * Uses PageBuilder to create the different aspects of the page (Ex. Label, Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
+    */
     @Override
     public JPanel createPage() {
         try {
@@ -75,13 +80,16 @@ public class LoginPage implements Page, LoginPageObserver {
         }
     }
 
+    /**Makes login button that has authentication logic set up.
+     * @return Button with authentication checking.
+     */
     private JButton createLoginButton() {
         JButton loginButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Login", labelFont);
         loginButton.addActionListener(e -> authenticate());
         return loginButton;
     }
 
-    /** Check the login info with database / cached data */
+    /**Check the login info with database / cached data. Handle error checking with user inputs.*/
     private void authenticate() {
         Component[] emailPanelComponents = emailFieldPanel.getComponents();
         Component[] passwordPanelComponents = passwordFieldPanel.getComponents();
@@ -102,6 +110,7 @@ public class LoginPage implements Page, LoginPageObserver {
             }
         }
 
+        //Error checking
         if (!email.matches(EMAIL_REGEX)) {
             ErrorState.getInstance().setError("Invalid Email");
             return;
@@ -121,12 +130,16 @@ public class LoginPage implements Page, LoginPageObserver {
         }
     }
 
+    /**Update the page with the new content. Recreate the page and add it to the window. */
     public void refreshPage() {
         JPanel page = createPage();
         Window.getInstance().addPanel("LoginPage", page);
     }
 
-    /** Update login data based on LoginState data */
+    /**Update login data based on LoginState data through observer.
+     * @param key The type of the object passed.
+     * @param value The actual value being passed.
+    */
     @Override
     public void onLoginChange(String key, Object value) {
         switch (key) {

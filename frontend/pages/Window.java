@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 
-/**Singleton class that is used with all pages. Gets updated with PageBuilder and PanelDecorator*/
+/**Singleton class that is used to display each page*/
 public class Window {
     private static Window instance;
     private JFrame frame;
@@ -13,6 +13,7 @@ public class Window {
     private JPanel cardPanel;
     private HashMap<String, JPanel> panels;
 
+    /**Initializes instance of window, with the title, size and behaviour of the window.*/
     private Window() {
         //Make frame if it hasn't been made yet, starts on homepage
         if (frame == null) { 
@@ -29,7 +30,7 @@ public class Window {
         }
     }
 
-    /**Returns a window that can be changed for each window layout*/
+    /**Returns the window instance that can be changed for each window layout*/
     public static Window getInstance() {
         //No instance of the window made yet
         if (Window.instance == null) {
@@ -44,6 +45,9 @@ public class Window {
      * @param panel Panel object to add
     */
     public void addPanel(String name, JPanel panel) {
+        if (panels.containsKey(name)) {
+            panels.remove(name);  
+        }
         panels.put(name, panel);
         cardPanel.add(panel, name);
     }
@@ -67,6 +71,7 @@ public class Window {
         }
     }
 
+    /**Makes instances of all the pages for the lifetime of the program, and adds them to the card list for the window. */
     public void makePages() {
         Window window = Window.getInstance();
 
@@ -112,6 +117,7 @@ public class Window {
         window.addPanel("PaymentSuccessPage", paymentSuccessPanel);  
     }
 
+    /**Refreshes all the pages, used with changing login / registered status.*/
     public void refreshPages() {
         Window window = Window.getInstance();
 

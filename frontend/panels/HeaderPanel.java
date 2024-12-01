@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+/**Handles the creation of the header for each page, made dynamic by entering the type of header required. */
 public class HeaderPanel extends JPanel {
     private JButton leftButton = null;
     private JButton rightButton = null;
@@ -23,23 +24,21 @@ public class HeaderPanel extends JPanel {
     private static final Map<String, ActionListener> RIGHT_BUTTON_ACTIONS = new HashMap<>();
 
     static {
-        // Labels for when the user is not signed in
+        //Labels for when the user is not signed in
         LEFT_BUTTON_LABELS.put("notSignedIn", "Sign Up");
         RIGHT_BUTTON_LABELS.put("notSignedIn", "Login");
 
-        // Labels for when the user is signed in
+        //Labels for when the user is signed in
         LEFT_BUTTON_LABELS.put("signedIn", "Profile");
         RIGHT_BUTTON_LABELS.put("signedIn", "Logout");
 
-        // CHANGE THE SHOW PANEL NAMES WHEN PAGES ARE ADDED! THIS IS FOR TESTING
-        // PURPOSES
-        // Actions buttons when not signed in
+        //Actions buttons when not signed in
         LEFT_BUTTON_ACTIONS.put("notSignedIn", e -> {LoginPage.getInstance().refreshPage();
                                                             Window.getInstance().showPanel("SignUpPage");});
         RIGHT_BUTTON_ACTIONS.put("notSignedIn", e -> {LoginPage.getInstance().refreshPage();
                                                             Window.getInstance().showPanel("LoginPage");});
 
-        // Actions for buttons when signed in
+        //Actions for buttons when signed in
         LEFT_BUTTON_ACTIONS.put("signedIn", e -> Window.getInstance().showPanel("ProfilePage"));
         RIGHT_BUTTON_ACTIONS.put("signedIn", e -> { UserState.getInstance().logOutUser();
                                                         Window.getInstance().refreshPages();
@@ -47,6 +46,7 @@ public class HeaderPanel extends JPanel {
 
     }
 
+    /**Initialize UI elements (Ex. Buttons on Header).*/
     public HeaderPanel() {
         setLayout(new BorderLayout());
         setBackground(Color.LIGHT_GRAY);
@@ -74,6 +74,11 @@ public class HeaderPanel extends JPanel {
         add(buttonPanel, BorderLayout.EAST);
     }
 
+    /**Makes the left button, dynamic based on type
+     * @param type The type of the button required.
+     * @param font The font of the button.
+     * @return A button with the required logic.
+     */
     private JButton createLeftButton(String type, Font font) {
         String label = LEFT_BUTTON_LABELS.getOrDefault(type, "");
         ActionListener action = LEFT_BUTTON_ACTIONS.get(type);
@@ -87,6 +92,11 @@ public class HeaderPanel extends JPanel {
         return leftButton;
     }
 
+    /**Makes the Right button, dynamic based on type
+     * @param type The type of the button required.
+     * @param font The font of the button.
+     * @return A button with the required logic.
+     */
     private JButton createRightButton(String type, Font font) {
         String label = RIGHT_BUTTON_LABELS.getOrDefault(type, "");
         ActionListener action = RIGHT_BUTTON_ACTIONS.get(type);

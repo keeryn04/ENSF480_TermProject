@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import frontend.observers.PaymentPageObserver;
-import frontend.observers.ProfilePageObserver;
 
 public class PaymentState {
     private static PaymentState instance;
@@ -19,7 +18,7 @@ public class PaymentState {
     private Boolean ticketFlag;
     private double ticketCost;
 
-    //Singleton management
+    /**Returns the single instance of PaymentState.*/
     public static PaymentState getInstance() {
         if (instance == null) {
             instance = new PaymentState();
@@ -37,20 +36,22 @@ public class PaymentState {
         ticketCost = 10.50;
     }
 
-    //Add PaymentPage objects as an observer for payment-related changes
+    /**Add Payment objects as an observer for payment-related changes.
+     * @param observer The observer to add.
+    */    
     public void addPaymentObserver(PaymentPageObserver observer) {
         observersPayment.add(observer);
     }
 
-    //Notify on Payment data changes
+    /**Notify Observers of payment data changes.
+     * @param key The type of the object passed.
+     * @param value The actual value being passed.
+    */
     private void notifyPaymentObservers(String key, Object value) {
         for (PaymentPageObserver observer : observersPayment) {
             observer.onPaymentConfirmed(key, value);
-            //System.out.println("Notified Observer: " + observer + " about " + key + " & " + value);
         }
     }
-
-
 
     //Setters and Getters
     public String getCardCVV() {
@@ -107,24 +108,27 @@ public class PaymentState {
         return ticketFlag;
     }
 
-    // Ticket management
+    /**Adjust price and amount of tickets purchased*/
     public void addTicket() {
         setTotalPrice(totalPrice + ticketCost);
         setTicketAmount(ticketAmount + 1);
     }
 
+    /**Adjust price and amount of tickets purchased*/
     public void removeTicket() {
         setTotalPrice(totalPrice - ticketCost);
         setTicketAmount(ticketAmount - 1);
     }
 
+    /**Clear all ticket data stored (User cancelled ticket purchase).*/
     public void clearTicketsAndSeats() {
         setTicketList(new ArrayList<>());
         setTicketAmount(0);
         setTotalPrice(0.0);
-        SeatMapState.getInstance().clearSelectedSeats(); // Clear related SeatMapState
+        SeatMapState.getInstance().clearSelectedSeats(); //Clear related SeatMapState
     }
 
+    /**Error handling if no tickets selected on seatmap page.*/
     public void submitTicketConfirm() {
         if (ticketAmount > 0) {
             setTicketFlag(true); // Tickets selected, flag is true

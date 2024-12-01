@@ -21,19 +21,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import backend.DatabaseAccessor;
 import backend.User;
 import frontend.decorators.DecoratorHelpers;
 import frontend.observers.MoviePageObserver;
 import frontend.observers.PaymentPageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
-import frontend.states.AppState;
 import frontend.states.ErrorState;
 import frontend.states.MovieState;
 import frontend.states.PaymentState;
 import frontend.states.UserState;
 
+/**Instance of the PaymentPage which handles payment inputs and updating the other states accordingly.*/
 public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver {
     private static PaymentPage instance; // Singleton
 
@@ -74,6 +73,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
     private Font dataTitleFont;
     private Font dataFont;
 
+    /**Creates default data (Avoid null checks) and default GUI components, updates data with observers.*/
     private PaymentPage() {
         itemPurchased = new String();
         price = 0; 
@@ -107,7 +107,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         MovieState.getInstance().addMovieObserver(this);
     }
 
-    /**Returns single instance of PaymentPage */
+    /**Returns single instance of PaymentPage*/
     public static PaymentPage getInstance() {
         if (instance == null) {
             instance = new PaymentPage();
@@ -115,10 +115,14 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         return instance;
     }
 
+    /**Creates the PaymentPage with required elements. 
+     * Uses PageBuilder to create the different aspects of the page (Ex. Panel, Label, Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
+    */
     @Override
     public JPanel createPage() {
         try {
-            if (UserState.getInstance().getUser() != null) {
+            if (UserState.getInstance().getUser() != null) { //Autofill the data if the user is logged in.
                 User currentUser = UserState.getInstance().getUser();
                 if (currentUser != null) { //User is logged in, has data stored to autofill
                     cardNum = String.valueOf(currentUser.getCardNumber());
@@ -217,10 +221,13 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         }
     }
 
-    /**Handles updates to payment info, used for refreshing page info */
+    /**Handles updates to payment info, used for refreshing page info
+     * @param key The type of the object passed.
+     * @param value The actual value being passed.
+    */
     @Override
     public void onPaymentConfirmed(String key, Object value) {
-        //React to changes from AppState
+        //React to changes from PaymentState
         switch (key) {
             case "paymentAmount":
                 amount = (Integer) value;
@@ -255,9 +262,13 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         }
     }
 
-    /**For movie poster updating*/
+    /**Gets the changed movie poster based on the current movie
+     * @param key The type of the object passed.
+     * @param value The actual value being passed.
+    */
     @Override
     public void onMovieSelected(String key, Object value) {
+        //Handle MovieState data change.
         switch (key) {
             case "moviePoster":
                 posterImage = loadImage((String) value);
@@ -281,7 +292,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         }
     }
 
-    /*Update the page content based on observers */
+    /*Update the payment page content based on observers*/
     private void updateContent() {
         SwingUtilities.invokeLater(() -> {
            priceLabel.setText("$" + String.valueOf(price));
@@ -298,7 +309,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         });
     }
 
-    /**For updating the page when swapping from registration to tickets */
+    /**For updating the page when swapping from registration to tickets, updates payment page GUI elements.*/
     private void refreshPage() {
         JPanel newPage = createPage();
         Window.getInstance().addPanel("PaymentPage", newPage);  
@@ -318,7 +329,11 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
         return sectionPanel;
     }
 
+    /**Verify the payment info entered in the input fields (Valid formatting).
+     * @return The status of the entered info (Ex. Valid is True).
+    */
     public Boolean confirmPaymentInfo() {
+        //Get the input components
         Component[] cardNumPanelComponents = cardNumPanel.getComponents();
         Component[] cardExpDatePanelComponents = cardDatePanel.getComponents();
         Component[] cardCVVPanelComponents = cardCVVPanel.getComponents();
@@ -348,6 +363,7 @@ public class PaymentPage implements Page, PaymentPageObserver, MoviePageObserver
             }
         }
 
+        //Error handling
         if (!cardNum.matches(CARD_NUM_REGEX)) {
             ErrorState.getInstance().setError("Invalid Card Number");
             return false;

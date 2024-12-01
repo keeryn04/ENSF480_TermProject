@@ -4,13 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import frontend.pages.PanelBuilder;
-import frontend.pages.Window;
 
 public class DecoratorHelpers {
     /**
@@ -92,36 +89,5 @@ public class DecoratorHelpers {
         panel.add(label, BorderLayout.WEST);
         panel.add(textField, BorderLayout.CENTER);
         return panel;
-    }
-
-    /** Makes the header that is used on every page. Has logo and profile button */
-    @SuppressWarnings("unused")
-    public static JPanel createHeaderPanel() { //
-        // Fonts
-        Font titleFont = new Font("Times New Roman", Font.BOLD, 36);
-        Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
-
-        // Main Title Label
-        JLabel titleLabel = DecoratorHelpers.makeLabel(Color.BLACK, "Acmeplex", titleFont);
-        titleLabel = (JLabel) new BackgroundColorDecorator(titleLabel, Color.LIGHT_GRAY).getDecoratedComponent();
-
-        // Profile Button
-        JButton profileButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "My Profile", buttonFont);
-        ActionListener listener = e -> {
-            Window.getInstance().showPanel("ProfilePage");
-        };
-        ActionListenerDecorator accountDecorator = new ActionListenerDecorator(profileButton, profileButton, listener);
-
-        // Use builder to add all panels in main layout
-        JPanel titlePanel = new PanelBuilder()
-                .setLayout(new BorderLayout())
-                .addComponent(titleLabel, BorderLayout.CENTER)
-                .addComponent(profileButton, BorderLayout.EAST)
-                .build();
-
-        JPanel decoratedPanel = (JPanel) new BackgroundColorDecorator(titlePanel, Color.LIGHT_GRAY)
-                .getDecoratedComponent();
-
-        return decoratedPanel;
     }
 }

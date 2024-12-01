@@ -1,6 +1,5 @@
 package frontend.pages;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.UserState;
-import frontend.states.PaymentState;
 
 import backend.User;
 import backend.DatabaseAccessor;
@@ -22,6 +20,7 @@ import backend.Movie;
 import backend.Showtime;
 import backend.Ticket;
 
+/**Instance of the ProfilePage which handles editing user data and updating the database accordingly.*/
 public class ProfilePage implements Page, ProfilePageObserver {
     private static ProfilePage instance; // Singleton
 
@@ -38,10 +37,12 @@ public class ProfilePage implements Page, ProfilePageObserver {
     private JButton registerButton;
     private JButton cancelTicketButton;
 
+    // User stored data
     private List<Ticket> userTickets;
     private JList<String> ticketList;
     private JScrollPane listScroller;
 
+    /**Make default entry labels for the page inputs. Add buttons for registering and cancelling selected tickets.*/
     private ProfilePage() {
         // Fonts and Labels
         Font nameFont = new Font("Times New Roman", Font.BOLD, 24);
@@ -62,14 +63,12 @@ public class ProfilePage implements Page, ProfilePageObserver {
 
         ticketList = new JList<String>(); //data has type Object[]
 
-        // Register with ProfileState
+        // Register with UserState and PaymentSuccessPage
         UserState.getInstance().addProfilePageObserver(this);
         PaymentSuccessPage.getInstance().addProfileObserver(this);
     }
 
-    /**
-     * Returns the single instance of ProfilePage.
-     */
+    /**Returns the single instance of ProfilePage.*/
     public static ProfilePage getInstance() {
         if (instance == null) {
             instance = new ProfilePage();
@@ -77,6 +76,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
         return instance;
     }
 
+    /**Creates the ProfilePage with required elements. 
+     * Uses PageBuilder to create the different aspects of the page (Ex. Panel, Label, Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
+    */
     @Override
     public JPanel createPage() {
         try {
@@ -136,10 +139,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
         }
     }
 
-    /** Update profile data based on ProfileState data */
+    /**Update profile data based on UserState data using observer.*/
     @Override
     public void onProfileEdited(String key, Object value) {
-        // React to changes from AppState
+        //React to changes from UserState
         switch (key) {
             case "User":
                 user = (User) value;
@@ -153,9 +156,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
         }
     }
 
-    /**
-     * Updates the ProfilePage data and UI components.
-     */
+    /**Updates the ProfilePage data and UI components.*/
     public void updateContent() {
         SwingUtilities.invokeLater(() -> {
             if (UserState.getInstance().getUser() != null) {
@@ -180,6 +181,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
         });
     }
 
+    /**Retrieves ticket data from the database and updates the users' ticket list accordingly.*/
     private void updateTicketList() {
         userTickets = DatabaseAccessor.getTicketsByUser(UserState.getInstance().getUser().getID());
         DefaultListModel<String> listModel = new DefaultListModel<String>();
@@ -205,6 +207,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
         contentPanel.add(listScroller);
     }
 
+    /**Cancels the selected ticket, updating the GUI and the database accordingly.*/
     private void cancelSelectedTickets() {
         int[] indexes = ticketList.getSelectedIndices(); // Get selected indices from the list
         double amountOfCreditToAdd = UserState.getInstance().getUser().getCreditBalance();

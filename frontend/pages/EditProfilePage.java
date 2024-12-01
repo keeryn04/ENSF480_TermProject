@@ -3,25 +3,22 @@ package frontend.pages;
 import java.awt.*;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
-
 import backend.DatabaseAccessor;
 import backend.User;
 import frontend.decorators.DecoratorHelpers;
-import frontend.observers.LoginPageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.ErrorState;
 import frontend.states.UserState;
 
+/**Instance of the EditProfilePage which handles user data changing and updating the database accordingly.*/
 public class EditProfilePage implements Page{
-    private static EditProfilePage instance; // Singleton
+    private static EditProfilePage instance; //Singleton
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final String CARD_NUM_REGEX = "^\\d{16}$";
     private static final String EXP_DATE_REGEX = "^(0[1-9]|1[0-2])\\/\\d{2}$";
-    private static final String CVV_REGEX = "^\\d{3}$";
 
     // Signup Data
     private String name;
@@ -39,6 +36,7 @@ public class EditProfilePage implements Page{
     private String oldCreditCardNum;
     private String oldCreditCardExpDate;
 
+    //UI components
     private JPanel nameFieldPanel;
     private JPanel emailFieldPanel;
     private JPanel passwordFieldPanel;
@@ -51,6 +49,7 @@ public class EditProfilePage implements Page{
 
     private Font labelFont;
 
+    /**Initialize the UI components for updating user data. */
     EditProfilePage() {
         // Initialize UI components
         labelFont = new Font("Times New Roman", Font.BOLD, 18);
@@ -58,7 +57,7 @@ public class EditProfilePage implements Page{
         updateButton.addActionListener(e -> updateUser());
     }
 
-        /** Returns single instance of LoginPage */
+    /**Returns single instance of EditProfilePage*/
     public static EditProfilePage getInstance() {
         if (instance == null) {
             instance = new EditProfilePage();
@@ -66,6 +65,10 @@ public class EditProfilePage implements Page{
         return instance;
     }
 
+    /**Creates the EditProfilePage elements. 
+     * Uses PageBuilder to create the different aspects of the page (Ex. Label, Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
+    */
     @Override
     public JPanel createPage() {
         try {            
@@ -76,6 +79,7 @@ public class EditProfilePage implements Page{
             JPanel editPanel = new JPanel();
             editPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
             
+            //Reset old data
             oldName = null;
             oldEmail = null;
             oldPassword = null;
@@ -83,6 +87,7 @@ public class EditProfilePage implements Page{
             oldCreditCardNum = null;
             oldCreditCardExpDate = null;
 
+            //Get current user and autofill old data
             if (UserState.getInstance().getUser() != null) 
             {
                 User u = UserState.getInstance().getUser();
@@ -94,6 +99,7 @@ public class EditProfilePage implements Page{
                 oldCreditCardExpDate = u.getCardExpiry();
             }
 
+            //Make input elements
             nameFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Name", labelFont, 40, oldName, new Dimension(10, 1));
             emailFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Email", labelFont, 40, oldEmail, new Dimension(10, 1));
             passwordFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Password", labelFont, 40, oldPassword, new Dimension(10, 1));
@@ -103,7 +109,7 @@ public class EditProfilePage implements Page{
             creditCardExpDateFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "Expiration Date", labelFont, 40, oldCreditCardExpDate, new Dimension(10, 1));
 
 
-            // Add components to panel
+            //Add components to panel
             editPanel.add(nameFieldPanel);
             editPanel.add(emailFieldPanel);
             editPanel.add(passwordFieldPanel);
@@ -113,6 +119,7 @@ public class EditProfilePage implements Page{
             editPanel.add(creditCardExpDateFieldPanel);
             editPanel.add(updateButton);
 
+            //Build main panel
             JPanel mainPanel = new PanelBuilder()
                 .setLayout(new BorderLayout())
                 .addComponent(titlePanel, BorderLayout.NORTH)
@@ -127,7 +134,9 @@ public class EditProfilePage implements Page{
         }
     }
 
-    /** Check the login info with database / cached data */
+    /**Check the user info with database / cached data. Handles input error checking
+     * @return Status of user info (True is valid)
+    */
     private Boolean updateUser() {
         Component[] namePanelComponents = nameFieldPanel.getComponents();
         Component[] emailPanelComponents = emailFieldPanel.getComponents();
@@ -194,6 +203,7 @@ public class EditProfilePage implements Page{
             }
         }
 
+        //Error handling
         if (!email.matches(EMAIL_REGEX)) {
             ErrorState.getInstance().setError("Invalid Email");
             return false;
@@ -223,6 +233,7 @@ public class EditProfilePage implements Page{
         return true;
     }
     
+    /**Refresh page with new entered data.*/
     public void refreshPage() {
         JPanel page = createPage();
         Window.getInstance().addPanel("ProfileEditPage", page);

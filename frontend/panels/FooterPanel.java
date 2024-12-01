@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+/**Handles the creation of the footer for each page, made dynamic by entering the type of footer required. */
 public class FooterPanel extends JPanel{
     private JButton backButton;
     private JButton rightButton;
@@ -57,13 +58,16 @@ public class FooterPanel extends JPanel{
         });
     }
 
+    /**Makes the footer panel, dynamic based on type
+     * @param type The name of the type required, changes button behaviour accordingly.
+     */
     public FooterPanel(String type) {
         setLayout(new BorderLayout());
         setBackground(Color.LIGHT_GRAY);
 
         Font buttonFont = new Font("Times New Roman", Font.PLAIN, 24);
 
-        backButton = createBackButton(type, buttonFont);
+        backButton = createBackButton(buttonFont);
         rightButton = createRightButton(type, buttonFont);
         errorLabel = createErrorLabel();
 
@@ -71,11 +75,15 @@ public class FooterPanel extends JPanel{
         add(rightButton, BorderLayout.EAST);
         add(errorLabel, BorderLayout.CENTER);
 
-        // Register as an ErrorObserver to update the footer dynamically
+        //Register as an ErrorObserver to update the footer dynamically with errors
         ErrorState.getInstance().addErrorObserver(this::updateErrorLabel);
     }
 
-    private JButton createBackButton(String type, Font font) {
+    /**Makes the back button for the program footer, constant on every page to retun to home.
+     * @param font The font of the button, can be customized on creation
+     * @return Returns a JButton that is added to the footer.
+     */
+    private JButton createBackButton(Font font) {
         JButton backButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Back to Home", font);
 
         backButton.addActionListener(e -> {
@@ -86,6 +94,11 @@ public class FooterPanel extends JPanel{
         return backButton;
     }
 
+    /**Makes the right button for the program footer, dynamic based on the page instance
+     * @param type Specifies the behavior of the button, and the text displayed on the button.
+     * @param font The font of the button, can be customized on creation.
+     * @return Returns a JButton that is added to the footer.
+     */
     private JButton createRightButton(String type, Font font) {
         String label = BUTTON_LABELS.getOrDefault(type, ""); // Default to an empty string if type is not found
         ActionListener action = BUTTON_ACTIONS.get(type); // May be null if type is not found
@@ -99,6 +112,9 @@ public class FooterPanel extends JPanel{
         return rightButton;
     }
 
+    /**Makes the Error statement to be displayed on the footer.
+     * @return Returns a JLabel with basic decoration (Colouring, alignment).
+     */
     private JLabel createErrorLabel() {
         JLabel errorLabel = new JLabel("");
         errorLabel.setForeground(Color.RED);
@@ -106,6 +122,9 @@ public class FooterPanel extends JPanel{
         return errorLabel;
     }
 
+    /**Changes the text displayed on the error message in the footer.
+     * @param errorMessage The text displayed in the error label.
+     */
     private void updateErrorLabel(String errorMessage) {
         errorLabel.setText(errorMessage.isEmpty() ? "" : "Error Occurred: " + errorMessage);
     }

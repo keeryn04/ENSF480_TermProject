@@ -5,6 +5,7 @@ import java.util.List;
 
 import frontend.observers.MoviePageObserver;
 
+/**Used to store movie data that will be used in the system (Like a cache to store current movie data)*/
 public class MovieState {
     private static MovieState instance;
     private final List<MoviePageObserver> observersMovie = new ArrayList<>();
@@ -21,7 +22,7 @@ public class MovieState {
     private Integer screenNum;
     private String releaseDate;
 
-    //Singleton management
+    /**Returns the single instance of MovieState.*/
     public static MovieState getInstance() {
         if (instance == null) {
             instance = new MovieState();
@@ -29,6 +30,7 @@ public class MovieState {
         return instance;
     }
 
+    /**Default Movie Data (Avoid Null Checks)*/
     private MovieState() {
         movieId = 1;
         showtimeId = 1;
@@ -42,12 +44,17 @@ public class MovieState {
         releaseDate = "2020-10-31";
     }
 
-    //Add MoviePage objects as an observer for movie-related changes
+    /**Add MoviePage objects as an observer for movie-related changes.
+     * @param observer The observer to add.
+    */
     public void addMovieObserver(MoviePageObserver observer) {
         observersMovie.add(observer);
     }
 
-    //Notify on Movie data changes
+    /**Notify Observers of movie data changes.
+     * @param key The type of the object passed.
+     * @param value The actual value being passed.
+    */
     private void notifyMovieObservers(String key, Object value) {
         for (MoviePageObserver observer : observersMovie) {
             observer.onMovieSelected(key, value);
@@ -55,6 +62,7 @@ public class MovieState {
         }
     }
 
+    //Setters and Getters
     public Integer getMovieId() {
         return movieId;
     }
