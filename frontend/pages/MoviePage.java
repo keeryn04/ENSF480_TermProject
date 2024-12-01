@@ -24,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import java.time.LocalDate;
 
 import backend.Movie;
 import backend.Showtime;
@@ -36,7 +35,6 @@ import frontend.panels.FooterPanel;
 import frontend.states.AppState;
 import frontend.states.MovieState;
 import frontend.states.SeatMapState;
-import frontend.states.UserState;
 import frontend.panels.HeaderPanel;
 
 public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
@@ -53,10 +51,6 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
     private String movieRating = "3.6";
     private String movieRuntime = "120";
     private Integer screenId = 1;
-    private String releaseDate = "2020-10-31";
-
-    //Date today
-    LocalDate currentDate = LocalDate.now();
 
     //UI components
     private JLabel titleLabel;
@@ -130,29 +124,10 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
 
             // Get or create the footer panel
             FooterPanel footerPanel;
-            boolean falseUserInfo = false;
-
-            // ParsedReleaseDate
-            releaseDate = MovieState.getInstance().getReleaseDate();
-            LocalDate storedDate = LocalDate.parse(releaseDate);
-        
-            try {
-                // Attempt to check the registered status
-                isUserRegistered = UserState.getInstance().isUserRegistered();
-                falseUserInfo = false;
-            } catch (Exception e) {
-                falseUserInfo = true;
-            }
 
             String footerType;
 
-            if (currentDate.isBefore(storedDate) && !isUserRegistered) {
-                footerType = "heldMovieTicket";
-            } else if (currentDate.isAfter(storedDate) && !falseUserInfo) {
-                footerType = "movieTicket";
-            } else {
-                footerType = "missingAccount";
-            }
+            footerType = "movieTicket";
 
             footerPanel = new FooterPanel(footerType);
 
@@ -261,10 +236,6 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
                 movieRuntime = (String) value;
                 updateContent();
                 break;
-            case "releaseDate":
-                releaseDate = (String) value;
-                updateContent();
-                break;
             default:
                 break;
         }
@@ -288,32 +259,6 @@ public class MoviePage implements Page, MoviePageObserver, SeatMapObserver {
             genreLabel.setText(movieGenre);
             ratingLabel.setText(movieRating);
             runtimeLabel.setText(movieRuntime);
-
-            //Get or create the footer panel
-            boolean falseUserInfo = false;
-
-            //ParsedReleaseDate
-            releaseDate = MovieState.getInstance().getReleaseDate();
-            LocalDate storedDate = LocalDate.parse(releaseDate);
-        
-            try {
-                //Attempt to check the registered status
-                isUserRegistered = UserState.getInstance().isUserRegistered();
-                falseUserInfo = false;
-            } catch (Exception e) {
-                falseUserInfo = true;
-            }
-
-            String footerType;
-
-            //Check state of user (Logged in, Registered, Overall access to movie booking)
-            if (currentDate.isBefore(storedDate) && !isUserRegistered) {
-                footerType = "heldMovieTicket";
-            } else if (currentDate.isAfter(storedDate) && !falseUserInfo) {
-                footerType = "movieTicket";
-            } else {
-                footerType = "missingAccount";
-            }
         });
     }
 

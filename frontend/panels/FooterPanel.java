@@ -8,11 +8,13 @@ import frontend.pages.PaymentPage;
 import frontend.pages.PaymentSuccessPage;
 import frontend.pages.Window;
 import frontend.states.ErrorState;
+import frontend.states.MovieState;
 import frontend.states.PaymentState;
 import frontend.states.UserState;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +30,6 @@ public class FooterPanel extends JPanel{
     static {
         // Populate button labels
         BUTTON_LABELS.put("movieTicket", "Purchase a Ticket");
-        BUTTON_LABELS.put("heldMovieTicket", "Tickets Unavailable: Movie Not Released");
-        BUTTON_LABELS.put("missingAccount", "Tickets Unavailable: Please Log In");
         BUTTON_LABELS.put("continuePurchase", "Continue to Payment");
         BUTTON_LABELS.put("confirmInfo", "Confirm");
         BUTTON_LABELS.put("editInfo", "Edit Info");
@@ -37,7 +37,30 @@ public class FooterPanel extends JPanel{
         BUTTON_LABELS.put("default", null);
 
         // Populate button actions
-        BUTTON_ACTIONS.put("movieTicket", e -> Window.getInstance().showPanel("SeatMapPage"));
+        BUTTON_ACTIONS.put("movieTicket", e -> {
+            try {
+                // Attempt to check the registered status
+                if(UserState.getInstance().isUserRegistered() == true){
+                    Window.getInstance().showPanel("SeatMapPage");
+                }
+                else{
+                    LocalDate currentDate = LocalDate.now();
+                    LocalDate storedDate = LocalDate.parse(MovieState.getInstance().getReleaseDate());
+
+                    if(currentDate.isBefore(storedDate)){
+                        ErrorState.getInstance().setError("Tickets Unavailable: Movie Not Released");
+                    }
+                    else{
+                        Window.getInstance().showPanel("SeatMapPage");
+                    }
+                }
+            } catch (Exception f) {
+                System.out.printf("User Not Logged In: %s%n", f.getMessage());
+                ErrorState.getInstance().setError("Tickets Unavailable: Please Log In");
+            }
+            if(UserState.getInstance().isUserRegistered() == true)
+            Window.getInstance().showPanel("SeatMapPage");
+        });
         BUTTON_ACTIONS.put("continuePurchase", e -> {
             PaymentState paymentState = PaymentState.getInstance();
             if (paymentState.getTicketAmount() == 0) {

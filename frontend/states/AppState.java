@@ -9,7 +9,6 @@ import backend.DatabaseAccessor;
 import backend.Movie;
 import backend.Screen;
 import backend.Showtime;
-import backend.User;
 
 /**Used to store data that will be used in the system (Like a cache to store database queried data)*/
 public class AppState {
