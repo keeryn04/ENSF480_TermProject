@@ -16,38 +16,30 @@
 
 ---
 
-## How to run using compiled files
-
-1. Run 2.sql
-2. Run 2.jar
-
-### NOTE: THIS MAY NOT WORK, RUNNING USING CODE BELOW WILL
-
----
-
 ## How to Run the Program  
 
 This application has been tested on **Windows 11**.  
 
 ### Prerequisites  
 1. Ensure you have a MySQL server installed and configured.  
-2. Update the `DatabaseConfig.java` file (in the `backend` folder) with your MySQL server’s details:  
+2. Unzip all folders present. This includes 2config.zip and 2java.zip
+3. Update the `DatabaseConfig.java` file (in the `backend` folder) with your MySQL server’s details:  
    - **URL**  
    - **Username**  
    - **Password**  
 
 ### Compilation Instructions  
-If `Main.class` does not exist or needs to be updated, follow these steps:  
-1. Open a terminal in the project directory: `ENSF480_TermProject/ENSF480_TermProject`.  
+If `2.jar` does not exist or needs to be updated, follow these steps:  
+1. Open a terminal in the project directory: `ENSF480_TermProject/2java`.  
 2. Run the following command:  
 ```bash
-javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java frontend/states/*.java frontend/panels/*.java backend/*.java
+jar cmfv META-INF/MANIFEST.MF 2.jar -C ./ .
 ```
 
 ### Running the Application  
-Once the `.class` files are compiled, run the application by entering:  
+Once the `2.jar` file is compiled, run the application while still inside 2java by entering:  
 ```bash
-java -cp ".;lib\mysql-connector-j-9.1.0.jar" Main
+java -jar 2.jar
 ```  
 
 ---
