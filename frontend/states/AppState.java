@@ -9,12 +9,8 @@ import backend.DatabaseAccessor;
 import backend.Movie;
 import backend.Screen;
 import backend.Showtime;
-import backend.User;
 
-/**
- * Used to store data that will be used in the system (Like a cache to store
- * database queried data)
- */
+/**Used to store data that will be used in the system (Like a cache to store database queried data)*/
 public class AppState {
     private static AppState instance; // Singleton instance
 
@@ -25,6 +21,7 @@ public class AppState {
 
     DateTimeFormatter formatter;
 
+    /**Initialize storage components for all data stored, and loads those containers with database data.*/
     private AppState() {
         movies = new HashMap<>();
         screens = new HashMap<>();
@@ -37,7 +34,7 @@ public class AppState {
         loadUserEmails();
     }
 
-    // Singleton management
+    /**Returns single instance of AppState*/
     public static AppState getInstance() {
         if (instance == null) {
             instance = new AppState();
@@ -45,6 +42,7 @@ public class AppState {
         return instance;
     }
 
+    //Getters
     public Map<Integer, Movie> getMovies() {
         return movies;
     }
@@ -61,6 +59,7 @@ public class AppState {
         return userEmails;
     }
 
+    /**Loads movies from database into appstate.*/
     private void loadMovies() {
         int movieId = 1;
         Movie movie;
@@ -70,6 +69,7 @@ public class AppState {
         }
     }
 
+    /**Loads screens from database into appstate.*/
     private void loadScreens() {
         int screenId = 1;
         Screen screen;
@@ -79,6 +79,7 @@ public class AppState {
         }
     }
 
+    /**Loads emails from database into appstate.*/
     private void loadUserEmails() {
         int userId = 1;
         String email;
@@ -88,6 +89,7 @@ public class AppState {
         }
     }
 
+    /**Loads showtimes from database into appstate.*/
     private void loadShowtimes() {
         int showtimeId = 1;
         Showtime showtime;

@@ -8,7 +8,6 @@ public class User {
     private String address;
     private long card_number;
     private String card_exp_date;
-    private String card_cvv;
     private boolean is_registered;
     private double credit_balance;
     private String last_payment_date;

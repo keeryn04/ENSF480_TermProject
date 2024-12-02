@@ -1,6 +1,5 @@
 package frontend.pages;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import frontend.observers.ProfilePageObserver;
 import frontend.panels.FooterPanel;
 import frontend.panels.HeaderPanel;
 import frontend.states.UserState;
-import frontend.states.PaymentState;
 
 import backend.User;
 import backend.DatabaseAccessor;
@@ -22,6 +20,7 @@ import backend.Movie;
 import backend.Showtime;
 import backend.Ticket;
 
+/**Instance of the ProfilePage which handles editing user data and updating the database accordingly.*/
 public class ProfilePage implements Page, ProfilePageObserver {
     private static ProfilePage instance; // Singleton
 
@@ -38,10 +37,12 @@ public class ProfilePage implements Page, ProfilePageObserver {
     private JButton registerButton;
     private JButton cancelTicketButton;
 
+    // User stored data
     private List<Ticket> userTickets;
     private JList<String> ticketList;
     private JScrollPane listScroller;
 
+    /**Make default entry labels for the page inputs. Add buttons for registering and cancelling selected tickets.*/
     private ProfilePage() {
         // Fonts
         Font nameFont = new Font("Times New Roman", Font.BOLD, 24);
@@ -71,9 +72,7 @@ public class ProfilePage implements Page, ProfilePageObserver {
         PaymentSuccessPage.getInstance().addProfileObserver(this);
     }
 
-    /**
-     * Returns the single instance of ProfilePage.
-     */
+    /**Returns the single instance of ProfilePage.*/
     public static ProfilePage getInstance() {
         if (instance == null) {
             instance = new ProfilePage();
@@ -81,6 +80,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
         return instance;
     }
 
+    /**Creates the ProfilePage with required elements. 
+     * Uses PageBuilder to create the different aspects of the page (Ex. Panel, Label, Button, etc.),
+     * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
+    */
     @Override
     public JPanel createPage() {
         try {
@@ -141,10 +144,10 @@ public class ProfilePage implements Page, ProfilePageObserver {
         }
     }
 
-    /** Update profile data based on ProfileState data */
+    /**Update profile data based on UserState data using observer.*/
     @Override
     public void onProfileEdited(String key, Object value) {
-        // React to changes from AppState
+        //React to changes from UserState
         switch (key) {
             case "User":
                 user = (User) value;    //User updated

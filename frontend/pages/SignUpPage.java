@@ -10,6 +10,7 @@ import frontend.panels.HeaderPanel;
 import frontend.states.AppState;
 import frontend.states.ErrorState;
 
+/**Instance of the SignupPage which handles creating new users and updating the database accordingly.*/
 public class SignUpPage implements Page {
     private static SignUpPage instance; // Singleton
 
@@ -26,6 +27,7 @@ public class SignUpPage implements Page {
 
     private Font labelFont;
 
+    /**Make default entry labels for the page inputs.*/
     private SignUpPage() {
         // Initialize UI components
         labelFont = new Font("Times New Roman", Font.BOLD, 18);
@@ -34,7 +36,7 @@ public class SignUpPage implements Page {
         passwordReEntryFieldPanel = DecoratorHelpers.makeLabeledField(Color.BLACK, "ReEnter Password", labelFont, 40, null, new Dimension(10, 1));
     }
 
-    /** Returns single instance of LoginPage */
+    /**Returns single instance of SignupPage*/
     public static SignUpPage getInstance() {
         if (instance == null) {
             instance = new SignUpPage();
@@ -42,6 +44,7 @@ public class SignUpPage implements Page {
         return instance;
     }
 
+    /**Creates an instance of the SignupPage, with GUI elements that can be changed dynamically.*/
     @Override
     public JPanel createPage() {
         try {
@@ -74,6 +77,9 @@ public class SignUpPage implements Page {
         }
     }
 
+    /**Makes a Button for signing up a new user, with features to verify the login information of the user.
+     * @return A button with login implementation.
+     */
     private JButton createSignUpButton() {
         JButton signUpButton = DecoratorHelpers.makeButton(Color.DARK_GRAY, Color.WHITE, "Sign Up", labelFont);
         signUpButton.addActionListener(e -> validateSignUp());
@@ -81,7 +87,9 @@ public class SignUpPage implements Page {
     }
 
 
-    /** Check the login info with database / cached data */
+    /**Check the login info with database / cached data. Handles error checking for invalid inputs.
+     * @return A boolean whether the user's info is verified or not.
+    */
     private Boolean validateSignUp() {
         Component[] emailPanelComponents = emailFieldPanel.getComponents();
         Component[] passwordPanelComponents = passwordFieldPanel.getComponents();

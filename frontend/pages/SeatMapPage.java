@@ -23,6 +23,7 @@ import frontend.states.PaymentState;
 import frontend.states.SeatMapState;
 import backend.DatabaseAccessor;
 
+/**Handles the instance of the seatmap of the current movie, using observers to update data between pages.*/
 public class SeatMapPage implements Page, SeatMapObserver {
     private static SeatMapPage instance; // Singleton instance
 
@@ -46,7 +47,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
 
         contentPanel = new JPanel();
 
-        //Register with SeatMapState
+        //Register with SeatMapState for updated seatmap info
         SeatMapState.getInstance().addSeatMapObserver(this); 
     }
 
@@ -59,7 +60,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
     }
 
     /**Creates the SeatMapPage elements. 
-     * Uses PageBuilder to create the different aspects of the page (Ex. Label, Button, etc.),
+     * Uses PageBuilder to create the different aspects of the page (Ex. Panel, Label, Button, etc.),
      * and uses Decorators in DecoratiorHelpers to add more functionality to those aspects.
     */
     @Override
@@ -87,18 +88,25 @@ public class SeatMapPage implements Page, SeatMapObserver {
         }
     }
 
-    /** Creates a seat map panel with interactive seats and color management.*/
+    /**Creates a seat map panel with interactive seats and color management.
+     * @param rows The amount of rows of the seatmap.
+     * @param cols The amount of columns of the seatmap.
+     * @return A Panel with the created seatmap.
+    */
     private JPanel createSeatMapPanel(int rows, int cols) {
+        //Create new seatmap storage
         this.seats = new JButton[rows][cols];
         JPanel seatPanel = new JPanel();
         seatPanel.setLayout(new GridLayout(rows, cols, 10, 10));
 
+        //Fonts
         Font seatFont = new Font("Times New Roman", Font.PLAIN, 12);
         Font screenFont = new Font("Times New Roman", Font.BOLD, 20);
 
+        //Get list of takes seats for current showtime
         ArrayList<String> takenSeats = DatabaseAccessor.getTakenSeats(MovieState.getInstance().getShowtimeId());
 
-        //Initialize or reset seats
+        //Initialize or reset seats (Colour, status, etc.)
         initializeOrResetSeats(rows, cols, seatFont, takenSeats);
 
         //Add seats to the seat panel
@@ -130,7 +138,9 @@ public class SeatMapPage implements Page, SeatMapObserver {
         return mainPanel;
     }
 
-    /**Initializes or resets the seats with appropriate colors and interactions.*/
+    /**Initializes or resets the seats with appropriate colors and interactions.
+     * @param takenSeats List of taken seats to update status of the seats (Reserved, Registered only, etc.)
+    */
     private void initializeOrResetSeats(int rows, int cols, Font seatFont, ArrayList<String> takenSeats) {
         String releaseDate = MovieState.getInstance().getReleaseDate();
         LocalDate storedDate = LocalDate.parse(releaseDate);
@@ -173,7 +183,10 @@ public class SeatMapPage implements Page, SeatMapObserver {
         PaymentState.getInstance().clearTicketsAndSeats(); //Update info stored for payment
     }
     
-    /**Update screen data based on SeatMapState data */
+    /**Update screen data based on SeatMapState data.
+     * @param key The type of data being updated.
+     * @param value The actual value of the data being updated.
+    */
     @Override
     public void onSeatMapUpdate(String key, Object value) {
         //React to changes from SeatMapState
@@ -191,6 +204,7 @@ public class SeatMapPage implements Page, SeatMapObserver {
         }
     }
 
+    /**Refresh the content of the Seatmap page. Used with observer to update GUI elements.*/
     public void updateContent() {
         SwingUtilities.invokeLater(() -> {
             //Make new SeatMap with new data
