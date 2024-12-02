@@ -148,6 +148,8 @@ public class RegisterPage implements Page{
 
         DatabaseAccessor.registerUser(UserState.getInstance().getUser().getEmail(), name, address, Long.valueOf(creditCardNum), creditCardExpDate);
         Window.getInstance().showPanel("Home");
+        JPanel profilePanel = ProfilePage.getInstance().createPage();
+        Window.getInstance().addPanel("ProfilePage", profilePanel);
         return true;
     }
 }
