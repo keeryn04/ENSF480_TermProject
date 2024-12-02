@@ -217,12 +217,11 @@ public class EditProfilePage implements Page{
             ErrorState.getInstance().setError("Empty Field");
             return false;
         } 
-
-        if (!password.equals(password_ReEntry)) {
+        else if (!password.equals(password_ReEntry)) {
             ErrorState.getInstance().setError("Passwords Don't Match");
             return false;
         }
-        else if (AppState.getInstance().getUserEmails().contains(email)) {
+        else if (AppState.getInstance().getUserEmails().contains(email) && !oldEmail.equals(email)) {
             ErrorState.getInstance().setError("User Already Exists");
             return false;
         } else {
