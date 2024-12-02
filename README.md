@@ -16,6 +16,15 @@
 
 ---
 
+## How to run using compiled files
+
+1. Run 2.sql
+2. Run 2.jar
+
+### NOTE: THIS MAY NOT WORK, RUNNING USING CODE BELOW WILL
+
+---
+
 ## How to Run the Program  
 
 This application has been tested on **Windows 11**.  
@@ -29,7 +38,7 @@ This application has been tested on **Windows 11**.
 
 ### Compilation Instructions  
 If `Main.class` does not exist or needs to be updated, follow these steps:  
-1. Open a terminal in the project directory: `ENSF480_TermProject`.  
+1. Open a terminal in the project directory: `ENSF480_TermProject/ENSF480_TermProject`.  
 2. Run the following command:  
 ```bash
 javac -cp lib/mysql-connector-j-9.1.0.jar Main.java frontend/pages/*.java frontend/decorators/*.java frontend/observers/*.java frontend/states/*.java frontend/panels/*.java backend/*.java
